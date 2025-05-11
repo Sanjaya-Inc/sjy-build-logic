@@ -87,19 +87,47 @@ fun Project.findLibs(
     alias: String,
     isPrintError: Boolean = false,
 ): Provider<MinimalExternalModuleDependency>? {
-    val dependency = conventions.findLibrary(alias).getOrNull()
-    if (dependency == null) {
+    val coreDependency = core.findLibrary(alias).getOrNull()
+    if (coreDependency != null) {
+        return coreDependency
+    }
+
+    val uiDependency = ui.findLibrary(alias).getOrNull()
+    if (uiDependency != null) {
+        return uiDependency
+    }
+
+    val essentialsDependency = essentials.findLibrary(alias)?.getOrNull()
+    if (essentialsDependency != null) {
+        return essentialsDependency
+    }
+
+    val libsDependency = libs.findLibrary(alias).getOrNull()
+    if (libsDependency == null) {
         if (isPrintError) printMessage("Cannot find $alias on buildtools version catalog, please check version")
         return null
     }
-    return dependency
+    return libsDependency
 }
 
 fun Project.isAliasesExistOnBuildTools(vararg alias: String): Boolean {
     return alias.all {
-        val plugin = conventions.findPlugin(it).getOrNull()?.orNull?.pluginId
-        val lib = conventions.findLibrary(it).getOrNull()
-        plugin != null || lib != null
+        val corePlugin = core.findPlugin(it).getOrNull()?.orNull?.pluginId
+        val coreLib = core.findLibrary(it).getOrNull()
+
+        val uiPlugin = ui.findPlugin(it).getOrNull()?.orNull?.pluginId
+        val uiLib = ui.findLibrary(it).getOrNull()
+
+        val essentialsPlugin = essentials.findPlugin(it).getOrNull()?.orNull?.pluginId
+        val essentialsLib = essentials.findLibrary(it).getOrNull()
+
+        val libsPlugin = libs.findPlugin(it).getOrNull()?.orNull?.pluginId
+        val libsLib = libs.findLibrary(it).getOrNull()
+
+        corePlugin != null || coreLib != null ||
+                uiPlugin != null || uiLib != null ||
+                essentialsPlugin != null || essentialsLib != null ||
+                libsPlugin != null || libsLib != null
     }
 }
 

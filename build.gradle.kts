@@ -5,6 +5,10 @@ plugins {
 }
 
 dependencies {
+    implementation(platform(core.koin.bom))
+    implementation(core.bundles.koin.nonandroid)
+    implementation(core.koin.annotation)
+    ksp(core.koin.ksp)
     compileOnly(core.plugin.agp)
     compileOnly(core.plugin.kgp)
     compileOnly(core.plugin.ksp)
@@ -15,30 +19,30 @@ dependencies {
 gradlePlugin {
     val androidTarget by plugins.creating {
         id = "com.sanjaya.buildlogic.target"
-        implementationClass = "com.sanjaya.buildlogic.AndroidTargetConventionPlugin"
+        implementationClass = "com.sanjaya.buildlogic.plugins.AndroidTargetConventionPlugin"
     }
     val app by plugins.creating {
         id = "com.sanjaya.buildlogic.app"
-        implementationClass = "com.sanjaya.buildlogic.AndroidAppConventionPlugin"
+        implementationClass = "com.sanjaya.buildlogic.plugins.AndroidAppConventionPlugin"
     }
     val lib by plugins.creating {
         id = "com.sanjaya.buildlogic.lib"
-        implementationClass = "com.sanjaya.buildlogic.AndroidLibConventionPlugin"
+        implementationClass = "com.sanjaya.buildlogic.plugins.AndroidLibConventionPlugin"
     }
     val compose by plugins.creating {
         id = "com.sanjaya.buildlogic.compose"
-        implementationClass = "com.sanjaya.buildlogic.AndroidComposeConventionPlugin"
+        implementationClass = "com.sanjaya.buildlogic.plugins.AndroidComposeConventionPlugin"
     }
     val apollo by plugins.creating {
         id = "com.sanjaya.buildlogic.apollo"
-        implementationClass = "com.sanjaya.buildlogic.ApolloConventionPlugin"
+        implementationClass = "com.sanjaya.buildlogic.plugins.ApolloConventionPlugin"
     }
     val detekt by plugins.creating {
         id = "com.sanjaya.buildlogic.detekt"
-        implementationClass = "com.sanjaya.buildlogic.DetektConventionPlugin"
+        implementationClass = "com.sanjaya.buildlogic.plugins.DetektConventionPlugin"
     }
     val kotlinMultiplatform by plugins.creating {
         id = "com.sanjaya.buildlogic.kotlin-multiplatform"
-        implementationClass = "com.sanjaya.buildlogic.KotlinMultiplatformConventionPlugin"
+        implementationClass = "com.sanjaya.buildlogic.plugins.KotlinMultiplatformConventionPlugin"
     }
 }

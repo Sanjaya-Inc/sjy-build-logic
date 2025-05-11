@@ -34,6 +34,22 @@ fun Project.applyKotlinPlugins() {
     }
 }
 
+fun Project.applyAndroidConvention(pluginId: String) {
+    with(pluginManager) {
+        applyPluginsWithLog(pluginId)
+        applyKotlinPlugins()
+        applyKspPlugins()
+        applyKoin()
+        configureFlavors()
+        applyPluginsWithLog("com.sanjaya.buildlogic.target")
+        applyPluginsWithLog("com.sanjaya.buildlogic.detekt")
+        testDependencies()
+        applyDebuggingTools()
+        addStoreDependencies()
+        addStartupDependencies()
+    }
+}
+
 fun PluginManager.applyPluginsWithLog(pluginId: String) {
     apply(pluginId)
     printMessage("Applying plugins: $pluginId")
@@ -66,7 +82,7 @@ fun Project.findPlugin(
     alias: String,
     isPrintError: Boolean = false,
 ): String? {
-    val kspPluginId = conventions.findPlugin(alias).getOrNull()?.orNull?.pluginId
+    val kspPluginId = core.findPlugin(alias).getOrNull()?.orNull?.pluginId
     if (kspPluginId == null) {
         if (isPrintError) printMessage("Cannot find $alias on version catalog, please check version")
         return null
@@ -135,4 +151,30 @@ fun Project.configureKotlinMultiplatform(
             findLibs("kotlin-coroutines-test")?.let { implementationWithLog(it) }
         }
     }
+}
+
+fun Project.applyComposeDependencies() = dependencies {
+    findLibs("compose-bom")?.let { implementationPlatformWithLog(it) }
+    findLibs("compose-bom")?.let { androidTestImplementationPlatformWithLog(it) }
+    findLibs("compose-activity")?.let { implementationWithLog(it) }
+    findLibs("compose-ui")?.let { implementationWithLog(it) }
+    findLibs("compose-material")?.let { implementationWithLog(it) }
+    findLibs("compose-ui-graphics")?.let { implementationWithLog(it) }
+    findLibs("compose-ui-preview")?.let { implementationWithLog(it) }
+    findLibs("compose-lifecycle-viewmodel")?.let { implementationWithLog(it) }
+    findLibs("compose-lifecycle-runtime")?.let { implementationWithLog(it) }
+    findLibs("compose-foundation")?.let { implementationWithLog(it) }
+    findLibs("compose-lottie")?.let { implementationWithLog(it) }
+    findLibs("compose-shimmer")?.let { implementationWithLog(it) }
+    findLibs("compose-animation")?.let { implementationWithLog(it) }
+    findLibs("compose-paging")?.let { implementationWithLog(it) }
+    findLibs("compose-ui-tooling")?.let { debugImplementationWithLog(it) }
+    findLibs("compose-ui-manifest")?.let { debugImplementationWithLog(it) }
+    findLibs("compose-test-junit")?.let { androidTestImplementationWithLog(it) }
+    findLibs("coil")?.let { implementationWithLog(it) }
+    findLibs("coil-svg")?.let { implementationWithLog(it) }
+    findLibs("coil-gif")?.let { implementationWithLog(it) }
+    findLibs("lifecycle-ktx")?.let { implementationWithLog(it) }
+    findLibs("lifecycle-runtime")?.let { implementationWithLog(it) }
+    findLibs("lifecycle-process")?.let { implementationWithLog(it) }
 }

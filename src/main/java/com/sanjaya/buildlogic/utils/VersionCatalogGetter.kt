@@ -5,11 +5,17 @@ import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.getByType
 
-val Project.conventions
-    get(): VersionCatalog = getVersionCatalogByName("conventions")
-
 val Project.libs
     get(): VersionCatalog = getVersionCatalogByName("libs")
+
+val Project.core
+    get(): VersionCatalog = getVersionCatalogByName("core")
+
+val Project.ui
+    get(): VersionCatalog = getVersionCatalogByName("ui")
+
+val Project.essentials
+    get(): VersionCatalog = getVersionCatalogByName("essentials")
 
 private fun Project.getVersionCatalogByName(name: String): VersionCatalog {
     return runCatching {

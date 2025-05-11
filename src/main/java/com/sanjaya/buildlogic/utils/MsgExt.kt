@@ -1,6 +1,6 @@
 package com.sanjaya.buildlogic.utils
 
-import com.sanjaya.buildlogic.utils.Constant.GLOBAL_TAG
+import com.sanjaya.buildlogic.utils.C.GLOBAL_TAG
 
 fun printMessage(
     msg: String,

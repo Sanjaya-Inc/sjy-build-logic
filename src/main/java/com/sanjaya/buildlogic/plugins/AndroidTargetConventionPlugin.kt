@@ -1,4 +1,4 @@
-package com.sanjaya.buildlogic
+package com.sanjaya.buildlogic.plugins
 
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.LibraryExtension
@@ -8,6 +8,7 @@ import com.sanjaya.buildlogic.utils.isApp
 import com.sanjaya.buildlogic.utils.isAppOrLib
 import com.sanjaya.buildlogic.utils.isLib
 import com.sanjaya.buildlogic.utils.libs
+import com.sanjaya.buildlogic.utils.core
 import com.sanjaya.buildlogic.utils.printMessage
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -37,12 +38,12 @@ class AndroidTargetConventionPlugin : Plugin<Project> {
                 } ?: return@with
 
             the(type).apply {
-                val targetSdk = libs.findVersion("sdk-target").get().toString().toInt()
-                val minSdkVersion = libs.findVersion("sdk-min").get().toString().toInt()
+                val targetSdk = libs.findVersion("compile-sdk").get().toString().toInt()
+                val minSdkVersion = libs.findVersion("min-sdk").get().toString().toInt()
                 if (this is ApplicationExtension) {
                     defaultConfig.targetSdk = targetSdk
                 }
-                compileSdk = libs.findVersion("sdk-target").get().toString().toInt()
+                compileSdk = libs.findVersion("compile-sdk").get().toString().toInt()
                 defaultConfig {
                     minSdk = minSdkVersion
                 }
@@ -52,7 +53,7 @@ class AndroidTargetConventionPlugin : Plugin<Project> {
                 the<JavaPluginExtension>().toolchain {
                     languageVersion.set(
                         JavaLanguageVersion.of(
-                            libs.findVersion("jvm-target").get().toString()
+                            core.findVersion("jvm-target").get().toString()
                         )
                     )
                 }

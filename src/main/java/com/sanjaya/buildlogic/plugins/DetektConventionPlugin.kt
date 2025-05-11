@@ -1,19 +1,15 @@
-package com.sanjaya.buildlogic
+package com.sanjaya.buildlogic.plugins
 
+import com.sanjaya.buildlogic.utils.core
 import com.sanjaya.buildlogic.utils.findLibs
 import com.sanjaya.buildlogic.utils.findPlugin
-import com.sanjaya.buildlogic.utils.implementationWithLog
-import com.sanjaya.buildlogic.utils.conventions
 import com.sanjaya.buildlogic.utils.printMessage
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.CategoryFilter.exclude
-import org.gradle.internal.impldep.org.junit.experimental.categories.Categories.CategoryFilter.include
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.the
 import org.gradle.kotlin.dsl.withType
 
@@ -43,7 +39,7 @@ class DetektConventionPlugin: Plugin<Project> {
                     baseline = file("../config/detekt-${name}-baseline.xml")
                     parallel = true
                 }
-                val jvmTarget = conventions.findVersion("jvm-target").get().toString()
+                val jvmTarget = core.findVersion("jvm-target").get().toString()
                 tasks.withType<Detekt>().configureEach {
                     this.jvmTarget = jvmTarget
                     reports {
