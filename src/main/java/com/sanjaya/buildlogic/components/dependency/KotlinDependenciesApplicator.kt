@@ -1,5 +1,6 @@
 package com.sanjaya.buildlogic.components.dependency
 
+import com.sanjaya.buildlogic.components.dependency.AndroidDependenciesApplicator.Companion
 import com.sanjaya.buildlogic.components.misc.BuildLogicLogger
 import org.gradle.api.artifacts.MinimalExternalModuleDependency
 import org.gradle.api.provider.Provider
@@ -119,6 +120,20 @@ class KotlinDependenciesApplicator(
     override fun testImplementation(alias: String) {
         val notation = dependenciesFinder.findLibrary(alias)
         testImplementation(notation)
+    }
+
+    override fun detektPlugin(notation: Provider<MinimalExternalModuleDependency>) {
+        handler.project.dependencies.add("detektPlugins", notation)
+    }
+
+    override fun detektPlugin(alias: String) {
+        val dependency = dependenciesFinder.findLibrary(alias)
+        detektPlugin(dependency)
+    }
+
+    override fun detektPlugins(vararg aliases: String) {
+        logger.i(TAG, "Adding detekt plugins: ")
+        aliases.forEach { detektPlugin(it) }
     }
 
     companion object {

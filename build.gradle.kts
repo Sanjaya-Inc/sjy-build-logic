@@ -33,16 +33,8 @@ gradlePlugin {
         id = "com.sanjaya.buildlogic.compose"
         implementationClass = "com.sanjaya.buildlogic.plugins.AndroidComposeConventionPlugin"
     }
-    val apollo by plugins.creating {
-        id = "com.sanjaya.buildlogic.apollo"
-        implementationClass = "com.sanjaya.buildlogic.plugins.ApolloConventionPlugin"
-    }
     val detekt by plugins.creating {
         id = "com.sanjaya.buildlogic.detekt"
         implementationClass = "com.sanjaya.buildlogic.plugins.DetektConventionPlugin"
-    }
-    val kotlinMultiplatform by plugins.creating {
-        id = "com.sanjaya.buildlogic.kotlin-multiplatform"
-        implementationClass = "com.sanjaya.buildlogic.plugins.KotlinMultiplatformConventionPlugin"
     }
 }

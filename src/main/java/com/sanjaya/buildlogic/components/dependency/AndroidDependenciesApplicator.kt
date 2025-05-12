@@ -126,6 +126,20 @@ class AndroidDependenciesApplicator(
         testImplementation(dependency)
     }
 
+    override fun detektPlugin(notation: Provider<MinimalExternalModuleDependency>) {
+        project.dependencies.add("detektPlugins", notation)
+    }
+
+    override fun detektPlugin(alias: String) {
+        val dependency = dependenciesFinder.findLibrary(alias)
+        detektPlugin(dependency)
+    }
+
+    override fun detektPlugins(vararg aliases: String) {
+        logger.i(TAG, "Adding detekt plugins: ")
+        aliases.forEach { detektPlugin(it) }
+    }
+
     companion object {
         private const val TAG = "AndroidDependenciesApplicator"
     }

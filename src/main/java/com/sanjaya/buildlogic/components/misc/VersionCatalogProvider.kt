@@ -31,7 +31,9 @@ class VersionCatalogProvider(
             core,
             ui,
             essentials
-        )
+        ).sortedBy {
+            it.name == "libs"
+        }
     }
 
     private fun Project.getVersionCatalogByName(name: String): VersionCatalog {

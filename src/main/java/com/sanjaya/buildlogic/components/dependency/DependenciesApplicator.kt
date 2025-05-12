@@ -25,4 +25,7 @@ interface DependenciesApplicator: KoinComponent {
     fun debugImplementations(vararg alias: String)
     fun testImplementation(notation: Provider<MinimalExternalModuleDependency>)
     fun testImplementation(alias: String)
+    fun detektPlugin(notation: Provider<MinimalExternalModuleDependency>)
+    fun detektPlugin(alias: String)
+    fun detektPlugins(vararg aliases: String)
 }
