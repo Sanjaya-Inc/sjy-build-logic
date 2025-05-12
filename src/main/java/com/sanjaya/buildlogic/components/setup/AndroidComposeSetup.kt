@@ -56,7 +56,6 @@ class AndroidComposeSetup(
                 "androidx-ui-tooling",
                 "androidx-ui-test-manifest"
             )
-            dependenciesApplicator.androidTestImplementation("androidx-ui-test-junit4")
         }
     }
 

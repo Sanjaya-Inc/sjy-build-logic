@@ -24,7 +24,7 @@ class AndroidConventionSetup(
     }
 
     fun setupAndroidLibrary() {
-        pluginApplicator.applyPluginsByAliases("com.android.library")
+        pluginApplicator.applyPluginsByIds("com.android.library")
         setupCommonConventions()
     }
 

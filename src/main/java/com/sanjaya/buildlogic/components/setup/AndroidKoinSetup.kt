@@ -32,7 +32,9 @@ class AndroidKoinSetup(
             "koin-androidx-workmanager",
             "koin-androidx-compose",
             "koin-androidx-compose-navigation",
-            "koin-compose-viewmodel-navigation"
+            "koin-compose-viewmodel-navigation",
+            "koin-compose-viewmodel-navigation",
+            "koin-annotation"
         )
         dependenciesApplicator.ksp("koin-ksp")
         project.the<KspExtension>().apply {
