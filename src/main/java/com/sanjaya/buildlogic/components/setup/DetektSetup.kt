@@ -124,8 +124,7 @@ class DetektSetup(
     private fun addDetektDependencies() {
         dependenciesApplicator.detektPlugins(
             "detekt-formatting",
-            "detekt-twitter",
-            "detekt-vkompose"
+            "detekt-twitter"
         )
     }
 

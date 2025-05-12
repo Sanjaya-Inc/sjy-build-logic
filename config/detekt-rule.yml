@@ -143,14 +143,3 @@ TwitterCompose:
     active: false
   ViewModelInjection:
     active: true
-
-vkompose:
-  NonSkippableComposable:
-    active: true
-    ignoredClasses: [ 'kotlin.*', 'my.clazz.Data' ]
-
-  # since 0.6
-  # It's usually the same thing as NonSkippableComposable, but the name is more correct for strong skip mode
-  ParamsComparedByRef:
-    active: true
-    ignoredClasses: [ 'kotlin.*', 'my.clazz.Data' ]
