@@ -1,5 +1,6 @@
 package com.sanjaya.buildlogic.components.setup
 
+import com.sanjaya.buildlogic.components.dependency.AndroidDependenciesApplicator
 import com.sanjaya.buildlogic.components.plugin.PluginApplicator
 import org.gradle.api.Project
 import org.koin.core.annotation.Factory
@@ -17,6 +18,13 @@ class AndroidConventionSetup(
     private val kotlinSetup: AndroidKotlinSetup by inject { parametersOf(project) }
     private val kspSetup: KspSetup by inject { parametersOf(project) }
     private val androidKoinSetup: AndroidKoinSetup by inject { parametersOf(project) }
+    private val androidDataSetup: AndroidDataSetup by inject { parametersOf(project) }
+    private val firebaseSetup: FirebaseSetup by inject { parametersOf(project) }
+    private val dependenciesApplicator: AndroidDependenciesApplicator by inject {
+        parametersOf(
+            project
+        )
+    }
 
     fun setupAndroidApp() {
         pluginApplicator.applyPluginsByIds("com.android.application")
@@ -32,6 +40,9 @@ class AndroidConventionSetup(
         kotlinSetup.setup()
         kspSetup.setup()
         androidKoinSetup.setup()
+        androidDataSetup.setup()
+        firebaseSetup.setup()
+        dependenciesApplicator.implementations("app-startup")
         pluginApplicator.applyPluginsByIds("com.sanjaya.buildlogic.target")
         pluginApplicator.applyPluginsByIds("com.sanjaya.buildlogic.detekt")
     }

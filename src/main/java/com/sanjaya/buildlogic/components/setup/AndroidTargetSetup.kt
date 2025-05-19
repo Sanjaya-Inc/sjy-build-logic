@@ -74,6 +74,10 @@ class AndroidTargetSetup(
                     minSdk = minSdkVersion
                 }
 
+                buildFeatures {
+                    buildConfig = false
+                }
+
                 this@AndroidTargetSetup.logger.i(
                     TAG,
                     "Setting up target android sdk to: $targetSdk"
