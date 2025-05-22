@@ -37,4 +37,8 @@ gradlePlugin {
         id = "com.sanjaya.buildlogic.detekt"
         implementationClass = "com.sanjaya.buildlogic.plugins.DetektConventionPlugin"
     }
+    val firebase by plugins.creating {
+        id = "com.sanjaya.buildlogic.firebase"
+        implementationClass = "com.sanjaya.buildlogic.plugins.FirebasePlugin"
+    }
 }
