@@ -38,7 +38,8 @@ class AndroidDataSetup(
             "okhttp-log",
             "ktor-okhttp",
             "ktor-serialization",
-            "ktor-content-negotiation"
+            "ktor-content-negotiation",
+            "ktor-logging"
         )
     }
 
