@@ -50,7 +50,8 @@ class AndroidComposeSetup(
                 "androidx-ui",
                 "androidx-ui-graphics",
                 "androidx-ui-tooling-preview",
-                "androidx-material3"
+                "androidx-material3",
+                "compose-google-fonts"
             )
             dependenciesApplicator.debugImplementations(
                 "androidx-ui-tooling",
