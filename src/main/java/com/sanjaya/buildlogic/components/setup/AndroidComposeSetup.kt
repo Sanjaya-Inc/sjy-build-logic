@@ -2,6 +2,7 @@ package com.sanjaya.buildlogic.components.setup
 
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.LibraryExtension
+import com.google.devtools.ksp.gradle.KspExtension
 import com.sanjaya.buildlogic.components.dependency.AndroidDependenciesApplicator
 import com.sanjaya.buildlogic.components.misc.BuildLogicLogger
 import com.sanjaya.buildlogic.components.plugin.PluginApplicator
@@ -45,14 +46,27 @@ class AndroidComposeSetup(
                     compose = true
                 }
             }
+            the(KspExtension::class).apply {
+                // used on some of the generated code, including default package name
+                arg("compose-destinations.moduleName", project.name)
+                // and if you want to generate mermaid graph files for this module's graphs:
+                // (ideally use the same path for all modules, so that navigation in the html works well)
+                arg("compose-destinations.htmlMermaidGraph", "$rootDir//navigation-docs")
+                arg("compose-destinations.mermaidGraph", "$rootDir/navigation-docs")
+            }
             dependenciesApplicator.implementations(
                 "androidx-activity-compose",
                 "androidx-ui",
                 "androidx-ui-graphics",
                 "androidx-ui-tooling-preview",
                 "androidx-material3",
-                "compose-google-fonts"
+                "compose-google-fonts",
+                "coil",
+                "coil-okhttp",
+                "compose-destination-core",
+                "compose-destination-sheet",
             )
+            dependenciesApplicator.ksp("compose-destination-ksp")
             dependenciesApplicator.debugImplementations(
                 "androidx-ui-tooling",
                 "androidx-ui-test-manifest"
