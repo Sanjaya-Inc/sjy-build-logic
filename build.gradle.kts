@@ -14,6 +14,7 @@ dependencies {
     compileOnly(core.plugin.ksp)
     compileOnly(core.plugin.compose)
     compileOnly(core.plugin.detekt)
+    compileOnly(core.plugin.detekt)
 }
 
 gradlePlugin {
