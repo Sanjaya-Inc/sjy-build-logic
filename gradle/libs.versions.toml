@@ -84,7 +84,7 @@ plugin-agp = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 plugin-kgp = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin-core" }
 plugin-ksp = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp" }
 plugin-compose = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "compose-compiler" }
-plugin-detekt = { module = " io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+plugin-detekt = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 
 detekt-twitter = { module = "com.twitter.compose.rules:detekt", version = "0.0.26" }
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
