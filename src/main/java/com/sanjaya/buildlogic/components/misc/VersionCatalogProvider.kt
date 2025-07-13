@@ -1,5 +1,6 @@
 package com.sanjaya.buildlogic.components.misc
 
+import com.android.tools.r8.internal.ui
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.artifacts.VersionCatalogsExtension
@@ -16,21 +17,13 @@ class VersionCatalogProvider(
     val libs
         get(): VersionCatalog = project.getVersionCatalogByName(LIBS_NAME)
 
-    val core
-        get(): VersionCatalog = project.getVersionCatalogByName(CORE_NAME)
-
-    val ui
-        get(): VersionCatalog = project.getVersionCatalogByName(UI_NAME)
-
-    val essentials
-        get(): VersionCatalog = project.getVersionCatalogByName(ESSENTIALS_NAME)
+    val sjy
+        get(): VersionCatalog = project.getVersionCatalogByName(SJY_NAME)
 
     fun getAll(): List<VersionCatalog> {
         return listOf(
             libs,
-            core,
-            ui,
-            essentials
+            sjy
         ).sortedBy {
             it.name == "libs"
         }
@@ -52,8 +45,6 @@ class VersionCatalogProvider(
     companion object {
         private const val TAG = "VersionCatalogProvider"
         private const val LIBS_NAME = "libs"
-        private const val CORE_NAME = "core"
-        private const val UI_NAME = "ui"
-        private const val ESSENTIALS_NAME = "essentials"
+        private const val SJY_NAME = "sjy"
     }
 }

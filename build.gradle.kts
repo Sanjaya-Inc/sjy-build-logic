@@ -1,20 +1,20 @@
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
-    alias(core.plugins.ksp)
+    alias(libs.plugins.ksp)
 }
 
 dependencies {
-    implementation(platform(core.koin.bom))
-    implementation(core.bundles.koin.nonandroid)
-    implementation(core.koin.annotation)
-    ksp(core.koin.ksp)
-    compileOnly(core.plugin.agp)
-    compileOnly(core.plugin.kgp)
-    compileOnly(core.plugin.ksp)
-    compileOnly(core.plugin.compose)
-    compileOnly(core.plugin.detekt)
-    compileOnly(core.plugin.detekt)
+    implementation(platform(libs.koin.bom))
+    implementation(libs.bundles.koin.nonandroid)
+    implementation(libs.koin.annotation)
+    ksp(libs.koin.ksp)
+    compileOnly(libs.plugin.agp)
+    compileOnly(libs.plugin.kgp)
+    compileOnly(libs.plugin.ksp)
+    compileOnly(libs.plugin.compose)
+    compileOnly(libs.plugin.detekt)
+    compileOnly(libs.plugin.detekt)
 }
 
 gradlePlugin {

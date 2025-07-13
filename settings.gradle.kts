@@ -11,12 +11,6 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
     }
-
-    versionCatalogs {
-        create("core") {
-            from(files("../sjy-version-catalog-core/core.versions.toml"))
-        }
-    }
 }
 
 rootProject.name = "sjy-build-logic"

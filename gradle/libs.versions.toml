@@ -1,0 +1,223 @@
+[versions]
+# Android
+agp = "8.11.1"
+
+# Kotlin
+kotlin-core = "2.2.0"
+kotlin-serialization = "1.9.0"
+kotlin-immutable = "0.4.0"
+ksp = "2.2.0-2.0.2"
+detekt = "1.23.8"
+jvm-target = "21"
+
+# AndroidX
+core-ktx = "1.16.0"
+
+# Concurrency
+coroutines = "1.10.2"
+
+# Dependency Injection
+koin = "4.1.0"
+koin-annotation = "2.1.0"
+compose-compiler = "1.8.2"
+
+ktorfit = "2.6.1"
+mmkv = "2.2.2"
+store = "5.1.0-alpha06"
+app-startup = "1.2.0"
+okhttp = "5.0.0"
+ktor = "3.2.1"
+chucker = "4.1.0"
+
+# Firebase & Stripe (from essentials)
+firebase-bom = "33.16.0"
+gms-services = "4.4.3"
+stripe = "21.20.0"
+
+# UI Components (from ui)
+orbit-mvi = "10.0.0"
+lifecycle = "2.9.1"
+activity = "1.10.1"
+compose-bom = "2025.06.01"
+material3 = "1.3.2"
+compose-destination = "2.2.0"
+coil = "3.2.0"
+
+[libraries]
+# AndroidX
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
+
+# Concurrency
+coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
+coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+kotlin-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlin-serialization" }
+kotlin-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlin-immutable" }
+
+# Dependency Injection - Koin Core
+koin-bom = { group = "io.insert-koin", name = "koin-bom", version.ref = "koin" }
+koin-core = { group = "io.insert-koin", name = "koin-core" }
+koin-core-coroutines = { group = "io.insert-koin", name = "koin-core-coroutines" }
+koin-annotation = { group = "io.insert-koin", name = "koin-annotations", version.ref = "koin-annotation" }
+koin-ksp = { group = "io.insert-koin", name = "koin-ksp-compiler", version.ref = "koin-annotation" }
+
+# Dependency Injection - Koin Android
+koin-android = { group = "io.insert-koin", name = "koin-android" }
+koin-android-compat = { group = "io.insert-koin", name = "koin-android-compat" }
+koin-androidx-workmanager = { group = "io.insert-koin", name = "koin-androidx-workmanager" }
+
+# Dependency Injection - Koin Compose
+koin-compose = { group = "io.insert-koin", name = "koin-compose" }
+koin-compose-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmodel" }
+koin-androidx-compose = { group = "io.insert-koin", name = "koin-androidx-compose" }
+koin-androidx-compose-navigation = { group = "io.insert-koin", name = "koin-androidx-compose-navigation" }
+koin-compose-viewmodel-navigation = { group = "io.insert-koin", name = "koin-compose-viewmodel-navigation" }
+
+# Dependency Injection - Koin Integration
+koin-ktor = { group = "io.insert-koin", name = "koin-ktor" }
+
+# Dependency Injection - Koin Testing
+koin-test = { group = "io.insert-koin", name = "koin-test" }
+koin-test-junit4 = { group = "io.insert-koin", name = "koin-test-junit4" }
+koin-test-junit5 = { group = "io.insert-koin", name = "koin-test-junit5" }
+
+plugin-agp = { module = "com.android.tools.build:gradle", version.ref = "agp" }
+plugin-kgp = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin-core" }
+plugin-ksp = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp" }
+plugin-compose = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "compose-compiler" }
+plugin-detekt = { module = " io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+
+detekt-twitter = { module = "com.twitter.compose.rules:detekt", version = "0.0.26" }
+detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
+ktorfit = { group = "de.jensklingenberg.ktorfit", name = "ktorfit-lib", version.ref = "ktorfit" }
+
+mmkv = { group = "com.tencent", name = "mmkv", version.ref = "mmkv" }
+store = { module = "org.mobilenativefoundation.store:store5", version.ref = "store" }
+app-startup = { module = "androidx.startup:startup-runtime", version.ref = "app-startup" }
+
+okhttp-bom = { group = "com.squareup.okhttp3", name = "okhttp-bom", version.ref = "okhttp" }
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+okhttp-log = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+ktor-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
+ktor-serialization = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
+
+chucker = { group = "com.github.chuckerteam.chucker", name = "library", version.ref = "chucker" }
+chucker-no-op = { group = "com.github.chuckerteam.chucker", name = "library-no-op", version.ref = "chucker" }
+
+# Firebase & Stripe (from essentials)
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
+firebase-config = { group = "com.google.firebase", name = "firebase-config" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth-ktx" }
+stripe-android = { group = "com.stripe", name = "stripe-android", version.ref = "stripe" }
+stripe-financial-connections = { group = "com.stripe", name = "financial-connections", version.ref = "stripe" }
+
+# UI Components (from ui)
+orbit-mvi-core = { group = "org.orbit-mvi", name = "orbit-core", version.ref = "orbit-mvi" }
+orbit-mvi-viewmodel = { group = "org.orbit-mvi", name = "orbit-viewmodel", version.ref = "orbit-mvi" }
+orbit-mvi-compose = { group = "org.orbit-mvi", name = "orbit-compose", version.ref = "orbit-mvi" }
+orbit-mvi-test = { group = "org.orbit-mvi", name = "orbit-test", version.ref = "orbit-mvi" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
+compose-google-fonts = { module = "androidx.compose.ui:ui-text-google-fonts" }
+
+coil-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
+coil = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+
+compose-destination-core = { module = "io.github.raamcosta.compose-destinations:core", version.ref = "compose-destination" }
+compose-destination-ksp = { module = "io.github.raamcosta.compose-destinations:ksp", version.ref = "compose-destination" }
+compose-destination-sheet = { module = "io.github.raamcosta.compose-destinations:bottom-sheet", version.ref = "compose-destination" }
+
+[bundles]
+koin-nonandroid = [
+    "koin-core",
+    "koin-core-coroutines",
+    "koin-ktor",
+    "koin-compose",
+    "koin-compose-viewmodel",
+]
+koin-android = [
+    "koin-android",
+    "koin-android-compat",
+    "koin-androidx-workmanager",
+    "koin-androidx-compose",
+    "koin-androidx-compose-navigation",
+    "koin-compose-viewmodel-navigation",
+]
+koin-test = [
+    "koin-test",
+    "koin-test-junit4",
+    "koin-test-junit5",
+]
+
+coroutines = [
+    "coroutines-core",
+    "coroutines-android",
+]
+
+okhttp = [
+    "okhttp",
+    "okhttp-log"
+]
+
+# Firebase & Stripe (from essentials)
+firebase = [
+    "firebase-analytics",
+    "firebase-crashlytics",
+    "firebase-messaging",
+    "firebase-config",
+    "firebase-auth"
+]
+stripe = [
+    "stripe-android",
+    "stripe-financial-connections"
+]
+
+# UI Components (from ui)
+orbit-mvi = [
+    "orbit-mvi-core",
+    "orbit-mvi-viewmodel",
+    "orbit-mvi-compose"
+]
+orbit-test = [
+    "orbit-mvi-test"
+]
+androidx-compose = [
+    "androidx-activity-compose",
+    "androidx-ui",
+    "androidx-ui-graphics",
+    "androidx-ui-tooling-preview",
+    "androidx-material3",
+    "compose-google-fonts"
+]
+androidx-compose-debug = [
+    "androidx-ui-tooling",
+    "androidx-ui-test-manifest"
+]
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-core" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin-core" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-core" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
+
+# Firebase & Stripe (from essentials)
+gms-services = { id = "com.google.gms.google-services", version.ref = "gms-services" }
+crashlytics = { id = "com.google.firebase.crashlytics", version = "3.0.3" }
+
+# UI Components (from ui)
+lumo = { id = "com.nomanr.plugin.lumo", version = "1.2.5" }
