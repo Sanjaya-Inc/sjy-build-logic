@@ -25,14 +25,14 @@ ktorfit = "2.6.1"
 mmkv = "2.2.2"
 store = "5.1.0-alpha06"
 app-startup = "1.2.0"
-okhttp = "5.0.0"
+okhttp = "5.1.0"
 ktor = "3.2.1"
-chucker = "4.1.0"
+chucker = "4.2.0"
 
 # Firebase & Stripe (from essentials)
 firebase-bom = "33.16.0"
 gms-services = "4.4.3"
-stripe = "21.20.0"
+stripe = "21.20.2"
 
 # UI Components (from ui)
 orbit-mvi = "10.0.0"
@@ -217,7 +217,7 @@ ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
 
 # Firebase & Stripe (from essentials)
 gms-services = { id = "com.google.gms.google-services", version.ref = "gms-services" }
-crashlytics = { id = "com.google.firebase.crashlytics", version = "3.0.3" }
+crashlytics = { id = "com.google.firebase.crashlytics", version = "3.0.4" }
 
 # UI Components (from ui)
 lumo = { id = "com.nomanr.plugin.lumo", version = "1.2.5" }
