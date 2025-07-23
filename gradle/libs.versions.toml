@@ -220,7 +220,7 @@ ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
 
 # Firebase & Stripe (from essentials)
 gms-services = { id = "com.google.gms.google-services", version.ref = "gms-services" }
-crashlytics = { id = "com.google.firebase.crashlytics", version = "3.0.4" }
+crashlytics = { id = "com.google.firebase.crashlytics", version = "3.0.5" }
 
 # UI Components (from ui)
 lumo = { id = "com.nomanr.plugin.lumo", version = "1.2.5" }
