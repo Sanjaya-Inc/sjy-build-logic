@@ -26,7 +26,7 @@ mmkv = "2.2.2"
 store = "5.1.0-alpha06"
 app-startup = "1.2.0"
 okhttp = "5.1.0"
-ktor = "3.2.2"
+ktor = "3.2.3"
 chucker = "4.2.0"
 
 # Firebase & Stripe (from essentials)
