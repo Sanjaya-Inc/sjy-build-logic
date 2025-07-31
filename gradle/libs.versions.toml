@@ -108,11 +108,11 @@ chucker-no-op = { group = "com.github.chuckerteam.chucker", name = "library-no-o
 
 # Firebase & Stripe (from essentials)
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
-firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
-firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging" }
 firebase-config = { group = "com.google.firebase", name = "firebase-config" }
-firebase-auth = { group = "com.google.firebase", name = "firebase-auth-ktx" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 stripe-android = { group = "com.stripe", name = "stripe-android", version.ref = "stripe" }
 stripe-financial-connections = { group = "com.stripe", name = "financial-connections", version.ref = "stripe" }
 
