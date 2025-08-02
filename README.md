@@ -6,6 +6,39 @@ This module provides a set of Gradle plugins to enforce conventions and simplify
 
 ### 1. Add as a Git Submodule
 
+First, add the `sjy-build-logic` repository as a submodule to your root project. This is a required first step.
+
+```bash
+git submodule add https://github.com/Sanjaya-Inc/sjy-build-logic.git sjy-build-logic
+```
+
+### 2. Run the Installation Script
+
+After adding the submodule, run the appropriate script for your operating system to automate the rest of the setup. The script will configure your `settings.gradle.kts` file and apply the necessary convention plugins to your Android modules.
+
+#### For macOS and Linux
+
+Open your terminal and run the following command from the root of your project:
+
+```bash
+chmod +x sjy-build-logic/installation.sh && ./sjy-build-logic/installation.sh
+```
+
+#### For Windows
+
+Open PowerShell and run the following command from the root of your project:
+
+```powershell
+./sjy-build-logic/installation.ps1
+```
+
+---
+## Manual Configuration
+
+If you need to understand the changes made by the script or wish to perform the setup manually, here are the steps involved.
+
+### 1. Include in `settings.gradle.kts`
+
 First, add the `sjy-build-logic` repository as a submodule to your root project:
 
 ```bash
@@ -25,7 +58,7 @@ pluginManagement {
 }
 ```
 
-This configuration tells Gradle to include the build logic from the `sjy-build-logic` module. The `repositories` block ensures that necessary repositories are available for resolving dependencies.
+This configuration tells Gradle to include the build logic from the `sjy-build-logic` module. The scripts also add a version catalog named `sjy` that points to the `libs.versions.toml` within the submodule.
 
 ### 3. Apply Plugins in `build.gradle.kts`
 
