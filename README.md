@@ -18,19 +18,24 @@ After adding the submodule, run the appropriate script for your operating system
 
 #### For macOS and Linux
 
-Open your terminal and run the following command from the root of your project:
+First, you may need to grant execute permissions to the script. Then, run it.
 
 ```bash
-chmod +x sjy-build-logic/installation.sh && ./sjy-build-logic/installation.sh
+chmod +x sjy-build-logic/installation.sh
+./sjy-build-logic/installation.sh
 ```
 
 #### For Windows
 
-Open PowerShell and run the following command from the root of your project:
+Open PowerShell and run the installation script.
 
 ```powershell
 ./sjy-build-logic/installation.ps1
 ```
+> **Note for Windows Users:** If you encounter an error about scripts being disabled on the system, you may need to change the execution policy for the current process. You can do this by running the following command in PowerShell before executing the installation script:
+> ```powershell
+> Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
+> ```
 
 ---
 ## Manual Configuration

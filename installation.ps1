@@ -65,20 +65,21 @@ function Update-SettingsGradle {
     $content | Set-Content $settingsFile
 }
 
-
 function Apply-PluginsToModules {
     param ([string]$settingsFile)
     Log-Info "Scanning for modules in $settingsFile..."
-    
+
     $modules = Get-Content $settingsFile | 
         Select-String -Pattern "include[(]'.+'[)]|include[\"'].+[\"']" | 
-        ForEach-Object { $_.ToString().Trim() -replace "include[(]*['\"]:", "" -replace "['\")]", "" -replace ":", "/" }
+        ForEach-Object {
+            $_.ToString().Trim() -replace "include[(]*['\"]:", "" -replace "['\")]", "" -replace ":", "/"
+        }
 
     if (-not $modules) {
         Log-Warn "No modules found in $settingsFile. Skipping plugin application."
         return
     }
-    
+
     Log-Info "Found modules:"
     $modules | ForEach-Object { Write-Host $_ }
 
@@ -96,35 +97,59 @@ function Apply-PluginsToModules {
             continue
         }
 
-        $buildFileContent = Get-Content $buildFile -Raw
+        $buildFileContent = Get-Content $buildFile
         $pluginId = ""
-        if ($buildFileContent -match "com\.android\.application") {
+        $rawText = [string]::Join("`n", $buildFileContent)
+
+        if ($rawText -match "com\.android\.application") {
             $pluginId = "com.sanjaya.buildlogic.app"
-        } elseif ($buildFileContent -match "com\.android\.library") {
+        } elseif ($rawText -match "com\.android\.library") {
             $pluginId = "com.sanjaya.buildlogic.lib"
         } else {
             Log-Warn "Module $modulePath is not an Android application or library. Skipping."
             continue
         }
 
-        Log-Info "Module $modulePath is an Android module. Applying plugin: $pluginId"
-
-        if ($buildFileContent -match $pluginId) {
+        if ($rawText -match $pluginId) {
             Log-Info "Plugin $pluginId already applied in $buildFile."
-        } else {
-            Log-Info "Applying $pluginId to $buildFile."
-            Copy-Item -Path $buildFile -Destination "$buildFile.bak" -Force
-            Log-Info "Backup created at $buildFile.bak"
-
-            if ($buildFileContent -match "plugins {") {
-                $newContent = $buildFileContent -replace "(plugins\s*\{)", "`$1`n    id(\""$pluginId\"")"
-            } else {
-                Log-Warn "No 'plugins {}' block found in $buildFile. Adding one at the top."
-                $newContent = "plugins {`n    id(\""$pluginId\"")`n}`n`n" + $buildFileContent
-            }
-            $newContent | Set-Content $buildFile
-            Log-Info "Successfully applied $pluginId."
+            continue
         }
+
+        Log-Info "Replacing plugins block in $buildFile..."
+        Copy-Item -Path $buildFile -Destination "$buildFile.bak" -Force
+
+        $newContent = @()
+        $insidePlugins = $false
+        $braceDepth = 0
+        foreach ($line in $buildFileContent) {
+            if (-not $insidePlugins -and $line -match '^\s*plugins\s*\{') {
+                $insidePlugins = $true
+                $braceDepth = 1
+                continue
+            }
+
+            if ($insidePlugins) {
+                $braceDepth += ($line -split '{').Length - 1
+                $braceDepth -= ($line -split '}').Length - 1
+                if ($braceDepth -le 0) {
+                    $insidePlugins = $false
+                }
+                continue
+            }
+
+            $newContent += $line
+        }
+
+        $pluginBlock = @(
+            "plugins {",
+            "    id(\"$pluginId\")",
+            "}",
+            ""
+        )
+
+        $finalContent = $pluginBlock + $newContent
+        $finalContent | Set-Content $buildFile
+        Log-Info "Successfully replaced plugins block in $buildFile."
     }
 }
 
