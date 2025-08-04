@@ -64,6 +64,15 @@ pluginManagement {
     includeBuild("sjy-build-logic")
     // Rest of your plugin management config
 }
+
+dependencyResolutionManagement {
+    // Rest of your dependency resolution management config
+    versionCatalogs {
+        create("sjy") {
+            from(files("sjy-build-logic/gradle/libs.versions.toml"))
+        }
+    }
+}
 ```
 
 ---
@@ -74,7 +83,7 @@ In your `gradle/libs.versions.toml`, add:
 
 ```toml
 [versions]
-compile-sdk = "35"
+compile-sdk = "36"
 min-sdk = "24"
 
 [plugins]
