@@ -32,7 +32,6 @@ function Update-SettingsGradle {
 
     $content = Get-Content $settingsFile -Raw
 
-    # Add includeBuild("sjy-build-logic") to pluginManagement
     if ($content -match 'includeBuild\("sjy-build-logic"\)') {
         Log-Info "sjy-build-logic is already included in pluginManagement."
     } else {
@@ -45,32 +44,116 @@ function Update-SettingsGradle {
         }
         Log-Info "Successfully added includeBuild for sjy-build-logic."
     }
-
-    # Add sjy version catalog
-    if ($content -match 'create\("sjy"\)') {
-        Log-Info "sjy version catalog already exists."
-    } else {
-        Log-Info "Adding sjy version catalog."
-        $sjyCatalogText = "        create(\""sjy\"") {`n            from(files(\""sjy-build-logic/gradle/libs.versions.toml\""))`n        }"
-        if ($content -notmatch "dependencyResolutionManagement {") {
-            $content += "`ndependencyResolutionManagement {`n    versionCatalogs {`n$sjyCatalogText`n    }`n}"
-        } elseif ($content -notmatch "versionCatalogs {") {
-             $content = $content -replace "(dependencyResolutionManagement\s*\{)", "`$1`n    versionCatalogs {`n$sjyCatalogText`n    }"
-        } else {
-            $content = $content -replace "(versionCatalogs\s*\{)", "`$1`n$sjyCatalogText"
-        }
-        Log-Info "Successfully added sjy version catalog."
-    }
     
     $content | Set-Content $settingsFile
+}
+
+function Update-LibsVersionsToml {
+    $tomlFile = "gradle/libs.versions.toml"
+    Log-Info "Updating $tomlFile..."
+    
+    if (-not (Test-Path $tomlFile)) {
+        Log-Error "$tomlFile not found. Please ensure your project has a version catalog."
+        exit 1
+    }
+    
+    Copy-Item -Path $tomlFile -Destination "$tomlFile.bak" -Force
+    Log-Info "Backup created: $tomlFile.bak"
+    
+    $content = Get-Content $tomlFile -Raw
+    $needsVersions = $false
+    $needsPlugins = $false
+    
+    if ($content -notmatch "compile-sdk.*=") {
+        $needsVersions = $true
+    }
+    
+    if ($content -notmatch "sjy-detekt.*=") {
+        $needsPlugins = $true
+    }
+    
+    if ($needsVersions) {
+        Log-Info "Adding compile-sdk and min-sdk versions..."
+        if ($content -match "^\[versions\]") {
+            $content = $content -replace "(^\[versions\])", "`$1`ncompile-sdk = \""35\""`nmin-sdk = \""24\"""
+        } else {
+            $content = "[versions]`ncompile-sdk = \""35\""`nmin-sdk = \""24\""`n`n" + $content
+        }
+    }
+    
+    if ($needsPlugins) {
+        Log-Info "Adding sjy plugin definitions..."
+        $sjyPlugins = @"
+sjy-detekt = { id = "com.sanjaya.buildlogic.detekt" }
+sjy-lib = { id = "com.sanjaya.buildlogic.lib" }
+sjy-compose = { id = "com.sanjaya.buildlogic.compose" }
+sjy-app = { id = "com.sanjaya.buildlogic.app" }
+sjy-firebase = { id = "com.sanjaya.buildlogic.firebase" }
+"@
+        if ($content -match "^\[plugins\]") {
+            $content = $content -replace "(^\[plugins\])", "`$1`n$sjyPlugins"
+        } else {
+            $content += "`n[plugins]`n$sjyPlugins"
+        }
+    }
+    
+    $content | Set-Content $tomlFile
+    Log-Info "libs.versions.toml updated successfully."
+}
+
+function Update-RootBuildGradle {
+    $buildFile = ""
+    if (Test-Path "build.gradle.kts") {
+        $buildFile = "build.gradle.kts"
+    } elseif (Test-Path "build.gradle") {
+        $buildFile = "build.gradle"
+    } else {
+        Log-Warn "No root build.gradle(.kts) found. Skipping root plugin configuration."
+        return
+    }
+    
+    Log-Info "Updating root $buildFile..."
+    Copy-Item -Path $buildFile -Destination "$buildFile.bak" -Force
+    Log-Info "Backup created: $buildFile.bak"
+    
+    $content = Get-Content $buildFile -Raw
+    
+    if ($content -match "alias\(libs\.plugins\.sjy\.detekt\)") {
+        Log-Info "Sjy plugin aliases already present in root build file."
+        return
+    }
+    
+    $pluginAliases = @"
+    alias(sjy.plugins.android.application) apply false
+    alias(sjy.plugins.android.library) apply false
+    alias(sjy.plugins.kotlin.android) apply false
+    alias(sjy.plugins.kotlin.compose) apply false
+    alias(sjy.plugins.ksp) apply false
+    alias(sjy.plugins.detekt) apply true
+    alias(sjy.plugins.ktorfit) apply false
+    alias(sjy.plugins.gms.services) apply false
+    alias(sjy.plugins.crashlytics) apply false
+    alias(sjy.plugins.lumo) apply false
+    alias(libs.plugins.sjy.detekt) apply true
+"@
+    
+    if ($content -match "plugins \{") {
+        $content = $content -replace "(plugins\s*\{)", "`$1`n$pluginAliases"
+        Log-Info "Added sjy plugin aliases to existing plugins block."
+    } else {
+        $content = "plugins {`n$pluginAliases`n}`n`n" + $content
+        Log-Info "Created plugins block with sjy plugin aliases."
+    }
+    
+    $content | Set-Content $buildFile
 }
 
 function Apply-PluginsToModules {
     param ([string]$settingsFile)
     Log-Info "Scanning for modules in $settingsFile..."
 
-    $modules = Get-Content $settingsFile | 
-        Select-String -Pattern "include[(]'.+'[)]|include[\"'].+[\"']" | 
+    $modules = Get-Content $settingsFile |
+        Select-String -Pattern "include[(]'.+'[)]|include[\"'].+[\"']" |
         ForEach-Object {
             $_.ToString().Trim() -replace "include[(]*['\"]:", "" -replace "['\")]", "" -replace ":", "/"
         }
@@ -98,58 +181,37 @@ function Apply-PluginsToModules {
         }
 
         $buildFileContent = Get-Content $buildFile
-        $pluginId = ""
+        $pluginAlias = ""
         $rawText = [string]::Join("`n", $buildFileContent)
 
         if ($rawText -match "com\.android\.application") {
-            $pluginId = "com.sanjaya.buildlogic.app"
+            $pluginAlias = "alias(libs.plugins.sjy.app)"
         } elseif ($rawText -match "com\.android\.library") {
-            $pluginId = "com.sanjaya.buildlogic.lib"
+            $pluginAlias = "alias(libs.plugins.sjy.lib)"
         } else {
             Log-Warn "Module $modulePath is not an Android application or library. Skipping."
             continue
         }
 
-        if ($rawText -match $pluginId) {
-            Log-Info "Plugin $pluginId already applied in $buildFile."
+        if ($rawText -match "alias\(libs\.plugins\.sjy") {
+            Log-Info "Sjy plugin alias already applied in $buildFile."
             continue
         }
 
-        Log-Info "Replacing plugins block in $buildFile..."
+        Log-Info "Adding sjy plugin alias to $buildFile"
         Copy-Item -Path $buildFile -Destination "$buildFile.bak" -Force
 
-        $newContent = @()
-        $insidePlugins = $false
-        $braceDepth = 0
-        foreach ($line in $buildFileContent) {
-            if (-not $insidePlugins -and $line -match '^\s*plugins\s*\{') {
-                $insidePlugins = $true
-                $braceDepth = 1
-                continue
-            }
+        $content = Get-Content $buildFile -Raw
 
-            if ($insidePlugins) {
-                $braceDepth += ($line -split '{').Length - 1
-                $braceDepth -= ($line -split '}').Length - 1
-                if ($braceDepth -le 0) {
-                    $insidePlugins = $false
-                }
-                continue
-            }
-
-            $newContent += $line
+        if ($content -match "plugins \{") {
+            $content = $content -replace "(plugins\s*\{)", "`$1`n    $pluginAlias"
+            Log-Info "Added $pluginAlias to existing plugins block."
+        } else {
+            $content = "plugins {`n    $pluginAlias`n}`n`n" + $content
+            Log-Info "Created plugins block with $pluginAlias."
         }
 
-        $pluginBlock = @(
-            "plugins {",
-            "    id(\"$pluginId\")",
-            "}",
-            ""
-        )
-
-        $finalContent = $pluginBlock + $newContent
-        $finalContent | Set-Content $buildFile
-        Log-Info "Successfully replaced plugins block in $buildFile."
+        $content | Set-Content $buildFile
     }
 }
 
@@ -172,6 +234,8 @@ function Main {
     Log-Info "Found settings file: $settingsFile"
     
     Update-SettingsGradle -settingsFile $settingsFile
+    Update-LibsVersionsToml
+    Update-RootBuildGradle
     Apply-PluginsToModules -settingsFile $settingsFile
     
     Log-Info "Installation complete. Please review the changes and run a Gradle sync."
