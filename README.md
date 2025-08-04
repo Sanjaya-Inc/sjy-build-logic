@@ -2,23 +2,25 @@
 
 This module provides a set of Gradle plugins to enforce conventions and simplify build configurations for Android projects. It helps maintain consistency and reduces boilerplate across multiple modules.
 
+---
+
 ## How to Use
 
 ### 1. Add as a Git Submodule
 
-First, add the `sjy-build-logic` repository as a submodule to your root project. This is a required first step.
+First, add the `sjy-build-logic` repository as a submodule to your root project:
 
 ```bash
 git submodule add https://github.com/Sanjaya-Inc/sjy-build-logic.git sjy-build-logic
 ```
 
-### 2. Run the Installation Script
+---
 
-After adding the submodule, run the appropriate script for your operating system to automate the rest of the setup. The script will configure your `settings.gradle.kts` file and apply the necessary convention plugins to your Android modules.
+### 2. Run the Installation Script (Recommended)
+
+After adding the submodule, run the appropriate script for your OS. This will automatically configure your `settings.gradle.kts` and apply convention plugins to all Android modules.
 
 #### For macOS and Linux
-
-First, you may need to grant execute permissions to the script. Then, run it.
 
 ```bash
 chmod +x sjy-build-logic/installation.sh
@@ -27,68 +29,108 @@ chmod +x sjy-build-logic/installation.sh
 
 #### For Windows
 
-Open PowerShell and run the installation script.
+Open PowerShell and run:
 
 ```powershell
 ./sjy-build-logic/installation.ps1
 ```
-> **Note for Windows Users:** If you encounter an error about scripts being disabled on the system, you may need to change the execution policy for the current process. You can do this by running the following command in PowerShell before executing the installation script:
+
+> **Note:** If scripts are disabled, run:
+>
 > ```powershell
 > Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 > ```
 
 ---
+
 ## Manual Configuration
 
-If you need to understand the changes made by the script or wish to perform the setup manually, here are the steps involved.
+If you prefer or need to configure the build logic manually, follow these steps:
 
-### 1. Include in `settings.gradle.kts`
-
-First, add the `sjy-build-logic` repository as a submodule to your root project:
+### 1. Add Submodule
 
 ```bash
 git submodule add https://github.com/Sanjaya-Inc/sjy-build-logic.git sjy-build-logic
 ```
 
-This command will add the `sjy-build-logic` repository to your project and create a `.gitmodules` file to track the submodule.
+---
 
-### 2. Include in `settings.gradle.kts`
+### 2. Update `settings.gradle.kts`
 
-To include the `sjy-build-logic` in your project, add the following to your `settings.gradle.kts` file:
+Include the build logic from the submodule:
 
 ```kotlin
 pluginManagement {
     includeBuild("sjy-build-logic")
-    // Rest of config
+    // Rest of your plugin management config
 }
 ```
 
-This configuration tells Gradle to include the build logic from the `sjy-build-logic` module. The scripts also add a version catalog named `sjy` that points to the `libs.versions.toml` within the submodule.
+---
 
-### 3. Apply Plugins in `build.gradle.kts`
+### 3. Update `libs.versions.toml`
 
-In your project level `build.gradle.kts` file, if you want to apply detekt plugins add this:
+In your `gradle/libs.versions.toml`, add:
+
+```toml
+[versions]
+compile-sdk = "35"
+min-sdk = "24"
+
+[plugins]
+sjy-detekt = { id = "com.sanjaya.buildlogic.detekt" }
+sjy-lib = { id = "com.sanjaya.buildlogic.lib" }
+sjy-compose = { id = "com.sanjaya.buildlogic.compose" }
+sjy-app = { id = "com.sanjaya.buildlogic.app" }
+sjy-firebase = { id = "com.sanjaya.buildlogic.firebase" }
+```
+
+---
+
+### 4. Update Root `build.gradle.kts`
+
+Add plugin aliases in the root `build.gradle.kts` file:
 
 ```kotlin
 plugins {
-    alias(core.plugins.detekt) apply true
-    id("com.sanjaya.buildlogic.detekt") apply true
+    alias(sjy.plugins.android.application) apply false
+    alias(sjy.plugins.android.library) apply false
+    alias(sjy.plugins.kotlin.android) apply false
+    alias(sjy.plugins.kotlin.compose) apply false
+    alias(sjy.plugins.ksp) apply false
+    alias(sjy.plugins.detekt) apply true
+    alias(sjy.plugins.ktorfit) apply false
+    alias(sjy.plugins.gms.services) apply false
+    alias(sjy.plugins.crashlytics) apply false
+    alias(sjy.plugins.lumo) apply false
+    alias(libs.plugins.sjy.detekt) apply true
 }
 ```
 
+---
+
+### 5. Apply Plugins in Modules
+
+Then apply plugins in each module’s `build.gradle.kts` file as needed:
+
+```kotlin
+plugins {
+    alias(libs.plugins.sjy.app)
+    alias(libs.plugins.sjy.lib)
+    alias(libs.plugins.sjy.compose)
+    alias(libs.plugins.sjy.detekt)
+}
+```
+
+---
+
 ## Available Plugins
 
-### `AndroidAppConventionPlugin`
+### ✅ `AndroidAppConventionPlugin`
 
-This plugin applies conventions for Android application modules. It configures common settings such as:
+Applies common configurations for Android application modules:
 
--   `compileSdkVersion`
--   `minSdkVersion`
--   `targetSdkVersion`
--   `buildFeatures`
--   `packagingOptions`
-
-To use this plugin, apply it in your `build.gradle.kts` file:
+* `compileSdkVersion`, `minSdkVersion`, `targetSdkVersion`
 
 ```kotlin
 plugins {
@@ -96,17 +138,15 @@ plugins {
 }
 ```
 
-### `AndroidLibConventionPlugin`
+---
 
-This plugin applies conventions for Android library modules. It configures common settings such as:
+### ✅ `AndroidLibConventionPlugin`
 
--   `compileSdkVersion`
--   `minSdkVersion`
--   `targetSdkVersion`
--   `buildFeatures`
--   `packagingOptions`
+Applies conventions for Android library modules:
 
-To use this plugin, apply it in your `build.gradle.kts` file:
+* Library-specific compile/target SDK setup
+* Build features
+* Publishing configuration (if needed)
 
 ```kotlin
 plugins {
@@ -114,15 +154,15 @@ plugins {
 }
 ```
 
-### `AndroidComposeConventionPlugin`
+---
 
-This plugin applies conventions for Android modules using Jetpack Compose. It configures common settings such as:
+### ✅ `AndroidComposeConventionPlugin`
 
--   Enabling Compose
--   Setting up Compose compiler
--   Adding Compose dependencies
+Adds Jetpack Compose setup and dependencies automatically:
 
-To use this plugin, apply it in your `build.gradle.kts` file:
+* Enables Compose in `buildFeatures`
+* Applies compiler options
+* Adds standard Compose BOM and core dependencies
 
 ```kotlin
 plugins {
@@ -130,11 +170,11 @@ plugins {
 }
 ```
 
-### `AndroidTargetConventionPlugin`
+---
 
-This plugin applies target conventions for Android.
+### ✅ `AndroidTargetConventionPlugin`
 
-To use this plugin, apply it in your `build.gradle.kts` file:
+Applies target configurations that may affect the project or variants globally, e.g., build types or product flavors.
 
 ```kotlin
 plugins {
@@ -142,15 +182,15 @@ plugins {
 }
 ```
 
-### `DetektConventionPlugin`
+---
 
-This plugin applies Detekt static analysis to your project. It configures:
+### ✅ `DetektConventionPlugin`
 
--   Detekt version
--   Detekt configuration file
--   Detekt tasks
+Adds Detekt static analysis with shared configuration:
 
-To use this plugin, apply it in your `build.gradle.kts` file:
+* Loads `detekt-config.yml`
+* Applies Detekt version and rules
+* Registers Detekt tasks
 
 ```kotlin
 plugins {
@@ -158,15 +198,45 @@ plugins {
 }
 ```
 
+---
+
+### ✅ `FirebasePlugin`
+
+Optional Firebase-specific setup:
+
+* Applies Google Services and Crashlytics plugins
+* Configures shared Firebase options
+
+```kotlin
+plugins {
+    id("com.sanjaya.buildlogic.firebase")
+}
+```
+---
+
 ## Benefits
 
--   **Centralized Configuration**: All build logic is managed in a single module.
--   **Consistency**: Ensures consistent build configurations across all modules in the project.
--   **Reduced Boilerplate**: Simplifies build files by extracting common configurations into plugins.
--   **Easy to Use**: Provides a simple and intuitive way to apply conventions.
+* **Centralized Configuration**
+* **Consistency Across Modules**
+* **Reduced Boilerplate**
+* **Alias-Based Usage with `libs.versions.toml`**
+
+---
 
 ## File Structure
 
--   `build.gradle.kts`: Contains plugin definitions and configurations.
--   `src/main/java/com/sanjaya/buildlogic/plugins/`: Contains the implementation of the convention plugins.
--   `README.md`: Documentation for using the build logic module.
+```
+sjy-build-logic/
+├── build/                    # Gradle build output
+├── config/                   # Optional shared config (e.g., Detekt rules)
+├── gradle/                   # Gradle wrapper or version catalog
+├── src/                      # Plugin implementation (Java/Kotlin)
+├── .gitignore
+├── build.gradle.kts          # Build script for the build logic module
+├── installation.ps1          # Windows installation script
+├── installation.sh           # macOS/Linux installation script
+├── README.md                 # This documentation file
+├── settings.gradle.kts       # Settings for the build logic module
+```
+
+---
