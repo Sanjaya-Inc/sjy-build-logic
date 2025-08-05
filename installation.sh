@@ -27,6 +27,31 @@ update_settings_gradle() {
     else
         log_info "includeBuild already present in pluginManagement."
     fi
+    
+    if ! grep -q 'create("sjy")' "$settings_file"; then
+        if grep -q "dependencyResolutionManagement {" "$settings_file"; then
+            if grep -q "versionCatalogs {" "$settings_file"; then
+                sed -i '' '/versionCatalogs {/a\
+        create("sjy") {\
+            from(files("sjy-build-logic/gradle/libs.versions.toml"))\
+        }
+' "$settings_file"
+            else
+                sed -i '' '/dependencyResolutionManagement {/a\
+    versionCatalogs {\
+        create("sjy") {\
+            from(files("sjy-build-logic/gradle/libs.versions.toml"))\
+        }\
+    }
+' "$settings_file"
+            fi
+        else
+            echo -e "\ndependencyResolutionManagement {\n    versionCatalogs {\n        create(\"sjy\") {\n            from(files(\"sjy-build-logic/gradle/libs.versions.toml\"))\n        }\n    }\n}" >> "$settings_file"
+        fi
+        log_info "sjy version catalog added to dependencyResolutionManagement."
+    else
+        log_info "sjy version catalog already present."
+    fi
 }
 
 update_libs_versions_toml() {
@@ -125,17 +150,74 @@ update_root_build_gradle() {
     alias(libs.plugins.sjy.detekt) apply true"
     
     if grep -q "plugins {" "$build_file"; then
-        sed -i '' "/plugins {/a\\
-$plugin_aliases
-" "$build_file"
-        log_info "Added sjy plugin aliases to existing plugins block."
+        # Only add sjy catalog aliases and libs.plugins.sjy.detekt if they don't exist
+        local aliases_to_add=""
+        
+        if ! grep -q "alias(sjy\.plugins\.android\.application)" "$build_file"; then
+            aliases_to_add="$aliases_to_add    alias(sjy.plugins.android.application) apply false\n"
+        fi
+        if ! grep -q "alias(sjy\.plugins\.android\.library)" "$build_file"; then
+            aliases_to_add="$aliases_to_add    alias(sjy.plugins.android.library) apply false\n"
+        fi
+        if ! grep -q "alias(sjy\.plugins\.kotlin\.android)" "$build_file"; then
+            aliases_to_add="$aliases_to_add    alias(sjy.plugins.kotlin.android) apply false\n"
+        fi
+        if ! grep -q "alias(sjy\.plugins\.kotlin\.compose)" "$build_file"; then
+            aliases_to_add="$aliases_to_add    alias(sjy.plugins.kotlin.compose) apply false\n"
+        fi
+        if ! grep -q "alias(sjy\.plugins\.ksp)" "$build_file"; then
+            aliases_to_add="$aliases_to_add    alias(sjy.plugins.ksp) apply false\n"
+        fi
+        if ! grep -q "alias(sjy\.plugins\.detekt)" "$build_file"; then
+            aliases_to_add="$aliases_to_add    alias(sjy.plugins.detekt) apply true\n"
+        fi
+        if ! grep -q "alias(sjy\.plugins\.ktorfit)" "$build_file"; then
+            aliases_to_add="$aliases_to_add    alias(sjy.plugins.ktorfit) apply false\n"
+        fi
+        if ! grep -q "alias(sjy\.plugins\.gms\.services)" "$build_file"; then
+            aliases_to_add="$aliases_to_add    alias(sjy.plugins.gms.services) apply false\n"
+        fi
+        if ! grep -q "alias(sjy\.plugins\.crashlytics)" "$build_file"; then
+            aliases_to_add="$aliases_to_add    alias(sjy.plugins.crashlytics) apply false\n"
+        fi
+        if ! grep -q "alias(sjy\.plugins\.lumo)" "$build_file"; then
+            aliases_to_add="$aliases_to_add    alias(sjy.plugins.lumo) apply false\n"
+        fi
+        if ! grep -q "alias(libs\.plugins\.sjy\.detekt)" "$build_file"; then
+            aliases_to_add="$aliases_to_add    alias(libs.plugins.sjy.detekt) apply true\n"
+        fi
+        
+        if [ -n "$aliases_to_add" ]; then
+            # Use awk to add aliases after plugins { line
+            echo -e "$aliases_to_add" > /tmp/plugin_aliases.txt
+            awk '/plugins \{/ {print; while ((getline line < "/tmp/plugin_aliases.txt") > 0) print line; close("/tmp/plugin_aliases.txt"); next} 1' "$build_file" > "$build_file.tmp"
+            mv "$build_file.tmp" "$build_file"
+            rm -f /tmp/plugin_aliases.txt
+            log_info "Added missing sjy plugin aliases to existing plugins block."
+        else
+            log_info "All sjy plugin aliases already present in plugins block."
+        fi
     else
-        sed -i '' "1i\\
-plugins {\\
-$plugin_aliases\\
-}\\
-\\
-" "$build_file"
+        # Create plugins block at the beginning
+        cat > /tmp/new_plugins.txt << 'EOF'
+plugins {
+    alias(sjy.plugins.android.application) apply false
+    alias(sjy.plugins.android.library) apply false
+    alias(sjy.plugins.kotlin.android) apply false
+    alias(sjy.plugins.kotlin.compose) apply false
+    alias(sjy.plugins.ksp) apply false
+    alias(sjy.plugins.detekt) apply true
+    alias(sjy.plugins.ktorfit) apply false
+    alias(sjy.plugins.gms.services) apply false
+    alias(sjy.plugins.crashlytics) apply false
+    alias(sjy.plugins.lumo) apply false
+    alias(libs.plugins.sjy.detekt) apply true
+}
+
+EOF
+        cat /tmp/new_plugins.txt "$build_file" > "$build_file.tmp"
+        mv "$build_file.tmp" "$build_file"
+        rm -f /tmp/new_plugins.txt
         log_info "Created plugins block with sjy plugin aliases."
     fi
 }
@@ -143,9 +225,9 @@ apply_plugins_to_modules() {
     local settings_file=$1
     log_info "Scanning modules in $settings_file..."
 
-    local modules=$(grep -E '^include\((.*)\)' "$settings_file" | \
-        sed -E 's/include\((.*)\)/\1/' | \
-        tr -d '"' | tr -d "'" | tr ':' '\n' | awk NF)
+    local modules=$(grep -E '^[[:space:]]*include\(' "$settings_file" | \
+        sed -E 's/^[[:space:]]*include\([[:space:]]*["'"'"']?([^"'"'"']+)["'"'"']?[[:space:]]*\).*/\1/' | \
+        sed 's/:/\//g')
 
     if [ -z "$modules" ]; then
         log_warn "No modules found."
@@ -153,9 +235,13 @@ apply_plugins_to_modules() {
     fi
 
     echo -e "${GREEN}Found modules:${NC}"
-    echo "$modules"
+    while IFS= read -r module; do
+        [ -n "$module" ] && echo "$module"
+    done <<< "$modules"
 
-    for module in $modules; do
+    while IFS= read -r module; do
+        [ -z "$module" ] && continue
+        
         local path="$module"
         log_info "Processing module: $path"
 
@@ -188,20 +274,21 @@ apply_plugins_to_modules() {
         cp "$build_file" "$build_file.bak"
 
         if grep -q "plugins {" "$build_file"; then
-            sed -i '' "/plugins {/a\\
-    $plugin_alias
-" "$build_file"
+            # Use awk to add plugin after plugins { line
+            awk -v plugin="    $plugin_alias" '/plugins \{/ {print; print plugin; next} 1' "$build_file" > "$build_file.tmp"
+            mv "$build_file.tmp" "$build_file"
             log_info "Added $plugin_alias to existing plugins block."
         else
-            sed -i '' "1i\\
-plugins {\\
-    $plugin_alias\\
-}\\
-\\
-" "$build_file"
+            # Create plugins block at the beginning
+            echo "plugins {" > "$build_file.tmp"
+            echo "    $plugin_alias" >> "$build_file.tmp"
+            echo "}" >> "$build_file.tmp"
+            echo "" >> "$build_file.tmp"
+            cat "$build_file" >> "$build_file.tmp"
+            mv "$build_file.tmp" "$build_file"
             log_info "Created plugins block with $plugin_alias."
         fi
-    done
+    done <<< "$modules"
 }
 
 main() {

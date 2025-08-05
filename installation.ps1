@@ -45,6 +45,46 @@ function Update-SettingsGradle {
         Log-Info "Successfully added includeBuild for sjy-build-logic."
     }
     
+    if ($content -notmatch 'create\("sjy"\)') {
+        if ($content -match "dependencyResolutionManagement {") {
+            if ($content -match "versionCatalogs {") {
+                Log-Info "Adding sjy catalog to existing versionCatalogs block."
+                $sjyCatalog = @"
+        create("sjy") {
+            from(files("sjy-build-logic/gradle/libs.versions.toml"))
+        }
+"@
+                $content = $content -replace "(versionCatalogs\s*\{)", "`$1`n$sjyCatalog"
+            } else {
+                Log-Info "Adding versionCatalogs block to dependencyResolutionManagement."
+                $versionCatalogs = @"
+    versionCatalogs {
+        create("sjy") {
+            from(files("sjy-build-logic/gradle/libs.versions.toml"))
+        }
+    }
+"@
+                $content = $content -replace "(dependencyResolutionManagement\s*\{)", "`$1`n$versionCatalogs"
+            }
+        } else {
+            Log-Info "Adding dependencyResolutionManagement block."
+            $depResManagement = @"
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        create("sjy") {
+            from(files("sjy-build-logic/gradle/libs.versions.toml"))
+        }
+    }
+}
+"@
+            $content += $depResManagement
+        }
+        Log-Info "Successfully added sjy version catalog."
+    } else {
+        Log-Info "sjy version catalog already present."
+    }
+    
     $content | Set-Content $settingsFile
 }
 
@@ -123,26 +163,54 @@ function Update-RootBuildGradle {
         return
     }
     
-    $pluginAliases = @"
-    alias(sjy.plugins.android.application) apply false
-    alias(sjy.plugins.android.library) apply false
-    alias(sjy.plugins.kotlin.android) apply false
-    alias(sjy.plugins.kotlin.compose) apply false
-    alias(sjy.plugins.ksp) apply false
-    alias(sjy.plugins.detekt) apply true
-    alias(sjy.plugins.ktorfit) apply false
-    alias(sjy.plugins.gms.services) apply false
-    alias(sjy.plugins.crashlytics) apply false
-    alias(sjy.plugins.lumo) apply false
-    alias(libs.plugins.sjy.detekt) apply true
-"@
+    $aliasesToAdd = @()
     
-    if ($content -match "plugins \{") {
-        $content = $content -replace "(plugins\s*\{)", "`$1`n$pluginAliases"
-        Log-Info "Added sjy plugin aliases to existing plugins block."
+    if ($content -notmatch "alias\(sjy\.plugins\.android\.application\)") {
+        $aliasesToAdd += "    alias(sjy.plugins.android.application) apply false"
+    }
+    if ($content -notmatch "alias\(sjy\.plugins\.android\.library\)") {
+        $aliasesToAdd += "    alias(sjy.plugins.android.library) apply false"
+    }
+    if ($content -notmatch "alias\(sjy\.plugins\.kotlin\.android\)") {
+        $aliasesToAdd += "    alias(sjy.plugins.kotlin.android) apply false"
+    }
+    if ($content -notmatch "alias\(sjy\.plugins\.kotlin\.compose\)") {
+        $aliasesToAdd += "    alias(sjy.plugins.kotlin.compose) apply false"
+    }
+    if ($content -notmatch "alias\(sjy\.plugins\.ksp\)") {
+        $aliasesToAdd += "    alias(sjy.plugins.ksp) apply false"
+    }
+    if ($content -notmatch "alias\(sjy\.plugins\.detekt\)") {
+        $aliasesToAdd += "    alias(sjy.plugins.detekt) apply true"
+    }
+    if ($content -notmatch "alias\(sjy\.plugins\.ktorfit\)") {
+        $aliasesToAdd += "    alias(sjy.plugins.ktorfit) apply false"
+    }
+    if ($content -notmatch "alias\(sjy\.plugins\.gms\.services\)") {
+        $aliasesToAdd += "    alias(sjy.plugins.gms.services) apply false"
+    }
+    if ($content -notmatch "alias\(sjy\.plugins\.crashlytics\)") {
+        $aliasesToAdd += "    alias(sjy.plugins.crashlytics) apply false"
+    }
+    if ($content -notmatch "alias\(sjy\.plugins\.lumo\)") {
+        $aliasesToAdd += "    alias(sjy.plugins.lumo) apply false"
+    }
+    if ($content -notmatch "alias\(libs\.plugins\.sjy\.detekt\)") {
+        $aliasesToAdd += "    alias(libs.plugins.sjy.detekt) apply true"
+    }
+    
+    if ($aliasesToAdd.Count -gt 0) {
+        $pluginAliases = $aliasesToAdd -join "`n"
+        
+        if ($content -match "plugins \{") {
+            $content = $content -replace "(plugins\s*\{)", "`$1`n$pluginAliases"
+            Log-Info "Added missing sjy plugin aliases to existing plugins block."
+        } else {
+            $content = "plugins {`n$pluginAliases`n}`n`n" + $content
+            Log-Info "Created plugins block with sjy plugin aliases."
+        }
     } else {
-        $content = "plugins {`n$pluginAliases`n}`n`n" + $content
-        Log-Info "Created plugins block with sjy plugin aliases."
+        Log-Info "All sjy plugin aliases already present in plugins block."
     }
     
     $content | Set-Content $buildFile
@@ -152,13 +220,27 @@ function Apply-PluginsToModules {
     param ([string]$settingsFile)
     Log-Info "Scanning for modules in $settingsFile..."
 
-    $modules = Get-Content $settingsFile |
-        Select-String -Pattern "include[(]'.+'[)]|include[\"'].+[\"']" |
-        ForEach-Object {
-            $_.ToString().Trim() -replace "include[(]*['\"]:", "" -replace "['\")]", "" -replace ":", "/"
+    $modules = @()
+    $content = Get-Content $settingsFile
+    
+    foreach ($line in $content) {
+        if ($line -match '^\s*include\s*\(') {
+            # Extract everything inside include() parentheses
+            if ($line -match 'include\s*\(\s*(.+)\s*\)') {
+                $includeContent = $matches[1]
+                # Split by comma and clean up each module
+                $moduleArray = $includeContent -split ',' | ForEach-Object {
+                    $module = $_.Trim() -replace '^["'']?:?([^"'']+)["'']?$', '$1' -replace ':', '/'
+                    if ($module -and $module -ne "") {
+                        $module
+                    }
+                }
+                $modules += $moduleArray
+            }
         }
+    }
 
-    if (-not $modules) {
+    if (-not $modules -or $modules.Count -eq 0) {
         Log-Warn "No modules found in $settingsFile. Skipping plugin application."
         return
     }
@@ -184,9 +266,9 @@ function Apply-PluginsToModules {
         $pluginAlias = ""
         $rawText = [string]::Join("`n", $buildFileContent)
 
-        if ($rawText -match "com\.android\.application") {
+        if ($rawText -match "com\.android\.application|alias\(.*android\.application\)") {
             $pluginAlias = "alias(libs.plugins.sjy.app)"
-        } elseif ($rawText -match "com\.android\.library") {
+        } elseif ($rawText -match "com\.android\.library|alias\(.*android\.library\)") {
             $pluginAlias = "alias(libs.plugins.sjy.lib)"
         } else {
             Log-Warn "Module $modulePath is not an Android application or library. Skipping."
