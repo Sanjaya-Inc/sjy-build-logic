@@ -11,7 +11,7 @@ detekt = "1.23.8"
 jvm-target = "21"
 
 # AndroidX
-core-ktx = "1.16.0"
+core-ktx = "1.17.0"
 
 # Concurrency
 coroutines = "1.10.2"
