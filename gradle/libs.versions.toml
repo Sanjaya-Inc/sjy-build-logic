@@ -22,7 +22,7 @@ koin-annotation = "2.1.0"
 compose-compiler = "1.8.2"
 
 ktorfit = "2.6.4"
-mmkv = "2.2.2"
+mmkv = "2.2.3"
 store = "5.1.0-alpha06"
 app-startup = "1.2.0"
 okhttp = "5.1.0"
