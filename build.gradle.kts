@@ -42,4 +42,8 @@ gradlePlugin {
         id = "com.sanjaya.buildlogic.firebase"
         implementationClass = "com.sanjaya.buildlogic.plugins.FirebasePlugin"
     }
+    val test by plugins.creating {
+        id = "com.sanjaya.buildlogic.test"
+        implementationClass = "com.sanjaya.buildlogic.plugins.TestConventionPlugin"
+    }
 }

@@ -44,6 +44,10 @@ compose-destination = "2.2.0"
 coil = "3.3.0"
 accompanist = "0.37.3"
 
+junit5 = "5.7.1"
+mockk = "1.14.5"
+turbine = "1.2.1"
+
 [libraries]
 # AndroidX
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -51,6 +55,7 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 # Concurrency
 coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
 kotlin-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlin-serialization" }
 kotlin-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlin-immutable" }
 
@@ -141,6 +146,14 @@ compose-destination-sheet = { module = "io.github.raamcosta.compose-destinations
 
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit5" }
+
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
+mockk-agent = { module = "io.mockk:mockk-agent", version.ref = "mockk" }
+
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+
 [bundles]
 koin-nonandroid = [
     "koin-core",
@@ -206,6 +219,11 @@ androidx-compose = [
 androidx-compose-debug = [
     "androidx-ui-tooling",
     "androidx-ui-test-manifest"
+]
+mockk = [
+    "mockk",
+    "mockk-agent",
+    "mockk-android"
 ]
 
 [plugins]

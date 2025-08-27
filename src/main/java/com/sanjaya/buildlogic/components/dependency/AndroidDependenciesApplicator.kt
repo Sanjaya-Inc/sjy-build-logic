@@ -76,12 +76,25 @@ class AndroidDependenciesApplicator(
         apiPlatform(dependency)
     }
 
+    override fun testImplementationPlatform(notation: Provider<MinimalExternalModuleDependency>) {
+        project.dependencies.add("testImplementation", project.dependencies.platform(notation))
+        logger.i(TAG, "Adding platform test implementation: ${notation.orNull?.name}")
+    }
+
+    override fun testImplementationPlatform(alias: String) {
+        val dependency = dependenciesFinder.findLibrary(alias)
+        testImplementationPlatform(dependency)
+    }
+
     override fun androidTestImplementationPlatform(notation: Provider<MinimalExternalModuleDependency>) {
         project.dependencies.add(
             "androidTestImplementation",
             project.dependencies.platform(notation)
         )
-        logger.i(TAG, "Adding android test platform library implementation: ${notation.orNull?.name}")
+        logger.i(
+            TAG,
+            "Adding android test platform library implementation: ${notation.orNull?.name}"
+        )
     }
 
     override fun androidTestImplementationPlatform(alias: String) {
@@ -138,6 +151,20 @@ class AndroidDependenciesApplicator(
     override fun detektPlugins(vararg aliases: String) {
         logger.i(TAG, "Adding detekt plugins: ")
         aliases.forEach { detektPlugin(it) }
+    }
+
+    override fun testImplementations(vararg alias: String) {
+        logger.i(TAG, "Adding library test implementations: ")
+        alias.forEach {
+            testImplementation(it)
+        }
+    }
+
+    override fun androidTestImplementations(vararg alias: String) {
+        logger.i(TAG, "Adding library android test implementations: ")
+        alias.forEach {
+            androidTestImplementation(it)
+        }
     }
 
     companion object {

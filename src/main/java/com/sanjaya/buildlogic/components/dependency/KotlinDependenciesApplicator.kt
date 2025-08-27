@@ -72,6 +72,22 @@ class KotlinDependenciesApplicator(
         apiPlatform(notation)
     }
 
+    override fun testImplementationPlatform(notation: Provider<MinimalExternalModuleDependency>) {
+        handler.project.dependencies.add(
+            "testImplementation",
+            handler.project.dependencies.platform(notation)
+        )
+        logger.i(
+            TAG,
+            "Adding android test platform implementation: ${notation.orNull?.name}"
+        )
+    }
+
+    override fun testImplementationPlatform(alias: String) {
+        val dependency = dependenciesFinder.findLibrary(alias)
+        testImplementationPlatform(dependency)
+    }
+
     override fun androidTestImplementationPlatform(notation: Provider<MinimalExternalModuleDependency>) {
         handler.project.dependencies.add(
             "androidTestImplementation",
@@ -134,6 +150,20 @@ class KotlinDependenciesApplicator(
     override fun detektPlugins(vararg aliases: String) {
         logger.i(TAG, "Adding detekt plugins: ")
         aliases.forEach { detektPlugin(it) }
+    }
+
+    override fun testImplementations(vararg alias: String) {
+        logger.i(TAG, "Adding library test implementations: ")
+        alias.forEach {
+            testImplementation(it)
+        }
+    }
+
+    override fun androidTestImplementations(vararg alias: String) {
+        logger.i(TAG, "Adding library android test implementations: ")
+        alias.forEach {
+            androidTestImplementation(it)
+        }
     }
 
     companion object {

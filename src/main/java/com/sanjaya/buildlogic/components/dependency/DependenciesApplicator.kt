@@ -16,6 +16,8 @@ interface DependenciesApplicator: KoinComponent {
     fun implementationPlatform(alias: String)
     fun apiPlatform(notation: Provider<MinimalExternalModuleDependency>)
     fun apiPlatform(alias: String)
+    fun testImplementationPlatform(notation: Provider<MinimalExternalModuleDependency>)
+    fun testImplementationPlatform(alias: String)
     fun androidTestImplementationPlatform(notation: Provider<MinimalExternalModuleDependency>)
     fun androidTestImplementationPlatform(alias: String)
     fun androidTestImplementation(notation: Provider<MinimalExternalModuleDependency>)
@@ -28,4 +30,6 @@ interface DependenciesApplicator: KoinComponent {
     fun detektPlugin(notation: Provider<MinimalExternalModuleDependency>)
     fun detektPlugin(alias: String)
     fun detektPlugins(vararg aliases: String)
+    fun testImplementations(vararg alias: String)
+    fun androidTestImplementations(vararg alias: String)
 }
