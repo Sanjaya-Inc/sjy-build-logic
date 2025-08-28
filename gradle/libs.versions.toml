@@ -44,7 +44,7 @@ compose-destination = "2.2.0"
 coil = "3.3.0"
 accompanist = "0.37.3"
 
-junit5 = "5.7.1"
+junit5 = "5.13.4"
 mockk = "1.14.5"
 turbine = "1.2.1"
 
