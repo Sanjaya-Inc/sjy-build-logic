@@ -17,7 +17,7 @@ core-ktx = "1.17.0"
 coroutines = "1.10.2"
 
 # Dependency Injection
-koin = "4.1.0"
+koin = "4.1.1"
 koin-annotation = "2.1.0"
 compose-compiler = "1.8.2"
 
