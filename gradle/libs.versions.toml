@@ -39,6 +39,7 @@ voyager = "1.1.0-beta02"
 orbit-mvi = "10.0.0"
 lifecycle = "2.9.3"
 activity = "1.10.1"
+compose-navigation = "2.9.0-beta05"
 compose-multiplatform = "1.8.2"
 compose-bom = "2025.08.01"
 material3 = "1.3.2"
@@ -49,6 +50,7 @@ accompanist = "0.37.3"
 junit5 = "5.13.4"
 mockk = "1.14.5"
 turbine = "1.2.1"
+buildconfig-kmp = "5.6.7"
 
 [libraries]
 # AndroidX
@@ -140,6 +142,7 @@ androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 compose-google-fonts = { module = "androidx.compose.ui:ui-text-google-fonts" }
+compose-navigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "compose-navigation" }
 
 coil-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
 coil = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
@@ -237,6 +240,7 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin-core" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-core" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin-core" }
+android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-core" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
@@ -249,3 +253,5 @@ crashlytics = { id = "com.google.firebase.crashlytics", version = "3.0.6" }
 
 # UI Components (from ui)
 lumo = { id = "com.nomanr.plugin.lumo", version = "1.2.5" }
+buildconfig-kmp = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig-kmp" }
+android-lint = { id = "com.android.lint", version.ref = "agp" }

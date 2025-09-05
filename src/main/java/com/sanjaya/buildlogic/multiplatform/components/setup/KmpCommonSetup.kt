@@ -31,6 +31,7 @@ class KmpCommonSetup(
     private val versionFinder: VersionFinder by inject { parametersOf(project) }
     private val kspSetup: KspSetup by inject { parametersOf(project) }
     private val kmpKoinSetup: KmpKoinSetup by inject { parametersOf(project) }
+    private val kmpKotlinSetup: KmpKotlinSetup by inject { parametersOf(project) }
 
     fun setup() {
         pluginApplicator.applyPluginsByAliases(
@@ -42,6 +43,7 @@ class KmpCommonSetup(
         )
         kspSetup.setup()
         kmpKoinSetup.setup()
+        kmpKotlinSetup.setup()
         project.configure<KotlinMultiplatformExtension>() {
             sourceSets.commonTest {
                 dependencies {

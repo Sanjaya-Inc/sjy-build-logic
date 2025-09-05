@@ -38,7 +38,8 @@ class CmpConventionPlugin : BasePlugin() {
                     "orbit-mvi-viewmodel",
                     "orbit-mvi-compose",
                     "androidx-lifecycle-viewmodelCompose",
-                    "androidx-lifecycle-runtimeCompose"
+                    "androidx-lifecycle-runtimeCompose",
+                    "compose-navigation",
                 ).map(dependenciesFinder::findLibrary)
                     .forEach(this::implementation)
             }

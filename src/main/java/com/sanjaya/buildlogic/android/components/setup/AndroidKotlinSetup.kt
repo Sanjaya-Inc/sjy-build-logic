@@ -29,6 +29,9 @@ class AndroidKotlinSetup(
             "kotlin-android",
             "kotlin-parcelize",
         )
+        pluginApplicator.applyPluginsByAliases(
+            "kotlin-serialization"
+        )
         dependenciesApplicator.implementations(
             "kotlin-serialization",
             "coroutines-core",
