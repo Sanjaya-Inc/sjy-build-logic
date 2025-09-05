@@ -52,6 +52,7 @@ junit5 = "5.13.4"
 mockk = "1.14.5"
 turbine = "1.2.1"
 buildconfig-kmp = "5.6.7"
+napier = "2.7.1"
 
 [libraries]
 # AndroidX
@@ -164,6 +165,7 @@ mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
 mockk-agent = { module = "io.mockk:mockk-agent", version.ref = "mockk" }
 
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 
 [bundles]
 koin-nonandroid = [

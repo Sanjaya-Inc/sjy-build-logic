@@ -47,6 +47,13 @@ class KmpCommonSetup(
         kmpKotlinSetup.setup()
         kmpDataSetup.setup()
         project.configure<KotlinMultiplatformExtension>() {
+            sourceSets.commonMain {
+                dependencies {
+                    listOf(
+                        "napier"
+                    ).map(dependenciesFinder::findLibrary).forEach(::implementation)
+                }
+            }
             sourceSets.commonTest {
                 dependencies {
                     val kotlinTest = dependenciesFinder.findLibrary("kotlin-test")
