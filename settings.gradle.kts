@@ -14,4 +14,3 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "sjy-build-logic"
-include(":buildlogic")

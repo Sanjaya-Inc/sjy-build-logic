@@ -18,32 +18,51 @@ dependencies {
 }
 
 gradlePlugin {
-    val androidTarget by plugins.creating {
-        id = "com.sanjaya.buildlogic.target"
-        implementationClass = "com.sanjaya.buildlogic.plugins.AndroidTargetConventionPlugin"
-    }
-    val app by plugins.creating {
-        id = "com.sanjaya.buildlogic.app"
-        implementationClass = "com.sanjaya.buildlogic.plugins.AndroidAppConventionPlugin"
-    }
-    val lib by plugins.creating {
-        id = "com.sanjaya.buildlogic.lib"
-        implementationClass = "com.sanjaya.buildlogic.plugins.AndroidLibConventionPlugin"
-    }
-    val compose by plugins.creating {
-        id = "com.sanjaya.buildlogic.compose"
-        implementationClass = "com.sanjaya.buildlogic.plugins.AndroidComposeConventionPlugin"
-    }
-    val detekt by plugins.creating {
-        id = "com.sanjaya.buildlogic.detekt"
-        implementationClass = "com.sanjaya.buildlogic.plugins.DetektConventionPlugin"
-    }
-    val firebase by plugins.creating {
-        id = "com.sanjaya.buildlogic.firebase"
-        implementationClass = "com.sanjaya.buildlogic.plugins.FirebasePlugin"
-    }
-    val test by plugins.creating {
-        id = "com.sanjaya.buildlogic.test"
-        implementationClass = "com.sanjaya.buildlogic.plugins.TestConventionPlugin"
+    plugins {
+        // region android buildlogic
+        register("androidTarget") {
+            id = "com.sanjaya.buildlogic.target"
+            implementationClass = "com.sanjaya.buildlogic.android.plugins.AndroidTargetConventionPlugin"
+        }
+        register("androidApp") {
+            id = "com.sanjaya.buildlogic.app"
+            implementationClass = "com.sanjaya.buildlogic.android.plugins.AndroidAppConventionPlugin"
+        }
+        register("androidLib") {
+            id = "com.sanjaya.buildlogic.lib"
+            implementationClass = "com.sanjaya.buildlogic.android.plugins.AndroidLibConventionPlugin"
+        }
+        register("androidCompose") {
+            id = "com.sanjaya.buildlogic.compose"
+            implementationClass = "com.sanjaya.buildlogic.android.plugins.AndroidComposeConventionPlugin"
+        }
+        register("detekt") {
+            id = "com.sanjaya.buildlogic.detekt"
+            implementationClass = "com.sanjaya.buildlogic.common.plugins.DetektConventionPlugin"
+        }
+        register("androidFirebase") {
+            id = "com.sanjaya.buildlogic.firebase"
+            implementationClass = "com.sanjaya.buildlogic.android.plugins.FirebasePlugin"
+        }
+        register("androidTest") {
+            id = "com.sanjaya.buildlogic.test"
+            implementationClass = "com.sanjaya.buildlogic.android.plugins.TestConventionPlugin"
+        }
+        // endregion
+
+        // region multiplatform buildlogic
+        register("multiplatformApp") {
+            id = "com.sanjaya.buildlogic.multiplatform.app"
+            implementationClass = "com.sanjaya.buildlogic.multiplatform.plugins.KmpAppConventionPlugin"
+        }
+        register("multiplatformLib") {
+            id = "com.sanjaya.buildlogic.multiplatform.lib"
+            implementationClass = "com.sanjaya.buildlogic.multiplatform.plugins.KmpLibConventionPlugin"
+        }
+        register("composeMultiplatform") {
+            id = "com.sanjaya.buildlogic.multiplatform.cmp"
+            implementationClass = "com.sanjaya.buildlogic.multiplatform.plugins.CmpConventionPlugin"
+        }
+        // endregion
     }
 }
