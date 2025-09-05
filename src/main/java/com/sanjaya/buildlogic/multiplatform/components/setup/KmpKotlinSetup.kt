@@ -31,7 +31,6 @@ class KmpKotlinSetup(
         pluginApplicator.applyPluginsByAliases(
             "kotlin-serialization"
         )
-        val kotlinExt = project.extensions.getByType<KotlinProjectExtension>()
         project.configure<KotlinMultiplatformExtension>() {
             sourceSets.commonMain.dependencies {
                 listOf(
