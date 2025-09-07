@@ -266,3 +266,4 @@ buildlogic-lib = { id = "com.sanjaya.buildlogic.lib" }
 buildlogic-compose = { id = "com.sanjaya.buildlogic.compose" }
 buildlogic-app = { id = "com.sanjaya.buildlogic.app" }
 buildlogic-firebase = { id = "com.sanjaya.buildlogic.firebase" }
+buildlogic-root = { id = "com.sanjaya.buildlogic.root" }
