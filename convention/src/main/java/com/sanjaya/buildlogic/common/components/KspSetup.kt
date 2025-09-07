@@ -1,21 +1,19 @@
 package com.sanjaya.buildlogic.common.components
 
+import com.sanjaya.buildlogic.common.utils.ComponentProvider
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.the
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.InjectedParam
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import org.koin.core.parameter.parametersOf
 
 @Factory
 class KspSetup(
     @InjectedParam private val project: Project,
-    private val logger: BuildLogicLogger
+    private val logger: BuildLogicLogger,
+    private val pluginApplicator: PluginApplicator = ComponentProvider.provide(project),
 ) : KoinComponent {
-
-    private val pluginApplicator: PluginApplicator by inject { parametersOf(project) }
 
     fun setup() {
         logger.title(TAG, "Setting up ksp for project: ${project.name}")

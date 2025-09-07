@@ -3,21 +3,20 @@ package com.sanjaya.buildlogic.multiplatform.plugins
 import com.sanjaya.buildlogic.common.components.DependenciesFinder
 import com.sanjaya.buildlogic.common.components.PluginApplicator
 import com.sanjaya.buildlogic.common.plugins.BasePlugin
+import com.sanjaya.buildlogic.common.utils.ComponentProvider
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
 import org.jetbrains.compose.ComposeExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.koin.core.component.inject
-import org.koin.core.parameter.parametersOf
 
 class CmpConventionPlugin : BasePlugin() {
 
     override fun apply(target: Project) = with(target) {
         super.apply(target)
-        val dependenciesFinder: DependenciesFinder by inject { parametersOf(target) }
-        val pluginApplicator: PluginApplicator by inject { parametersOf(target) }
+        val dependenciesFinder: DependenciesFinder = ComponentProvider.provide(target)
+        val pluginApplicator: PluginApplicator = ComponentProvider.provide(target)
         pluginApplicator.applyPluginsByAliases("compose-multiplatform", "kotlin-compose")
         val compose = extensions.getByType<ComposeExtension>()
         configure<KotlinMultiplatformExtension> {

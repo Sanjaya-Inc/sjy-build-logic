@@ -1,6 +1,7 @@
 package com.sanjaya.buildlogic.common.components
 
 import com.sanjaya.buildlogic.android.components.dependency.AndroidDependenciesApplicator
+import com.sanjaya.buildlogic.common.utils.ComponentProvider
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
@@ -10,8 +11,6 @@ import org.gradle.kotlin.dsl.withType
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.InjectedParam
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import org.koin.core.parameter.parametersOf
 
 /**
  * Sets up Detekt for the given project.
@@ -30,16 +29,13 @@ import org.koin.core.parameter.parametersOf
 @Factory
 class DetektSetup(
     @InjectedParam private val project: Project,
-    private val buildLogicLogger: BuildLogicLogger
+    private val buildLogicLogger: BuildLogicLogger,
+    private val versionFinder: VersionFinder = ComponentProvider.provide(project),
+    private val dependenciesApplicator: AndroidDependenciesApplicator = ComponentProvider.provide(
+        project
+    ),
+    private val pluginApplicator: PluginApplicator = ComponentProvider.provide(project)
 ) : KoinComponent {
-
-    private val versionFinder: VersionFinder by inject { parametersOf(project) }
-    private val dependenciesApplicator: AndroidDependenciesApplicator by inject {
-        parametersOf(
-            project
-        )
-    }
-    private val pluginApplicator: PluginApplicator by inject { parametersOf(project) }
 
     fun setup() {
         buildLogicLogger.title(TAG, "Setting up Detekt for project: ${project.name}")
@@ -108,28 +104,30 @@ class DetektSetup(
     private fun Project.configureDetektTask(task: Detekt, jvmTarget: String) {
         task.apply {
             this.jvmTarget = jvmTarget
-            setSource(files(
-                "src/main/java",
-                "src/main/kotlin",
-                "src/test/java",
-                "src/test/kotlin",
-                "src/androidTest/java",
-                "src/androidTest/kotlin",
-                "src/androidDeviceTest/java",
-                "src/androidDeviceTest/kotlin",
-                "src/androidHostTest/java",
-                "src/androidHostTest/kotlin",
-                "src/commonMain/java",
-                "src/commonMain/kotlin",
-                "src/commonTest/java",
-                "src/commonTest/kotlin",
-                "src/androidMain/java",
-                "src/androidMain/kotlin",
-                "src/iosMain/java",
-                "src/iosMain/kotlin",
-                "src/jvmMain/java",
-                "src/jvmMain/kotlin"
-            ))
+            setSource(
+                files(
+                    "src/main/java",
+                    "src/main/kotlin",
+                    "src/test/java",
+                    "src/test/kotlin",
+                    "src/androidTest/java",
+                    "src/androidTest/kotlin",
+                    "src/androidDeviceTest/java",
+                    "src/androidDeviceTest/kotlin",
+                    "src/androidHostTest/java",
+                    "src/androidHostTest/kotlin",
+                    "src/commonMain/java",
+                    "src/commonMain/kotlin",
+                    "src/commonTest/java",
+                    "src/commonTest/kotlin",
+                    "src/androidMain/java",
+                    "src/androidMain/kotlin",
+                    "src/iosMain/java",
+                    "src/iosMain/kotlin",
+                    "src/jvmMain/java",
+                    "src/jvmMain/kotlin"
+                )
+            )
             exclude("**/build/**")
             reports {
                 html.required.set(true)

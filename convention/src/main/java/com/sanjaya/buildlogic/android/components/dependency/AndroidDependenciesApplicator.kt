@@ -1,22 +1,20 @@
 package com.sanjaya.buildlogic.android.components.dependency
 
-import com.sanjaya.buildlogic.common.components.DependenciesFinder
 import com.sanjaya.buildlogic.common.components.BuildLogicLogger
+import com.sanjaya.buildlogic.common.components.DependenciesFinder
+import com.sanjaya.buildlogic.common.utils.ComponentProvider
 import org.gradle.api.Project
 import org.gradle.api.artifacts.MinimalExternalModuleDependency
 import org.gradle.api.provider.Provider
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.InjectedParam
-import org.koin.core.component.inject
-import org.koin.core.parameter.parametersOf
 
 @Factory
 class AndroidDependenciesApplicator(
     @InjectedParam private val project: Project,
     private val logger: BuildLogicLogger,
+    private val dependenciesFinder: DependenciesFinder = ComponentProvider.provide(project)
 ) : DependenciesApplicator {
-
-    private val dependenciesFinder: DependenciesFinder by inject { parametersOf(project) }
 
     override fun implementation(notation: Provider<MinimalExternalModuleDependency>) {
         project.dependencies.add("implementation", notation)

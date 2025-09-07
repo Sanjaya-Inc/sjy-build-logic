@@ -11,5 +11,6 @@ import org.koin.core.annotation.Module
     "com.sanjaya.buildlogic.android.components.setup",
     "com.sanjaya.buildlogic.common.components",
     "com.sanjaya.buildlogic.multiplatform.components",
+    "com.sanjaya.buildlogic.android.utils"
 )
 object BuildLogicModule

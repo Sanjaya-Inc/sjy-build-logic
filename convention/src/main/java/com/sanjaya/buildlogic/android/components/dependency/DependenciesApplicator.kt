@@ -4,7 +4,7 @@ import org.gradle.api.artifacts.MinimalExternalModuleDependency
 import org.gradle.api.provider.Provider
 import org.koin.core.component.KoinComponent
 
-interface DependenciesApplicator: KoinComponent {
+interface DependenciesApplicator : KoinComponent {
     fun implementation(notation: Provider<MinimalExternalModuleDependency>)
     fun implementation(alias: String)
     fun implementations(vararg alias: String)

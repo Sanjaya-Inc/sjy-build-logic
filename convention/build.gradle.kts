@@ -14,7 +14,16 @@ dependencies {
     compileOnly(sjy.plugin.ksp)
     compileOnly(sjy.plugin.compose)
     compileOnly(sjy.plugin.detekt)
-    compileOnly(sjy.plugin.detekt)
+    testImplementation(sjy.junit.jupiter)
+    testImplementation(sjy.junit.jupiter.api)
+    testImplementation(sjy.mockk)
+    testRuntimeOnly(sjy.junit.jupiter.engine)
+    testImplementation(gradleTestKit())
+    testImplementation(kotlin("test"))
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
 
 gradlePlugin {

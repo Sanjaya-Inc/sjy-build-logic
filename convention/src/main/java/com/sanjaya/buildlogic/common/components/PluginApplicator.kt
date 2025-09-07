@@ -1,20 +1,17 @@
 package com.sanjaya.buildlogic.common.components
 
-import com.sanjaya.buildlogic.common.components.BuildLogicLogger
+import com.sanjaya.buildlogic.common.utils.ComponentProvider
 import org.gradle.api.Project
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.InjectedParam
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import org.koin.core.parameter.parametersOf
 
 @Factory
 class PluginApplicator(
     @InjectedParam private val project: Project,
-    private val logger: BuildLogicLogger
+    private val logger: BuildLogicLogger,
+    private val pluginFinder: PluginFinder = ComponentProvider.provide(project)
 ) : KoinComponent {
-
-    private val pluginFinder: PluginFinder by inject { parametersOf(project) }
 
     fun applyPluginsByIds(vararg ids: String) {
         logger.i(TAG, "Applying plugin by ids: ")

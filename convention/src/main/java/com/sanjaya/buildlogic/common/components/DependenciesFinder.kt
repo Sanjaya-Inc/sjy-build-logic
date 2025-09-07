@@ -1,5 +1,6 @@
 package com.sanjaya.buildlogic.common.components
 
+import com.sanjaya.buildlogic.common.utils.ComponentProvider
 import org.gradle.api.Project
 import org.gradle.api.artifacts.ExternalModuleDependencyBundle
 import org.gradle.api.artifacts.MinimalExternalModuleDependency
@@ -7,17 +8,14 @@ import org.gradle.api.provider.Provider
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.InjectedParam
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import org.koin.core.parameter.parametersOf
 import kotlin.jvm.optionals.getOrNull
 
 @Factory
 class DependenciesFinder(
     @InjectedParam private val project: Project,
-    private val buildLogicLogger: BuildLogicLogger
+    private val buildLogicLogger: BuildLogicLogger,
+    private val versionCatalogProvider: VersionCatalogProvider = ComponentProvider.provide(project)
 ) : KoinComponent {
-
-    private val versionCatalogProvider: VersionCatalogProvider by inject { parametersOf(project) }
 
     fun findLibrary(alias: String): Provider<MinimalExternalModuleDependency> {
         var versionCatalog = ""

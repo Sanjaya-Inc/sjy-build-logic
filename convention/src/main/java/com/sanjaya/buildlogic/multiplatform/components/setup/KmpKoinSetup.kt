@@ -1,32 +1,28 @@
 package com.sanjaya.buildlogic.multiplatform.components.setup
 
 import com.google.devtools.ksp.gradle.KspExtension
-import com.sanjaya.buildlogic.android.components.dependency.AndroidDependenciesApplicator
 import com.sanjaya.buildlogic.common.components.BuildLogicLogger
 import com.sanjaya.buildlogic.common.components.DependenciesFinder
+import com.sanjaya.buildlogic.common.utils.ComponentProvider
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.the
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.internal.builtins.StandardNames.FqNames.target
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.InjectedParam
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import org.koin.core.parameter.parametersOf
 
 @Factory
 class KmpKoinSetup(
     @InjectedParam private val project: Project,
-    private val logger: BuildLogicLogger
+    private val logger: BuildLogicLogger,
+    private val dependenciesFinder: DependenciesFinder = ComponentProvider.provide(project)
 ) : KoinComponent {
-
-    private val dependenciesFinder: DependenciesFinder by inject { parametersOf(project) }
 
     fun setup() {
         logger.title(TAG, "Setting up Koin for kmp project: ${project.name}")
-        project.configure<KotlinMultiplatformExtension>() {
+        project.configure<KotlinMultiplatformExtension> {
             sourceSets.commonMain.dependencies {
                 val bom = dependenciesFinder.findLibrary("koin-bom")
                 implementation(this.project.dependencies.platform(bom))
@@ -51,9 +47,10 @@ class KmpKoinSetup(
             val compiler = dependenciesFinder.findLibrary("koin-ksp")
             add("ksp", compiler)
         }
-        project.tasks.matching { it.name.startsWith("ksp") && it.name != "kspCommonMainKotlinMetadata" }.configureEach {
-            dependsOn("kspCommonMainKotlinMetadata")
-        }
+        project.tasks.matching { it.name.startsWith("ksp") && it.name != "kspCommonMainKotlinMetadata" }
+            .configureEach {
+                dependsOn("kspCommonMainKotlinMetadata")
+            }
         project.the<KspExtension>().apply {
             arg("KOIN_CONFIG_CHECK", "true")
         }

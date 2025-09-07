@@ -3,28 +3,25 @@ package com.sanjaya.buildlogic.android.components.setup
 import com.sanjaya.buildlogic.android.components.dependency.AndroidDependenciesApplicator
 import com.sanjaya.buildlogic.common.components.KspSetup
 import com.sanjaya.buildlogic.common.components.PluginApplicator
+import com.sanjaya.buildlogic.common.utils.ComponentProvider
 import org.gradle.api.Project
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.InjectedParam
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import org.koin.core.parameter.parametersOf
 
 @Factory
 class AndroidConventionSetup(
-    @InjectedParam private val project: Project
+    @InjectedParam private val project: Project,
+    private val pluginApplicator: PluginApplicator = ComponentProvider.provide(project),
+    private val kotlinSetup: AndroidKotlinSetup = ComponentProvider.provide(project),
+    private val kspSetup: KspSetup = ComponentProvider.provide(project),
+    private val androidKoinSetup: AndroidKoinSetup = ComponentProvider.provide(project),
+    private val androidDataSetup: AndroidDataSetup = ComponentProvider.provide(project),
+    private val dependenciesApplicator: AndroidDependenciesApplicator = ComponentProvider.provide(
+        project
+    )
 ) : KoinComponent {
 
-    private val pluginApplicator: PluginApplicator by inject { parametersOf(project) }
-    private val kotlinSetup: AndroidKotlinSetup by inject { parametersOf(project) }
-    private val kspSetup: KspSetup by inject { parametersOf(project) }
-    private val androidKoinSetup: AndroidKoinSetup by inject { parametersOf(project) }
-    private val androidDataSetup: AndroidDataSetup by inject { parametersOf(project) }
-    private val dependenciesApplicator: AndroidDependenciesApplicator by inject {
-        parametersOf(
-            project
-        )
-    }
 
     fun setupAndroidApp() {
         pluginApplicator.applyPluginsByIds("com.android.application")

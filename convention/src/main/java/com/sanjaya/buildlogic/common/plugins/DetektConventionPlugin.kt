@@ -1,14 +1,13 @@
 package com.sanjaya.buildlogic.common.plugins
 
 import com.sanjaya.buildlogic.common.components.DetektSetup
+import com.sanjaya.buildlogic.common.utils.ComponentProvider
 import org.gradle.api.Project
-import org.koin.core.component.inject
-import org.koin.core.parameter.parametersOf
 
-class DetektConventionPlugin: BasePlugin() {
+class DetektConventionPlugin : BasePlugin() {
     override fun apply(target: Project) {
         super.apply(target)
-        val detektSetup: DetektSetup by inject { parametersOf(target) }
+        val detektSetup: DetektSetup = ComponentProvider.provide(target)
         detektSetup.setup()
     }
 }
