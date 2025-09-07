@@ -132,7 +132,7 @@ update_root_build_gradle() {
     cp "$build_file" "$build_file.bak"
     log_info "Backup created: $build_file.bak"
     
-    if grep -q "alias(libs.plugins.sjy.detekt)" "$build_file"; then
+    if grep -q "alias(sjy.plugins.buildlogic.detekt)" "$build_file"; then
         log_info "Sjy plugin aliases already present in root build file."
         return
     fi
@@ -147,10 +147,10 @@ update_root_build_gradle() {
     alias(sjy.plugins.gms.services) apply false
     alias(sjy.plugins.crashlytics) apply false
     alias(sjy.plugins.lumo) apply false
-    alias(libs.plugins.sjy.detekt) apply true"
+    alias(sjy.plugins.buildlogic.detekt) apply true"
     
     if grep -q "plugins {" "$build_file"; then
-        # Only add sjy catalog aliases and libs.plugins.sjy.detekt if they don't exist
+        # Only add sjy catalog aliases and sjy.plugins.buildlogic.detekt if they don't exist
         local aliases_to_add=""
         
         if ! grep -q "alias(sjy\.plugins\.android\.application)" "$build_file"; then
@@ -184,7 +184,7 @@ update_root_build_gradle() {
             aliases_to_add="$aliases_to_add    alias(sjy.plugins.lumo) apply false\n"
         fi
         if ! grep -q "alias(libs\.plugins\.sjy\.detekt)" "$build_file"; then
-            aliases_to_add="$aliases_to_add    alias(libs.plugins.sjy.detekt) apply true\n"
+            aliases_to_add="$aliases_to_add    alias(sjy.plugins.buildlogic.detekt) apply true\n"
         fi
         
         if [ -n "$aliases_to_add" ]; then
@@ -211,7 +211,7 @@ plugins {
     alias(sjy.plugins.gms.services) apply false
     alias(sjy.plugins.crashlytics) apply false
     alias(sjy.plugins.lumo) apply false
-    alias(libs.plugins.sjy.detekt) apply true
+    alias(sjy.plugins.buildlogic.detekt) apply true
 }
 
 EOF
@@ -257,9 +257,9 @@ apply_plugins_to_modules() {
 
         local plugin_alias=""
         if grep -q -E "com.android.application|alias\\(.*android\\.application\\)" "$build_file"; then
-            plugin_alias="alias(libs.plugins.sjy.app)"
+            plugin_alias="alias(sjy.plugins.buildlogic.app)"
         elif grep -q -E "com.android.library|alias\\(.*android\\.library\\)" "$build_file"; then
-            plugin_alias="alias(libs.plugins.sjy.lib)"
+            plugin_alias="alias(sjy.plugins.buildlogic.lib)"
         else
             log_warn "Module $path is not an Android app/library. Skipping."
             continue

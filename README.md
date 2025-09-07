@@ -112,7 +112,7 @@ plugins {
     alias(sjy.plugins.gms.services) apply false
     alias(sjy.plugins.crashlytics) apply false
     alias(sjy.plugins.lumo) apply false
-    alias(libs.plugins.sjy.detekt) apply true
+    alias(sjy.plugins.buildlogic.detekt) apply true
 }
 ```
 
@@ -124,10 +124,10 @@ Then apply plugins in each module’s `build.gradle.kts` file as needed:
 
 ```kotlin
 plugins {
-    alias(libs.plugins.sjy.app)
-    alias(libs.plugins.sjy.lib)
-    alias(libs.plugins.sjy.compose)
-    alias(libs.plugins.sjy.detekt)
+    alias(sjy.plugins.buildlogic.app)
+    alias(sjy.plugins.buildlogic.lib)
+    alias(sjy.plugins.buildlogic.compose)
+    alias(sjy.plugins.buildlogic.detekt)
 }
 ```
 

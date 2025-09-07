@@ -196,7 +196,7 @@ function Update-RootBuildGradle {
         $aliasesToAdd += "    alias(sjy.plugins.lumo) apply false"
     }
     if ($content -notmatch "alias\(libs\.plugins\.sjy\.detekt\)") {
-        $aliasesToAdd += "    alias(libs.plugins.sjy.detekt) apply true"
+        $aliasesToAdd += "    alias(sjy.plugins.buildlogic.detekt) apply true"
     }
     
     if ($aliasesToAdd.Count -gt 0) {
@@ -267,9 +267,9 @@ function Apply-PluginsToModules {
         $rawText = [string]::Join("`n", $buildFileContent)
 
         if ($rawText -match "com\.android\.application|alias\(.*android\.application\)") {
-            $pluginAlias = "alias(libs.plugins.sjy.app)"
+            $pluginAlias = "alias(sjy.plugins.buildlogic.app)"
         } elseif ($rawText -match "com\.android\.library|alias\(.*android\.library\)") {
-            $pluginAlias = "alias(libs.plugins.sjy.lib)"
+            $pluginAlias = "alias(sjy.plugins.buildlogic.lib)"
         } else {
             Log-Warn "Module $modulePath is not an Android application or library. Skipping."
             continue
