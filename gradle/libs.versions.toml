@@ -259,3 +259,10 @@ crashlytics = { id = "com.google.firebase.crashlytics", version = "3.0.6" }
 lumo = { id = "com.nomanr.plugin.lumo", version = "1.2.5" }
 buildconfig-kmp = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig-kmp" }
 android-lint = { id = "com.android.lint", version.ref = "agp" }
+
+# Build Logic
+buildlogic-detekt = { id = "com.sanjaya.buildlogic.detekt" }
+buildlogic-lib = { id = "com.sanjaya.buildlogic.lib" }
+buildlogic-compose = { id = "com.sanjaya.buildlogic.compose" }
+buildlogic-app = { id = "com.sanjaya.buildlogic.app" }
+buildlogic-firebase = { id = "com.sanjaya.buildlogic.firebase" }
