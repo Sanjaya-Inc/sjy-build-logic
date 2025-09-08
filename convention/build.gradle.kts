@@ -2,6 +2,7 @@ plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
     alias(sjy.plugins.ksp)
+    alias(sjy.plugins.jacoco)
 }
 
 dependencies {
@@ -13,13 +14,53 @@ dependencies {
     compileOnly(sjy.plugin.kgp)
     compileOnly(sjy.plugin.ksp)
     compileOnly(sjy.plugin.compose)
-    compileOnly(sjy.plugin.detekt)
+    implementation(sjy.plugin.detekt)
     testImplementation(sjy.junit.jupiter)
     testImplementation(sjy.junit.jupiter.api)
     testImplementation(sjy.mockk)
     testRuntimeOnly(sjy.junit.jupiter.engine)
     testImplementation(gradleTestKit())
     testImplementation(kotlin("test"))
+}
+
+extensions.configure<JacocoPluginExtension> {
+    toolVersion = sjy.versions.jacoco.get()
+}
+
+tasks.test {
+    useJUnitPlatform()
+}
+
+tasks.withType<Test>().configureEach {
+    if (name.startsWith("test") && name.endsWith("UnitTest")) {
+        extensions.configure(JacocoTaskExtension::class) {
+            isIncludeNoLocationClasses = true
+            excludes = listOf("jdk.internal.*")
+        }
+    }
+}
+
+afterEvaluate {
+    tasks.withType<JacocoReport> {
+        group = "verification"
+        val testTask = tasks.named("test")
+        dependsOn(testTask)
+        classDirectories.setFrom(
+            fileTree(layout.buildDirectory.dir("classes/kotlin/main/com"))
+        )
+        val sources = listOf(
+            layout.projectDirectory.file("src/main/kotlin")
+        )
+        sourceDirectories.setFrom(sources)
+        executionData.setFrom(
+            layout.buildDirectory.dir("jacoco").get()
+                .asFileTree.matching { include("**/test.exec") }
+        )
+        reports {
+            xml.required.set(true)
+            html.required.set(true)
+        }
+    }
 }
 
 tasks.test {
