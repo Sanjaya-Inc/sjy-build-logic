@@ -9,6 +9,7 @@ kotlin-immutable = "0.4.0"
 ksp = "2.2.10-2.0.2"
 detekt = "1.23.8"
 jvm-target = "21"
+jacoco = "0.8.13"
 
 # AndroidX
 core-ktx = "1.17.0"
@@ -47,6 +48,7 @@ compose-destination = "2.2.0"
 coil = "3.3.0"
 accompanist = "0.37.3"
 
+junit4 = "4.13.2"
 junit5 = "5.13.4"
 mockk = "1.14.5"
 turbine = "1.2.1"
@@ -156,9 +158,11 @@ compose-destination-sheet = { module = "io.github.raamcosta.compose-destinations
 
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 
+junit = { module = "junit:junit", version.ref = "junit4" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit5" }
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit5" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit5" }
+junit-vintage-engine = { module = "org.junit.vintage:junit-vintage-engine", version.ref = "junit5" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin-core" }
 
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
@@ -167,6 +171,7 @@ mockk-agent = { module = "io.mockk:mockk-agent", version.ref = "mockk" }
 
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }
+jacoco-core = { module = "org.jacoco:org.jacoco.core", version.ref = "jacoco" }
 
 [bundles]
 koin-nonandroid = [
@@ -261,6 +266,7 @@ crashlytics = { id = "com.google.firebase.crashlytics", version = "3.0.6" }
 lumo = { id = "com.nomanr.plugin.lumo", version = "1.2.5" }
 buildconfig-kmp = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig-kmp" }
 android-lint = { id = "com.android.lint", version.ref = "agp" }
+jacoco = { id = "jacoco" }
 
 # Build Logic
 buildlogic-detekt = { id = "com.sanjaya.buildlogic.detekt" }
@@ -268,4 +274,4 @@ buildlogic-lib = { id = "com.sanjaya.buildlogic.lib" }
 buildlogic-compose = { id = "com.sanjaya.buildlogic.compose" }
 buildlogic-app = { id = "com.sanjaya.buildlogic.app" }
 buildlogic-firebase = { id = "com.sanjaya.buildlogic.firebase" }
-buildlogic-root = { id = "com.sanjaya.buildlogic.root" }
+buildlogic-test = { id = "com.sanjaya.buildlogic.test" }
