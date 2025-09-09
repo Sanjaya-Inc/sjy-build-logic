@@ -275,3 +275,6 @@ buildlogic-compose = { id = "com.sanjaya.buildlogic.compose" }
 buildlogic-app = { id = "com.sanjaya.buildlogic.app" }
 buildlogic-firebase = { id = "com.sanjaya.buildlogic.firebase" }
 buildlogic-test = { id = "com.sanjaya.buildlogic.test" }
+buildlogic-multiplatform-app = { id = "com.sanjaya.buildlogic.multiplatform.app" }
+buildlogic-multiplatform-lib = { id = "com.sanjaya.buildlogic.multiplatform.lib" }
+buildlogic-multiplatform-cmp = { id = "com.sanjaya.buildlogic.multiplatform.cmp" }
