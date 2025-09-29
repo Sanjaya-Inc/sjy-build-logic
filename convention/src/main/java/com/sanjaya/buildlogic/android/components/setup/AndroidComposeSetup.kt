@@ -62,6 +62,7 @@ class AndroidComposeSetup(
             "coil-okhttp",
             "compose-destination-core",
             "compose-destination-sheet",
+            "compose-icons",
         )
         dependenciesApplicator.ksp("compose-destination-ksp")
         dependenciesApplicator.debugImplementations(

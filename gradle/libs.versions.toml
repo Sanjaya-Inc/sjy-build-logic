@@ -43,6 +43,7 @@ activity = "1.11.0"
 compose-navigation = "2.9.0"
 compose-multiplatform = "1.10.0-alpha01"
 compose-bom = "2025.09.01"
+compose-icon = "1.7.8"
 material3 = "1.4.0"
 compose-destination = "2.2.0"
 coil = "3.3.0"
@@ -148,6 +149,7 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 compose-google-fonts = { module = "androidx.compose.ui:ui-text-google-fonts" }
 compose-navigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "compose-navigation" }
+compose-icons = { module = "androidx.compose.material:material-icons-core", version.ref = "compose-icon" }
 
 coil-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
 coil = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
@@ -233,7 +235,8 @@ androidx-compose = [
     "androidx-ui-graphics",
     "androidx-ui-tooling-preview",
     "androidx-material3",
-    "compose-google-fonts"
+    "compose-google-fonts",
+    "compose-icons"
 ]
 androidx-compose-debug = [
     "androidx-ui-tooling",
