@@ -45,7 +45,7 @@ compose-multiplatform = "1.10.0-alpha02"
 compose-bom = "2025.10.00"
 compose-icon = "1.7.8"
 material3 = "1.4.0"
-compose-destination = "2.2.0"
+compose-destination = "2.3.0"
 coil = "3.3.0"
 accompanist = "0.37.3"
 
