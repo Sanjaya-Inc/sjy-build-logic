@@ -32,7 +32,7 @@ ktor = "3.3.1"
 chucker = "4.2.0"
 
 # Firebase & Stripe (from essentials)
-firebase-bom = "34.4.0"
+firebase-bom = "34.5.0"
 gms-services = "4.4.4"
 stripe = "21.29.1"
 
