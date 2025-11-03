@@ -50,7 +50,7 @@ coil = "3.3.0"
 accompanist = "0.37.3"
 
 junit4 = "4.13.2"
-junit5 = "6.0.0"
+junit5 = "6.0.1"
 mockk = "1.14.6"
 turbine = "1.2.1"
 buildconfig-kmp = "5.7.1"
