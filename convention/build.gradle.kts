@@ -3,6 +3,7 @@ plugins {
     `kotlin-dsl`
     alias(sjy.plugins.ksp)
     alias(sjy.plugins.jacoco)
+    kotlin("jvm") version sjy.versions.kotlin.core
 }
 
 dependencies {
