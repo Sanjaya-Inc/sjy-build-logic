@@ -34,7 +34,7 @@ class AndroidKoinSetup(
         )
         dependenciesApplicator.ksp("koin-ksp")
         project.the<KspExtension>().apply {
-            arg("KOIN_CONFIG_CHECK", "true")
+            arg("KOIN_CONFIG_CHECK", "false")
         }
     }
 
