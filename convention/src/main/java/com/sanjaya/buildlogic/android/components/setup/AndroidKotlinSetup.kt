@@ -33,7 +33,8 @@ class AndroidKotlinSetup(
             "kotlin-serialization",
             "coroutines-core",
             "coroutines-android",
-            "kotlin-immutable"
+            "kotlin-immutable",
+            "kotlin-date",
         )
     }
 

@@ -32,7 +32,8 @@ class KmpKotlinSetup(
                 listOf(
                     "kotlin-serialization",
                     "coroutines-core",
-                    "kotlin-immutable"
+                    "kotlin-immutable",
+                    "kotlin-date",
                 ).map(dependenciesFinder::findLibrary).forEach(::implementation)
             }
         }
