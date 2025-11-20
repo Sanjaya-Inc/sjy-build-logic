@@ -33,6 +33,7 @@ class KmpDataSetup(
                     "ktorfit",
                     "ktor-serialization",
                     "ktor-content-negotiation",
+                    "ktor-cio",
                     "ktor-logging",
                     "store",
                     "multiplatform-settings"
