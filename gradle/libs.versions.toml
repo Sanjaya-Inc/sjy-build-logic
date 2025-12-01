@@ -39,7 +39,7 @@ stripe = "22.2.0"
 
 # UI Components (from ui)
 orbit-mvi = "11.0.0"
-lifecycle = "2.9.4"
+lifecycle = "2.10.0"
 activity = "1.12.0"
 compose-navigation = "2.9.1"
 compose-multiplatform = "1.10.0-beta02"
@@ -56,6 +56,9 @@ mockk = "1.14.6"
 turbine = "1.2.1"
 buildconfig-kmp = "6.0.6"
 napier = "2.7.1"
+datastore = "1.2.0"
+room = "2.8.4"
+sqlcipher = "4.11.0"
 
 [libraries]
 # AndroidX
@@ -154,6 +157,9 @@ compose-google-fonts = { module = "androidx.compose.ui:ui-text-google-fonts" }
 compose-navigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "compose-navigation" }
 compose-icons = { module = "androidx.compose.material:material-icons-core", version.ref = "compose-icon" }
 
+datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
+datastore-core = { module = "androidx.datastore:datastore-core", version.ref = "datastore" }
+
 coil-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
 coil = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 
@@ -177,6 +183,13 @@ mockk-agent = { module = "io.mockk:mockk-agent", version.ref = "mockk" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 jacoco-core = { module = "org.jacoco:org.jacoco.core", version.ref = "jacoco" }
+
+## ROOM Database
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+room-test = { module = "androidx.room:room-testing", version.ref = "room" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+sqlcipher = { module = "net.zetetic:sqlcipher-android", version.ref = "sqlcipher" }
 
 [bundles]
 koin-nonandroid = [
@@ -248,6 +261,11 @@ mockk = [
     "mockk",
     "mockk-agent",
     "mockk-android"
+]
+room = [
+    "room-runtime",
+    "room-ktx",
+    "sqlcipher",
 ]
 
 [plugins]

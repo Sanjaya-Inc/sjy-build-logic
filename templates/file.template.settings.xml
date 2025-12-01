@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ExportableFileTemplateSettings">
+    <default_templates>
+      <template name="Koin Modules.kt" reformat="true" live-template-enabled="false">
+        <template name="Koin Modules.kt.child.0.kt" file-name="${MODULE_NAME}ModuleInitializer" reformat="true" live-template-enabled="false" />
+      </template>
+      <template name="Koin Modules.kt.child.0.kt" file-name="${MODULE_NAME}ModuleInitializer" reformat="true" live-template-enabled="false" />
+    </default_templates>
+  </component>
+</project>

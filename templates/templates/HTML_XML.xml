@@ -1,0 +1,8 @@
+<templateSet group="HTML/XML">
+  <template name="init" value="&lt;provider&#10;            android:name=&quot;androidx.startup.InitializationProvider&quot;&#10;            android:authorities=&quot;${applicationId}.androidx-startup&quot;&#10;            android:exported=&quot;false&quot;&#10;            tools:node=&quot;merge&quot;&gt;&#10;            &lt;meta-data&#10;                android:name=&quot;$CLASS$&quot;&#10;                android:value=&quot;androidx.startup&quot; /&gt;&#10;        &lt;/provider&gt;" description="Quick Create Initializer" toReformat="true" toShortenFQNames="true">
+    <variable name="CLASS" expression="" defaultValue="" alwaysStopAt="true" />
+    <context>
+      <option name="XML" value="true" />
+    </context>
+  </template>
+</templateSet>

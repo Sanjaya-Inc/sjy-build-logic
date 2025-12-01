@@ -49,7 +49,7 @@ class DetektSetup(
             configureDetekt()
             configureDetektTasks()
             addDetektDependencies()
-            attachDetektTask()
+            // attachDetektTask()
         }.onFailure {
             buildLogicLogger.i(TAG, "Failed to apply detekt plugin: ${it.message}")
         }
