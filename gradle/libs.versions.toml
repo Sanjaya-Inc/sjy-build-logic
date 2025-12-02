@@ -39,7 +39,7 @@ stripe = "22.3.0"
 
 # UI Components (from ui)
 orbit-mvi = "11.0.0"
-lifecycle = "2.10.0"
+lifecycle = "2.9.4"
 activity = "1.12.0"
 compose-navigation = "2.9.1"
 compose-multiplatform = "1.10.0-beta02"
