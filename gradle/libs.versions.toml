@@ -58,7 +58,7 @@ buildconfig-kmp = "6.0.6"
 napier = "2.7.1"
 datastore = "1.2.0"
 room = "2.8.4"
-sqlcipher = "4.11.0"
+sqlcipher = "4.12.0"
 
 [libraries]
 # AndroidX
