@@ -35,6 +35,7 @@ class KmpDataSetup(
                     "ktor-content-negotiation",
                     "ktor-cio",
                     "ktor-logging",
+                    "ktor-auth",
                     "store",
                     "multiplatform-settings"
                 ).map(dependenciesFinder::findLibrary)
