@@ -3,6 +3,7 @@ plugins {
     `kotlin-dsl`
     alias(sjy.plugins.ksp)
     alias(sjy.plugins.jacoco)
+    kotlin("jvm") version sjy.versions.kotlin.core
 }
 
 dependencies {
@@ -65,6 +66,13 @@ afterEvaluate {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    compilerOptions {
+        apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_3)
+        languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_3)
+    }
 }
 
 gradlePlugin {
