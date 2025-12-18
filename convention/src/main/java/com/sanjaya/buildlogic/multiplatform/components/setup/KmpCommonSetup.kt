@@ -69,7 +69,7 @@ class KmpCommonSetup(
                 iosSimulatorArm64()
             ).forEach { iosTarget ->
                 iosTarget.binaries.framework {
-                    baseName = project.name
+                    baseName = project.name.toPascalCase()
                     isStatic = true
 
                     val bundleId = project.findProperty("ios.bundleId") as? String
@@ -87,4 +87,20 @@ class KmpCommonSetup(
     companion object {
         private const val TAG = "KmpCommonSetup"
     }
+}
+
+/**
+ * Converts a Gradle project name to PascalCase for XCFramework naming.
+ * Handles standard Gradle naming conventions: kebab-case and snake_case.
+ * 
+ * Examples:
+ * - "compose-app" -> "ComposeApp"
+ * - "my_project" -> "MyProject"
+ * - "composeApp" -> "ComposeApp"
+ */
+private fun String.toPascalCase(): String {
+    return split('-', '_')
+        .joinToString("") { word ->
+            word.replaceFirstChar { it.uppercaseChar() }
+        }
 }
