@@ -56,6 +56,9 @@ class KmpDataSetup(
             sourceSets.iosMain.dependencies {
                 implementation(dependenciesFinder.findLibrary("ktor-darwin"))
             }
+            sourceSets.jsMain.dependencies {
+                implementation(dependenciesFinder.findLibrary("ktor-js"))
+            }
         }
     }
 
