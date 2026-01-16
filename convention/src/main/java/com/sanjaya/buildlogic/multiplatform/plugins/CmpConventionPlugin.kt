@@ -7,8 +7,6 @@ import com.sanjaya.buildlogic.common.utils.ComponentProvider
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.getByType
-import org.jetbrains.compose.ComposeExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 class CmpConventionPlugin : BasePlugin() {
@@ -18,21 +16,21 @@ class CmpConventionPlugin : BasePlugin() {
         val dependenciesFinder: DependenciesFinder = ComponentProvider.provide(target)
         val pluginApplicator: PluginApplicator = ComponentProvider.provide(target)
         pluginApplicator.applyPluginsByAliases("compose-multiplatform", "kotlin-compose")
-        val compose = extensions.getByType<ComposeExtension>()
         configure<KotlinMultiplatformExtension> {
             sourceSets.androidMain.dependencies {
                 val activity = dependenciesFinder.findLibrary("androidx-activity-compose")
-                implementation(compose.dependencies.preview)
+                val preview = dependenciesFinder.findLibrary("androidx-ui-tooling-preview")
+                implementation(preview)
                 implementation(activity)
             }
             sourceSets.commonMain.dependencies {
-                implementation(compose.dependencies.runtime)
-                implementation(compose.dependencies.foundation)
-                implementation(compose.dependencies.material3)
-                implementation(compose.dependencies.ui)
-                implementation(compose.dependencies.components.resources)
-                implementation(compose.dependencies.components.uiToolingPreview)
                 arrayOf(
+                    "compose-runtime",
+                    "compose-foundation",
+                    "compose-material3-multiplatform",
+                    "compose-ui-multiplatform",
+                    "compose-components-resources",
+                    "compose-components-ui-tooling-preview",
                     "orbit-mvi-core",
                     "orbit-mvi-viewmodel",
                     "orbit-mvi-compose",
@@ -44,7 +42,8 @@ class CmpConventionPlugin : BasePlugin() {
             }
         }
         dependencies {
-            add("debugImplementation", compose.dependencies.uiTooling)
+            val uiTooling = dependenciesFinder.findLibrary("compose-ui-tooling-multiplatform")
+            add("debugImplementation", uiTooling)
         }
     }
 }

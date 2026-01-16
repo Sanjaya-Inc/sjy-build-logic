@@ -43,6 +43,7 @@ lifecycle = "2.9.4"
 activity = "1.12.2"
 compose-navigation = "2.9.1"
 compose-multiplatform = "1.11.0-alpha01"
+compose-multiplatform-runtime = "1.10.0"
 compose-bom = "2026.01.00"
 compose-icon = "1.7.8"
 material3 = "1.4.0"
@@ -168,6 +169,15 @@ coil = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 compose-destination-core = { module = "io.github.raamcosta.compose-destinations:core", version.ref = "compose-destination" }
 compose-destination-ksp = { module = "io.github.raamcosta.compose-destinations:ksp", version.ref = "compose-destination" }
 compose-destination-sheet = { module = "io.github.raamcosta.compose-destinations:bottom-sheet", version.ref = "compose-destination" }
+
+# Compose Multiplatform
+compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-multiplatform-runtime" }
+compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose-multiplatform-runtime" }
+compose-material3-multiplatform = { module = "org.jetbrains.compose.material3:material3", version.ref = "compose-multiplatform-runtime" }
+compose-ui-multiplatform = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose-multiplatform-runtime" }
+compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose-multiplatform-runtime" }
+compose-components-ui-tooling-preview = { module = "org.jetbrains.compose.components:components-ui-tooling-preview", version.ref = "compose-multiplatform-runtime" }
+compose-ui-tooling-multiplatform = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "compose-multiplatform-runtime" }
 
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 

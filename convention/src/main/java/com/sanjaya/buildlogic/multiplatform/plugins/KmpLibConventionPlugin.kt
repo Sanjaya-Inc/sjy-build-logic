@@ -12,7 +12,7 @@ class KmpLibConventionPlugin : BasePlugin() {
     override fun apply(target: Project) = with(target) {
         super.apply(target)
         val pluginApplicator: PluginApplicator = ComponentProvider.provide(target)
-        pluginApplicator.applyPluginsByAliases("android-library")
+        pluginApplicator.applyPluginsByAliases("android-kotlin-multiplatform-library ")
         val kmpCommonSetup: KmpCommonSetup = ComponentProvider.provide(target)
         val kmpKoinSetup: KmpKoinSetup = ComponentProvider.provide(target)
         kmpCommonSetup.setup()

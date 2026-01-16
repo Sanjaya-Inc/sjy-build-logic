@@ -1,5 +1,7 @@
 package com.sanjaya.buildlogic.multiplatform.components.setup
 
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryExtension
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import com.sanjaya.buildlogic.common.components.BuildLogicLogger
 import com.sanjaya.buildlogic.common.components.DependenciesFinder
 import com.sanjaya.buildlogic.common.components.KspSetup
@@ -39,6 +41,16 @@ class KmpCommonSetup(
         kmpKoinSetup.setup()
         kmpKotlinSetup.setup()
         kmpDataSetup.setup()
+        project.configure<KotlinMultiplatformAndroidLibraryTarget> {
+            withJava()
+            compilerOptions {
+                jvmTarget.set(
+                    JvmTarget.fromTarget(
+                        versionFinder.find("jvm-target").toString()
+                    )
+                )
+            }
+        }
         project.configure<KotlinMultiplatformExtension> {
             sourceSets.commonMain {
                 dependencies {
@@ -54,15 +66,6 @@ class KmpCommonSetup(
                 }
             }
             logger.i(TAG, "Configuring android target for ${project.name}")
-            androidTarget {
-                compilerOptions {
-                    jvmTarget.set(
-                        JvmTarget.fromTarget(
-                            versionFinder.find("jvm-target").toString()
-                        )
-                    )
-                }
-            }
             logger.i(TAG, "Configuring ios target for ${project.name}")
             listOf(
                 iosArm64(),

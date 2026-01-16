@@ -1,9 +1,9 @@
 package com.sanjaya.buildlogic.android.components.setup
 
-import com.android.build.gradle.AppExtension
-import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.LibraryExtension
-import com.android.build.gradle.internal.core.InternalBaseVariant
+import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.api.dsl.LibraryExtension
+import com.android.build.api.variant.ApplicationAndroidComponentsExtension
+import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import com.sanjaya.buildlogic.android.components.dependency.AndroidDependenciesApplicator
 import com.sanjaya.buildlogic.android.utils.AndroidProjectTypeChecker
 import com.sanjaya.buildlogic.common.components.BuildLogicLogger
@@ -64,15 +64,20 @@ class TestSetup(
     private fun configureAndroidTestOptions() {
         if (!projectTypeChecker.isAppOrLib()) return
 
-        val extensionType = when {
-            projectTypeChecker.isApp() -> AppExtension::class
-            projectTypeChecker.isLib() -> LibraryExtension::class
-            else -> return
-        }
-
-        project.the(extensionType).apply {
-            testOptions {
-                unitTests.all { it.useJUnitPlatform() }
+        when {
+            projectTypeChecker.isApp() -> {
+                project.the<ApplicationExtension>().apply {
+                    testOptions {
+                        unitTests.all { it.useJUnitPlatform() }
+                    }
+                }
+            }
+            projectTypeChecker.isLib() -> {
+                project.the<LibraryExtension>().apply {
+                    testOptions {
+                        unitTests.all { it.useJUnitPlatform() }
+                    }
+                }
             }
         }
     }
@@ -95,41 +100,48 @@ class TestSetup(
     }
 
     private fun setupJacocoReports() {
-        project.afterEvaluate {
-            val androidVariants = projectTypeChecker.let { checker ->
-                when {
-                    checker.isAppOrLib() -> {
-                        val extension = project.extensions.getByType(BaseExtension::class.java)
-                        if (checker.isApp()) (extension as AppExtension).applicationVariants
-                        else (extension as LibraryExtension).libraryVariants
-                    }
+        if (!projectTypeChecker.isAppOrLib()) return
 
-                    else -> null
+        when {
+            projectTypeChecker.isApp() -> {
+                val componentsExtension = project.extensions.getByType(ApplicationAndroidComponentsExtension::class.java)
+                componentsExtension.onVariants { variant ->
+                    if (variant.buildType == "debug") {
+                        val variantName = variant.name.replaceFirstChar {
+                            if (it.isLowerCase()) it.titlecase() else it.toString()
+                        }
+                        val testTask = project.tasks.named("test${variantName}UnitTest")
+                        registerJacocoReportTask(variantName, testTask, variant.name)
+                    }
                 }
             }
-            androidVariants?.filter { it.buildType.name == "debug" }
-                ?.forEach { variant ->
-                    val variantName = variant.name.replaceFirstChar {
-                        if (it.isLowerCase()) it.titlecase() else it.toString()
+            projectTypeChecker.isLib() -> {
+                val componentsExtension = project.extensions.getByType(LibraryAndroidComponentsExtension::class.java)
+                componentsExtension.onVariants { variant ->
+                    if (variant.buildType == "debug") {
+                        val variantName = variant.name.replaceFirstChar {
+                            if (it.isLowerCase()) it.titlecase() else it.toString()
+                        }
+                        val testTask = project.tasks.named("test${variantName}UnitTest")
+                        registerJacocoReportTask(variantName, testTask, variant.name)
                     }
-                    val testTask = project.tasks.named("test${variantName}UnitTest")
-                    registerJacocoReportTask(variantName, testTask, variant)
                 }
+            }
         }
     }
 
     private fun registerJacocoReportTask(
         variantName: String,
         testTask: TaskProvider<Task>,
-        variant: InternalBaseVariant
+        variantNameLower: String
     ) {
         project.tasks.register<JacocoReport>("jacoco${variantName}Report") {
             group = "verification"
             dependsOn(testTask)
             classDirectories.setFrom(
-                project.layout.buildDirectory.dir("tmp/kotlin-classes/${variant.name}")
+                project.layout.buildDirectory.dir("tmp/kotlin-classes/$variantNameLower")
                     .get().asFileTree.matching { exclude(JACOCO_FILE_FILTER) },
-                project.layout.buildDirectory.dir("intermediates/javac/${variant.name}/classes")
+                project.layout.buildDirectory.dir("intermediates/javac/$variantNameLower/classes")
                     .get().asFileTree.matching { exclude(JACOCO_FILE_FILTER) }
             )
             val sources = listOf(
