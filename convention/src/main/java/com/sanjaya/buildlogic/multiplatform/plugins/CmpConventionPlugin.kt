@@ -6,7 +6,6 @@ import com.sanjaya.buildlogic.common.plugins.BasePlugin
 import com.sanjaya.buildlogic.common.utils.ComponentProvider
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 class CmpConventionPlugin : BasePlugin() {
@@ -40,10 +39,6 @@ class CmpConventionPlugin : BasePlugin() {
                 ).map(dependenciesFinder::findLibrary)
                     .forEach(this::implementation)
             }
-        }
-        dependencies {
-            val uiTooling = dependenciesFinder.findLibrary("compose-ui-tooling-multiplatform")
-            add("debugImplementation", uiTooling)
         }
     }
 }

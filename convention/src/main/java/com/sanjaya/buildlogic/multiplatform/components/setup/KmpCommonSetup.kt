@@ -1,6 +1,8 @@
 package com.sanjaya.buildlogic.multiplatform.components.setup
 
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryExtension
 import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
+import com.sanjaya.buildlogic.android.components.setup.AndroidTargetSetup
 import com.sanjaya.buildlogic.common.components.BuildLogicLogger
 import com.sanjaya.buildlogic.common.components.DependenciesFinder
 import com.sanjaya.buildlogic.common.components.KspSetup
@@ -51,6 +53,13 @@ class KmpCommonSetup(
                     )
                 )
             }
+        }
+
+        project.configure<KotlinMultiplatformAndroidLibraryExtension> {
+            val targetSdkVersion = versionFinder.find("compile-sdk").toString().toInt()
+            val minSdkVersion = versionFinder.find("min-sdk").toString().toInt()
+            compileSdk = targetSdkVersion
+            minSdk = minSdkVersion
         }
         
         project.configure<KotlinMultiplatformExtension> {

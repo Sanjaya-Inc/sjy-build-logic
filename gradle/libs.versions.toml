@@ -177,8 +177,6 @@ compose-material3-multiplatform = { module = "org.jetbrains.compose.material3:ma
 compose-ui-multiplatform = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose-multiplatform-runtime" }
 compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose-multiplatform-runtime" }
 compose-components-ui-tooling-preview = { module = "org.jetbrains.compose.components:components-ui-tooling-preview", version.ref = "compose-multiplatform-runtime" }
-compose-ui-tooling-multiplatform = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "compose-multiplatform-runtime" }
-
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 
 junit = { module = "junit:junit", version.ref = "junit4" }
