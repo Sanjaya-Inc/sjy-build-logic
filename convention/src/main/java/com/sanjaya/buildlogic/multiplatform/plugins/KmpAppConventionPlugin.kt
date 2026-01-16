@@ -10,8 +10,6 @@ class KmpAppConventionPlugin : BasePlugin() {
 
     override fun apply(target: Project) = with(target) {
         super.apply(target)
-        val pluginApplicator: PluginApplicator = ComponentProvider.provide(target)
-        pluginApplicator.applyPluginsByAliases("android-application")
         val kmpCommonSetup: KmpCommonSetup = ComponentProvider.provide(target)
         kmpCommonSetup.setup()
     }

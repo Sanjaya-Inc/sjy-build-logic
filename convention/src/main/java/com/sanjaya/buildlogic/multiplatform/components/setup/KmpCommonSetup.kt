@@ -1,6 +1,5 @@
 package com.sanjaya.buildlogic.multiplatform.components.setup
 
-import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryExtension
 import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import com.sanjaya.buildlogic.common.components.BuildLogicLogger
 import com.sanjaya.buildlogic.common.components.DependenciesFinder
@@ -31,7 +30,8 @@ class KmpCommonSetup(
 
     fun setup() {
         pluginApplicator.applyPluginsByAliases(
-            "kotlin-multiplatform"
+            "kotlin-multiplatform",
+            "android-kotlin-multiplatform-library"
         )
         pluginApplicator.applyPluginsByIds(
             "com.sanjaya.buildlogic.detekt",
@@ -41,7 +41,8 @@ class KmpCommonSetup(
         kmpKoinSetup.setup()
         kmpKotlinSetup.setup()
         kmpDataSetup.setup()
-        project.configure<KotlinMultiplatformAndroidLibraryTarget> {
+
+        project.extensions.findByType(KotlinMultiplatformAndroidLibraryTarget::class.java)?.apply {
             withJava()
             compilerOptions {
                 jvmTarget.set(
@@ -51,6 +52,7 @@ class KmpCommonSetup(
                 )
             }
         }
+        
         project.configure<KotlinMultiplatformExtension> {
             sourceSets.commonMain {
                 dependencies {
@@ -65,7 +67,6 @@ class KmpCommonSetup(
                     implementation(kotlinTest)
                 }
             }
-            logger.i(TAG, "Configuring android target for ${project.name}")
             logger.i(TAG, "Configuring ios target for ${project.name}")
             listOf(
                 iosArm64(),
