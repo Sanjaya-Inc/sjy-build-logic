@@ -31,17 +31,23 @@ class AndroidComposeSetup(
             "Setting up Android Compose for project: ${project.name}"
         )
         if (!projectTypeChecker.isAppOrLib()) return@with
-        val type =
-            when {
-                projectTypeChecker.isApp() -> ApplicationExtension::class
-                projectTypeChecker.isLib() -> LibraryExtension::class
-                else -> null
-            } ?: return@with
         pluginApplicator.applyPluginsByAliases("kotlin-compose")
-        the(type).apply {
-            buildFeatures {
-                compose = true
+        when {
+            projectTypeChecker.isApp() -> {
+                the<ApplicationExtension>().apply {
+                    buildFeatures {
+                        compose = true
+                    }
+                }
             }
+            projectTypeChecker.isLib() -> {
+                the<LibraryExtension>().apply {
+                    buildFeatures {
+                        compose = true
+                    }
+                }
+            }
+            else -> return@with
         }
         the(KspExtension::class).apply {
             // used on some of the generated code, including default package name

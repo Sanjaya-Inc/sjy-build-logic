@@ -44,52 +44,53 @@ class AndroidTargetSetup(
             "Setting up Android Target for project: ${project.name}"
         )
         if (!projectTypeChecker.isAppOrLib()) return@with
-        val type =
-            when {
-                projectTypeChecker.isApp() -> {
-                    the<ApplicationExtension>().apply {
-                        defaultConfig {
-                            multiDexEnabled = true
-                            this@AndroidTargetSetup.logger.i(TAG, "Set Multidex enabled")
-                        }
+        
+        val targetSdkVersion = versionFinder.find("compile-sdk").toString().toInt()
+        val minSdkVersion = versionFinder.find("min-sdk").toString().toInt()
+        
+        when {
+            projectTypeChecker.isApp() -> {
+                the<ApplicationExtension>().apply {
+                    compileSdk = targetSdkVersion
+                    defaultConfig {
+                        multiDexEnabled = true
+                        targetSdk = targetSdkVersion
+                        minSdk = minSdkVersion
+                        this@AndroidTargetSetup.logger.i(TAG, "Set Multidex enabled")
                     }
-                    ApplicationExtension::class
+                    buildFeatures {
+                        buildConfig = false
+                    }
                 }
-
-                projectTypeChecker.isLib() -> LibraryExtension::class
-                else -> null
-            } ?: return@with
-
-        the(type).apply {
-            val targetSdk = versionFinder.find("compile-sdk").toString().toInt()
-            val minSdkVersion = versionFinder.find("min-sdk").toString().toInt()
-            if (this is ApplicationExtension) {
-                defaultConfig.targetSdk = targetSdk
             }
-            compileSdk = versionFinder.find("compile-sdk").toString().toInt()
-            defaultConfig {
-                minSdk = minSdkVersion
+            projectTypeChecker.isLib() -> {
+                the<LibraryExtension>().apply {
+                    compileSdk = targetSdkVersion
+                    defaultConfig {
+                        minSdk = minSdkVersion
+                    }
+                    buildFeatures {
+                        buildConfig = false
+                    }
+                }
             }
+            else -> return@with
+        }
 
-            buildFeatures {
-                buildConfig = false
-            }
-
-            this@AndroidTargetSetup.logger.i(
-                TAG,
-                "Setting up target android sdk to: $targetSdk"
-            )
-            this@AndroidTargetSetup.logger.i(
-                TAG,
-                "Setting up min android sdk to: $minSdkVersion"
-            )
-            the<JavaPluginExtension>().toolchain {
-                languageVersion.set(
-                    JavaLanguageVersion.of(
-                        versionFinder.find("jvm-target").toString()
-                    )
+        this@AndroidTargetSetup.logger.i(
+            TAG,
+            "Setting up target android sdk to: $targetSdkVersion"
+        )
+        this@AndroidTargetSetup.logger.i(
+            TAG,
+            "Setting up min android sdk to: $minSdkVersion"
+        )
+        the<JavaPluginExtension>().toolchain {
+            languageVersion.set(
+                JavaLanguageVersion.of(
+                    versionFinder.find("jvm-target").toString()
                 )
-            }
+            )
         }
         dependenciesApplicator.implementations("androidx-core-ktx")
     }
