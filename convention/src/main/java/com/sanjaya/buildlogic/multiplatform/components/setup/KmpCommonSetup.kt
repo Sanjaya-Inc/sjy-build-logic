@@ -1,8 +1,6 @@
 package com.sanjaya.buildlogic.multiplatform.components.setup
 
-import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryExtension
-import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
-import com.sanjaya.buildlogic.android.components.setup.AndroidTargetSetup
+import com.android.build.api.variant.KotlinMultiplatformAndroidComponentsExtension
 import com.sanjaya.buildlogic.common.components.BuildLogicLogger
 import com.sanjaya.buildlogic.common.components.DependenciesFinder
 import com.sanjaya.buildlogic.common.components.KspSetup
@@ -10,8 +8,7 @@ import com.sanjaya.buildlogic.common.components.PluginApplicator
 import com.sanjaya.buildlogic.common.components.VersionFinder
 import com.sanjaya.buildlogic.common.utils.ComponentProvider
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.configure
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.gradle.kotlin.dsl.the
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.InjectedParam
@@ -36,33 +33,20 @@ class KmpCommonSetup(
             "android-kotlin-multiplatform-library"
         )
         pluginApplicator.applyPluginsByIds(
-            "com.sanjaya.buildlogic.detekt",
-            "com.sanjaya.buildlogic.target",
+            "com.sanjaya.buildlogic.detekt"
         )
         kspSetup.setup()
         kmpKoinSetup.setup()
         kmpKotlinSetup.setup()
         kmpDataSetup.setup()
-
-        project.extensions.findByType(KotlinMultiplatformAndroidLibraryTarget::class.java)?.apply {
-            withJava()
-            compilerOptions {
-                jvmTarget.set(
-                    JvmTarget.fromTarget(
-                        versionFinder.find("jvm-target").toString()
-                    )
-                )
+        project.the<KotlinMultiplatformAndroidComponentsExtension>().apply {
+            this.finalizeDsl {
+                it.androidResources.enable = true
+                it.minSdk = versionFinder.find("min-sdk").toString().toInt()
+                it.compileSdk = versionFinder.find("compile-sdk").toString().toInt()
             }
         }
-
-        project.configure<KotlinMultiplatformAndroidLibraryExtension> {
-            val targetSdkVersion = versionFinder.find("compile-sdk").toString().toInt()
-            val minSdkVersion = versionFinder.find("min-sdk").toString().toInt()
-            compileSdk = targetSdkVersion
-            minSdk = minSdkVersion
-        }
-        
-        project.configure<KotlinMultiplatformExtension> {
+        project.the<KotlinMultiplatformExtension>().apply {
             sourceSets.commonMain {
                 dependencies {
                     listOf(
@@ -105,7 +89,7 @@ class KmpCommonSetup(
 /**
  * Converts a Gradle project name to PascalCase for XCFramework naming.
  * Handles standard Gradle naming conventions: kebab-case and snake_case.
- * 
+ *
  * Examples:
  * - "compose-app" -> "ComposeApp"
  * - "my_project" -> "MyProject"

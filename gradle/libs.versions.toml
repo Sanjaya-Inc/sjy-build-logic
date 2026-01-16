@@ -43,7 +43,6 @@ lifecycle = "2.9.4"
 activity = "1.12.2"
 compose-navigation = "2.9.1"
 compose-multiplatform = "1.11.0-alpha01"
-compose-multiplatform-runtime = "1.10.0"
 compose-bom = "2026.01.00"
 compose-icon = "1.7.8"
 material3 = "1.4.0"
@@ -171,12 +170,12 @@ compose-destination-ksp = { module = "io.github.raamcosta.compose-destinations:k
 compose-destination-sheet = { module = "io.github.raamcosta.compose-destinations:bottom-sheet", version.ref = "compose-destination" }
 
 # Compose Multiplatform
-compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-multiplatform-runtime" }
-compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose-multiplatform-runtime" }
-compose-material3-multiplatform = { module = "org.jetbrains.compose.material3:material3", version.ref = "compose-multiplatform-runtime" }
-compose-ui-multiplatform = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose-multiplatform-runtime" }
-compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose-multiplatform-runtime" }
-compose-components-ui-tooling-preview = { module = "org.jetbrains.compose.components:components-ui-tooling-preview", version.ref = "compose-multiplatform-runtime" }
+compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-multiplatform" }
+compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose-multiplatform" }
+compose-material3-multiplatform = { module = "org.jetbrains.compose.material3:material3", version.ref = "compose-multiplatform" }
+compose-ui-multiplatform = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose-multiplatform" }
+compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose-multiplatform" }
+compose-components-ui-tooling-preview = { module = "org.jetbrains.compose.components:components-ui-tooling-preview", version.ref = "compose-multiplatform" }
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist" }
 
 junit = { module = "junit:junit", version.ref = "junit4" }
@@ -282,7 +281,6 @@ room = [
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin-core" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-core" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin-core" }
 android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
@@ -308,6 +306,5 @@ buildlogic-compose = { id = "com.sanjaya.buildlogic.compose" }
 buildlogic-app = { id = "com.sanjaya.buildlogic.app" }
 buildlogic-firebase = { id = "com.sanjaya.buildlogic.firebase" }
 buildlogic-test = { id = "com.sanjaya.buildlogic.test" }
-buildlogic-multiplatform-app = { id = "com.sanjaya.buildlogic.multiplatform.app" }
 buildlogic-multiplatform-lib = { id = "com.sanjaya.buildlogic.multiplatform.lib" }
 buildlogic-multiplatform-cmp = { id = "com.sanjaya.buildlogic.multiplatform.cmp" }

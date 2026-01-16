@@ -23,7 +23,6 @@ class AndroidKotlinSetup(
     fun setup() {
         logger.title(TAG, "Setting up Kotlin for project: ${project.name}")
         pluginApplicator.applyPluginsByIds(
-            "kotlin-android",
             "kotlin-parcelize",
         )
         pluginApplicator.applyPluginsByAliases(

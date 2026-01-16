@@ -135,11 +135,15 @@ plugins {
 
 ## Available Plugins
 
-### ✅ `AndroidAppConventionPlugin`
+### Android Plugins
+
+#### ✅ `AndroidAppConventionPlugin`
 
 Applies common configurations for Android application modules:
 
 * `compileSdkVersion`, `minSdkVersion`, `targetSdkVersion`
+* **AGP 9.0+**: Built-in Kotlin support (no need for `kotlin-android` plugin)
+* Use this for standalone Android apps or `androidApp` modules that consume KMP libraries
 
 ```kotlin
 plugins {
@@ -149,7 +153,7 @@ plugins {
 
 ---
 
-### ✅ `AndroidLibConventionPlugin`
+#### ✅ `AndroidLibConventionPlugin`
 
 Applies conventions for Android library modules:
 
@@ -165,7 +169,7 @@ plugins {
 
 ---
 
-### ✅ `AndroidComposeConventionPlugin`
+#### ✅ `AndroidComposeConventionPlugin`
 
 Adds Jetpack Compose setup and dependencies automatically:
 
@@ -181,7 +185,7 @@ plugins {
 
 ---
 
-### ✅ `AndroidTargetConventionPlugin`
+#### ✅ `AndroidTargetConventionPlugin`
 
 Applies target configurations that may affect the project or variants globally, e.g., build types or product flavors.
 
@@ -193,7 +197,50 @@ plugins {
 
 ---
 
-### ✅ `DetektConventionPlugin`
+### Kotlin Multiplatform Plugins
+
+#### ✅ `KmpLibConventionPlugin`
+
+**AGP 9.0+ Required**: Configures Kotlin Multiplatform library modules using the new `com.android.kotlin.multiplatform.library` plugin.
+
+* Applies `kotlin-multiplatform` and `android-kotlin-multiplatform-library` plugins
+* Configures Android, iOS targets
+* Sets up Koin DI, Kotlin serialization, coroutines
+* Includes common dependencies (napier, kotlin-test)
+
+**Important**: With AGP 9.0+, KMP modules can only be libraries. For apps, create a separate `androidApp` module that depends on your KMP library.
+
+```kotlin
+plugins {
+    id("com.sanjaya.buildlogic.multiplatform.lib")
+}
+```
+
+---
+
+#### ✅ `CmpConventionPlugin`
+
+Configures Compose Multiplatform for KMP library modules:
+
+* Applies Compose Multiplatform and Kotlin Compose plugins
+* Adds Compose dependencies (runtime, foundation, material3, UI)
+* Includes Orbit MVI, lifecycle, and navigation
+* Android-specific Compose dependencies (activity-compose, tooling)
+
+**Note**: This is now library-only. Use with `KmpLibConventionPlugin` for shared UI code.
+
+```kotlin
+plugins {
+    id("com.sanjaya.buildlogic.multiplatform.lib")
+    id("com.sanjaya.buildlogic.multiplatform.cmp")
+}
+```
+
+---
+
+### Common Plugins
+
+#### ✅ `DetektConventionPlugin`
 
 Adds Detekt static analysis with shared configuration:
 
@@ -209,7 +256,7 @@ plugins {
 
 ---
 
-### ✅ `FirebasePlugin`
+#### ✅ `FirebasePlugin`
 
 Optional Firebase-specific setup:
 
@@ -221,6 +268,65 @@ plugins {
     id("com.sanjaya.buildlogic.firebase")
 }
 ```
+
+---
+
+## AGP 9.0 Migration Guide
+
+### Key Changes in AGP 9.0
+
+1. **Built-in Kotlin Support**: Android modules no longer need the `kotlin-android` plugin
+2. **New KMP Plugin**: Use `com.android.kotlin.multiplatform.library` for KMP modules
+3. **Separation of Concerns**: KMP modules are libraries only; apps must be separate modules
+
+### Migration Steps
+
+#### For Existing `composeApp` Modules
+
+If you have a single `composeApp` module that combines KMP and Android app:
+
+1. **Create a new `androidApp` module**:
+   ```kotlin
+   // androidApp/build.gradle.kts
+   plugins {
+       alias(sjy.plugins.buildlogic.app)
+       alias(sjy.plugins.buildlogic.compose)
+   }
+   
+   dependencies {
+       implementation(project(":composeApp"))
+   }
+   ```
+
+2. **Convert `composeApp` to a library**:
+   ```kotlin
+   // composeApp/build.gradle.kts
+   plugins {
+       alias(sjy.plugins.buildlogic.multiplatform.lib)
+       alias(sjy.plugins.buildlogic.multiplatform.cmp)
+   }
+   ```
+
+3. **Move Android-specific code**:
+   - Move `MainActivity`, `Application` class to `androidApp`
+   - Keep shared UI and business logic in `composeApp`
+
+#### For New Projects
+
+Structure your project with clear separation:
+
+```
+project/
+├── androidApp/          # Android application entry point
+│   └── build.gradle.kts # Uses buildlogic.app
+├── composeApp/          # KMP library with shared code
+│   └── build.gradle.kts # Uses buildlogic.multiplatform.lib + cmp
+└── iosApp/              # iOS application entry point
+```
+
+### Removed Plugins
+
+- ❌ `buildlogic-multiplatform-app` - No longer available (KMP modules are libraries only)
 ---
 
 ## Benefits

@@ -108,10 +108,6 @@ gradlePlugin {
         // endregion
 
         // region multiplatform buildlogic
-        register("multiplatformApp") {
-            id = "com.sanjaya.buildlogic.multiplatform.app"
-            implementationClass = "com.sanjaya.buildlogic.multiplatform.plugins.KmpAppConventionPlugin"
-        }
         register("multiplatformLib") {
             id = "com.sanjaya.buildlogic.multiplatform.lib"
             implementationClass = "com.sanjaya.buildlogic.multiplatform.plugins.KmpLibConventionPlugin"
