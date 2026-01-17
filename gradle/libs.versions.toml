@@ -59,6 +59,7 @@ napier = "2.7.1"
 datastore = "1.2.0"
 room = "2.8.4"
 sqlcipher = "4.12.0"
+supabase = "3.3.0"
 
 [libraries]
 # AndroidX
@@ -200,6 +201,12 @@ room-test = { module = "androidx.room:room-testing", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 sqlcipher = { module = "net.zetetic:sqlcipher-android", version.ref = "sqlcipher" }
 
+## Supabase
+supabase-bom = { group = "io.github.jan-tennert.supabase", name = "bom", version.ref = "supabase" }
+supabase-postgrest = { group = "io.github.jan-tennert.supabase", name = "postgrest-kt" }
+supabase-auth = { group = "io.github.jan-tennert.supabase", name = "auth-kt" }
+supabase-realtime = { group = "io.github.jan-tennert.supabase", name = "realtime-kt" }
+
 [bundles]
 koin-nonandroid = [
     "koin-core",
@@ -275,6 +282,11 @@ room = [
     "room-runtime",
     "room-ktx",
     "sqlcipher",
+]
+supabase-core = [
+    "supabase-postgrest",
+    "supabase-auth",
+    "supabase-realtime"
 ]
 
 [plugins]
