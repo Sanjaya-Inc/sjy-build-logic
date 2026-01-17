@@ -8,17 +8,14 @@ import org.koin.dsl.module
 import org.koin.ksp.generated.module
 import org.koin.mp.KoinPlatform
 
-actual fun startKoinPlatform(context: PlatformContext?, vararg module: Module) {
+actual fun startKoinPlatform(context: PlatformContext?,  modules: List<Module>) {
     startKoin {
-        modules(
+        val loadedModules = listOf(
             CoreUtilsModule.module,
-            module {
-                single { context }
-            },
-            *module
-        )
+        ) + modules
+        modules(loadedModules)
     }
     KoinPlatform.getKoin().getOrCreateScope<InitializerScope>("Initializer")
         .get<InitializerRegistry>()
-        .initialize()
+        .initialize(context)
 }

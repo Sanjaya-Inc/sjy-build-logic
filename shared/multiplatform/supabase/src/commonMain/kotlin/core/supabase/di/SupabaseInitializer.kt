@@ -22,7 +22,7 @@ class SupabaseInitializer(
     private val dispatchers: SjyDispatchers
 ) : Initializer, CoroutineScope by CoroutineScope(dispatchers.io) {
 
-    override fun initialize(context: PlatformContext) {
+    override fun initialize(context: PlatformContext?) {
         println("Initializer: SupabaseInitializer")
         launch { supabaseClient.auth.init() }
         launch { supabaseClient.postgrest.init() }

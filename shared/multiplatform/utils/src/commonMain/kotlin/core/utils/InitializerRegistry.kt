@@ -9,15 +9,14 @@ import org.koin.core.annotation.Single
 @Scoped
 @Scope(InitializerScope::class)
 class InitializerRegistry(
-    private val initializers: List<Initializer>,
-    private val context: PlatformContext
+    private val initializers: List<Initializer>
 ) {
 
     private val prioritizedInitializer by lazy {
         initializers.sortedByDescending { it.priority }
     }
 
-    fun initialize() {
+    fun initialize(context: PlatformContext?) {
         prioritizedInitializer.forEach { it.initialize(context) }
     }
 }
