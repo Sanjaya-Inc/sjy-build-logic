@@ -10,8 +10,8 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.utils)
-            implementation(project.dependencies.platform(sjy.supabase.bom))
-            implementation(sjy.bundles.supabase.core)
+            implementation(sjy.datastore)
+            implementation(sjy.datastore.preferences)
         }
     }
 }

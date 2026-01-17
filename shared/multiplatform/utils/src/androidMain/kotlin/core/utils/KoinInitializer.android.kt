@@ -17,6 +17,7 @@ actual fun startKoinPlatform(context: PlatformContext?, modules: List<Module>) {
             androidLogger()
             val loadedModules = listOf(
                 CoreUtilsModule.module,
+                module { single { context } }
             ) + modules
             modules(loadedModules)
         }
