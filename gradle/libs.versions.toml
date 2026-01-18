@@ -58,6 +58,7 @@ buildconfig-kmp = "6.0.7"
 napier = "2.7.1"
 datastore = "1.2.0"
 room = "2.8.4"
+sqlite = "2.6.2"
 sqlcipher = "4.12.0"
 supabase = "3.3.0"
 
@@ -105,6 +106,7 @@ plugin-kgp = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref
 plugin-ksp = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp" }
 plugin-compose = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "compose-compiler" }
 plugin-detekt = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+plugin-room = { module = "androidx.room:room-gradle-plugin", version.ref = "room" }
 
 detekt-twitter = { module = "com.twitter.compose.rules:detekt", version = "0.0.26" }
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
@@ -200,6 +202,7 @@ room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 room-test = { module = "androidx.room:room-testing", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 sqlcipher = { module = "net.zetetic:sqlcipher-android", version.ref = "sqlcipher" }
 
 ## Supabase
@@ -301,6 +304,7 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 ktorfit = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }
+androidx-room = { id = "androidx.room", version.ref = "room" }
 
 # Firebase & Stripe (from essentials)
 gms-services = { id = "com.google.gms.google-services", version.ref = "gms-services" }
