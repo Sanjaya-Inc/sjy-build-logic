@@ -5,8 +5,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
+import androidx.navigation3.ui.NavDisplay.popTransitionSpec
+import androidx.navigation3.ui.NavDisplay.predictivePopTransitionSpec
+import androidx.navigation3.ui.NavDisplay.transitionSpec
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -47,8 +52,9 @@ class NavigationRouter {
 @Composable
 fun NavigationRouter(
     startRoute: Route,
-    entryProvider: (Route) -> NavEntry<Route>,
+    entryProvider: EntryProviderScope<Route>.() -> Unit,
     modifier: Modifier = Modifier,
+    transitionSpecs: TransitionSpecs = DefaultTransitionSpecs,
 ) {
     val router = koinInject<NavigationRouter>()
     val backStack by router.backStack.collectAsStateWithLifecycle()
@@ -58,9 +64,14 @@ fun NavigationRouter(
     }
 
     NavDisplay(
-        backStack = backStack,
+        backStack = backStack.takeIf { it.isNotEmpty() } ?: listOf(startRoute),
         onBack = router::onBack,
         modifier = modifier,
-        entryProvider = entryProvider
+        transitionSpec = transitionSpecs.screenForward,
+        popTransitionSpec = transitionSpecs.screenBackward,
+        predictivePopTransitionSpec = transitionSpecs.screenPredictiveBack,
+        entryProvider = entryProvider {
+            entryProvider()
+        }
     )
 }
