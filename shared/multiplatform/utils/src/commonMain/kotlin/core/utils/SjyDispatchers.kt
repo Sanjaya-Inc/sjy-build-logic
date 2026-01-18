@@ -12,7 +12,7 @@ interface SjyDispatchers {
 }
 
 @Single
-class SjyDispatchersImpl : SjyDispatchers {
+internal class SjyDispatchersImpl : SjyDispatchers {
     override val io: CoroutineDispatcher = Dispatchers.IO
     override val main: MainCoroutineDispatcher = Dispatchers.Main
 }

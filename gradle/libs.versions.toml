@@ -42,6 +42,9 @@ orbit-mvi = "11.0.0"
 lifecycle = "2.9.4"
 activity = "1.12.2"
 compose-navigation = "2.9.1"
+navigation3-ui = "1.0.0-alpha05"
+navigation3-adaptive = "1.3.0-alpha02"
+navigation3-lifecycle = "2.10.0-alpha05"
 compose-multiplatform = "1.11.0-alpha01"
 compose-bom = "2026.01.00"
 compose-icon = "1.7.8"
@@ -162,6 +165,11 @@ compose-google-fonts = { module = "androidx.compose.ui:ui-text-google-fonts" }
 compose-navigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "compose-navigation" }
 compose-icons = { module = "androidx.compose.material:material-icons-core", version.ref = "compose-icon" }
 
+# Navigation 3 (Compose Multiplatform)
+navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "navigation3-ui" }
+navigation3-adaptive = { module = "org.jetbrains.compose.material3.adaptive:adaptive-navigation3", version.ref = "navigation3-adaptive" }
+navigation3-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "navigation3-lifecycle" }
+
 datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 datastore-core = { module = "androidx.datastore:datastore-core", version.ref = "datastore" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
@@ -276,6 +284,11 @@ androidx-compose = [
 androidx-compose-debug = [
     "androidx-ui-tooling",
     "androidx-ui-test-manifest"
+]
+navigation3 = [
+    "navigation3-ui",
+    "navigation3-adaptive",
+    "navigation3-viewmodel"
 ]
 mockk = [
     "mockk",

@@ -1,0 +1,66 @@
+package core.presentation.navigation
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.ui.NavDisplay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import org.koin.compose.koinInject
+import org.koin.core.annotation.Single
+
+interface Route
+
+@Single
+class NavigationRouter {
+
+    private val _backStack = MutableStateFlow(listOf<Route>())
+    val backStack = _backStack.asStateFlow()
+
+    fun setStartRoute(route: Route) {
+        _backStack.update { listOf(route) }
+    }
+
+    fun navigateTo(route: Route, clearBackStack: Boolean = false) {
+        _backStack.update {
+            if (clearBackStack) {
+                listOf(route)
+            } else {
+                it + route
+            }
+        }
+    }
+
+    fun onBack() {
+        _backStack.update { it.dropLast(1) }
+    }
+
+    fun clearBackStack() {
+        _backStack.update { emptyList() }
+    }
+}
+
+@Composable
+fun NavigationRouter(
+    startRoute: Route,
+    entryProvider: (Route) -> NavEntry<Route>,
+    modifier: Modifier = Modifier,
+) {
+    val router = koinInject<NavigationRouter>()
+    val backStack by router.backStack.collectAsStateWithLifecycle()
+
+    LaunchedEffect(startRoute) {
+        router.setStartRoute(startRoute)
+    }
+
+    NavDisplay(
+        backStack = backStack,
+        onBack = router::onBack,
+        modifier = modifier,
+        entryProvider = entryProvider
+    )
+}

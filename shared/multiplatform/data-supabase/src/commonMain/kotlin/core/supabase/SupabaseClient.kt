@@ -1,6 +1,6 @@
 package core.supabase
 
-import Adadisini.core.supabase.BuildConfig
+import Adadisini.core.data_supabase.BuildConfig
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.createSupabaseClient
