@@ -58,11 +58,6 @@ fun NavigationRouter(
 ) {
     val router = koinInject<NavigationRouter>()
     val backStack by router.backStack.collectAsStateWithLifecycle()
-
-    LaunchedEffect(startRoute) {
-        router.setStartRoute(startRoute)
-    }
-
     NavDisplay(
         backStack = backStack.takeIf { it.isNotEmpty() } ?: listOf(startRoute),
         onBack = router::onBack,
