@@ -8,7 +8,7 @@ import org.koin.dsl.module
 import org.koin.ksp.generated.module
 import org.koin.mp.KoinPlatform
 
-actual fun startKoinPlatform(context: PlatformContext?,  modules: List<Module>) {
+actual fun startKoinPlatform(context: PlatformContext?, modules: List<Module>) {
     startKoin {
         val loadedModules = listOf(
             CoreUtilsModule.module,
