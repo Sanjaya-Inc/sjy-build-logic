@@ -39,7 +39,9 @@ class NavigationRouter {
     }
 
     fun onBack() {
-        _backStack.update { it.dropLast(1) }
+        _backStack.update { 
+            if (it.size > 1) it.dropLast(1) else it
+        }
     }
 
     fun clearBackStack() {
