@@ -21,8 +21,8 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.utils)
-            implementation(project.dependencies.platform(sjy.supabase.bom))
-            implementation(sjy.bundles.supabase.core)
+            api(project.dependencies.platform(sjy.supabase.bom))
+            api(sjy.bundles.supabase.core)
         }
     }
 }
