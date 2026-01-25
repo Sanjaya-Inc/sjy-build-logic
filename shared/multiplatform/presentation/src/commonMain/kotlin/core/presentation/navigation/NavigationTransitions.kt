@@ -11,7 +11,9 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Immutable
@@ -44,222 +46,230 @@ object NavigationTransitions {
     /**
      * Animation Specifications
      * Single source of truth for all animation parameters
+     *
+     * Design Philosophy:
+     * - Elegant timing: Slower, more refined animations (500ms enter, 400ms exit)
+     * - Gentle easing: Smooth curves that feel natural, not aggressive
+     * - Subtle parallax: Background moves at 60% speed (not too extreme)
+     * - Minimal scale: Very subtle depth enhancement (98%, barely noticeable)
+     * - Cohesive motion: Layers move together smoothly, not disconnected
      */
     object Specs {
         /**
          * Duration Constants
-         * Based on Material Design 3 motion duration tokens
+         * Slower timing for elegant, refined animations
          */
         object Duration {
-            const val STANDARD = 400
-            const val EMPHASIZED = 500
-            const val QUICK = 250
+            const val SCREEN_ENTER = 500  // Elegant, unhurried entrance
+            const val SCREEN_EXIT = 400   // Responsive but not rushed exit
+            const val MODAL = 400         // Slightly slower for modal feel
+            const val FADE = 250          // Quick cross-fade for lateral movement
         }
 
         /**
          * Custom Easing Curves
-         * Provides natural, sophisticated motion feel
+         * Gentle, smooth curves for elegant motion
          */
         object Easing {
-            val EmphasizedDecelerate = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1.0f)
-            val EmphasizedAccelerate = CubicBezierEasing(0.3f, 0.0f, 0.8f, 0.15f)
+            // Smooth deceleration - gentle landing (inspired by iOS)
+            val SmoothDecelerate = CubicBezierEasing(0.25f, 0.1f, 0.25f, 1.0f)
+            // Smooth acceleration - gentle departure
+            val SmoothAccelerate = CubicBezierEasing(0.4f, 0.0f, 0.6f, 1.0f)
             val Standard = FastOutSlowInEasing
         }
 
         /**
-         * Offset Calculation
-         * Determines slide distance based on screen dimensions
+         * Parallax Effect Constants
+         * Subtle depth perception without extreme differential
          */
-        object Offset {
-            const val FULL_SCREEN = 1.0f
-            const val PARTIAL_SCREEN = 0.3f
+        object Parallax {
+            const val FOREGROUND_OFFSET = 1.0f   // Foreground moves at full speed
+            const val BACKGROUND_OFFSET = 0.6f   // Background moves at 60% speed (gentle parallax)
+            const val BACKGROUND_SCALE = 0.98f   // Very subtle scale for depth (barely noticeable)
         }
 
         /**
          * Alpha Values for Fade Animations
+         * Minimal fade to prevent white flash artifacts
          */
         object Alpha {
-            const val TRANSPARENT = 0f
-            const val SEMI_TRANSPARENT = 0.3f
             const val OPAQUE = 1f
-        }
-
-        /**
-         * Scale Values for Zoom Animations
-         */
-        object Scale {
-            const val NORMAL = 1f
-            const val SLIGHTLY_REDUCED = 0.95f
-            const val REDUCED = 0.9f
+            const val SUBTLE_FADE = 0.95f  // Barely noticeable, no color artifacts
         }
     }
 
     /**
-     * Default Forward Navigation Transition
+     * Default Forward Navigation Transition (with Gentle Parallax)
      *
      * Behavior:
-     * - New screen slides in from bottom with fade
-     * - Current screen slides up with fade and slight scale
-     * - Creates depth perception and directional awareness
+     * - New screen slides in from RIGHT at full speed (foreground)
+     * - Current screen slides out to LEFT at 60% speed with subtle scale (background parallax)
+     * - Creates elegant depth without extreme differential
+     * - Smooth, refined motion with gentle easing
      *
+     * Parallax Effect:
+     * - Foreground (incoming): 100% speed, no scale
+     * - Background (outgoing): 60% speed, scales to 98%, subtle fade
+     * - Result: Cohesive, elegant depth perception
+     *
+     * Timing: 500ms entrance for elegant, unhurried feel
+     * Easing: Smooth curves for natural, refined motion
+     *
+     * Mental Model: New screen elegantly slides over old screen
      * Use Case: Primary navigation flow (e.g., Dashboard → Transaction List)
      */
     val defaultForwardTransition: AnimatedContentTransitionScope<*>.() -> ContentTransform = {
-        slideInVertically(
-            initialOffsetY = { fullHeight -> (fullHeight * Specs.Offset.FULL_SCREEN).toInt() },
+        slideInHorizontally(
+            initialOffsetX = { fullWidth -> (fullWidth * Specs.Parallax.FOREGROUND_OFFSET).toInt() },
             animationSpec = tween(
-                durationMillis = Specs.Duration.EMPHASIZED,
-                easing = Specs.Easing.EmphasizedDecelerate
+                durationMillis = Specs.Duration.SCREEN_ENTER,
+                easing = Specs.Easing.SmoothDecelerate
             )
-        ) + fadeIn(
+        ) togetherWith slideOutHorizontally(
+            targetOffsetX = { fullWidth -> -(fullWidth * Specs.Parallax.BACKGROUND_OFFSET).toInt() },
             animationSpec = tween(
-                durationMillis = Specs.Duration.EMPHASIZED,
+                durationMillis = Specs.Duration.SCREEN_EXIT,
+                easing = Specs.Easing.SmoothAccelerate
+            )
+        ) + scaleOut(
+            targetScale = Specs.Parallax.BACKGROUND_SCALE,
+            animationSpec = tween(
+                durationMillis = Specs.Duration.SCREEN_EXIT,
                 easing = Specs.Easing.Standard
-            ),
-            initialAlpha = Specs.Alpha.SEMI_TRANSPARENT
-        ) togetherWith slideOutVertically(
-            targetOffsetY = { fullHeight -> -(fullHeight * Specs.Offset.PARTIAL_SCREEN).toInt() },
-            animationSpec = tween(
-                durationMillis = Specs.Duration.EMPHASIZED,
-                easing = Specs.Easing.EmphasizedDecelerate
             )
         ) + fadeOut(
             animationSpec = tween(
-                durationMillis = Specs.Duration.EMPHASIZED,
+                durationMillis = Specs.Duration.SCREEN_EXIT,
                 easing = Specs.Easing.Standard
             ),
-            targetAlpha = Specs.Alpha.SEMI_TRANSPARENT
-        ) + scaleOut(
-            targetScale = Specs.Scale.SLIGHTLY_REDUCED,
-            animationSpec = tween(
-                durationMillis = Specs.Duration.EMPHASIZED,
-                easing = Specs.Easing.Standard
-            )
+            targetAlpha = Specs.Alpha.SUBTLE_FADE
         )
     }
 
     /**
-     * Default Backward Navigation Transition (Pop)
+     * Default Backward Navigation Transition (Pop with Gentle Parallax)
      *
      * Behavior:
-     * - Previous screen slides in from top with scale up
-     * - Current screen slides down with fade
-     * - Reverses the forward animation for consistency
+     * - Previous screen slides in from LEFT at 60% speed with subtle scale up (background parallax)
+     * - Current screen slides out to RIGHT at full speed (foreground)
+     * - Creates elegant reveal without extreme differential
+     * - Smooth, refined motion with gentle easing
      *
+     * Parallax Effect:
+     * - Background (incoming): 60% speed, scales from 98% to 100%, fades in
+     * - Foreground (outgoing): 100% speed, no scale
+     * - Result: Cohesive, elegant reveal animation
+     *
+     * Timing: 500ms entrance, 400ms exit for refined feel
+     * Easing: Smooth curves for natural, elegant motion
+     *
+     * Mental Model: Current screen elegantly slides away, revealing screen underneath
      * Use Case: Back navigation (e.g., Transaction List → Dashboard)
      */
     val defaultPopTransition: AnimatedContentTransitionScope<*>.() -> ContentTransform = {
-        slideInVertically(
-            initialOffsetY = { fullHeight -> -(fullHeight * Specs.Offset.PARTIAL_SCREEN).toInt() },
+        slideInHorizontally(
+            initialOffsetX = { fullWidth -> -(fullWidth * Specs.Parallax.BACKGROUND_OFFSET).toInt() },
             animationSpec = tween(
-                durationMillis = Specs.Duration.EMPHASIZED,
-                easing = Specs.Easing.EmphasizedAccelerate
+                durationMillis = Specs.Duration.SCREEN_ENTER,
+                easing = Specs.Easing.SmoothDecelerate
+            )
+        ) + scaleIn(
+            initialScale = Specs.Parallax.BACKGROUND_SCALE,
+            animationSpec = tween(
+                durationMillis = Specs.Duration.SCREEN_ENTER,
+                easing = Specs.Easing.Standard
             )
         ) + fadeIn(
             animationSpec = tween(
-                durationMillis = Specs.Duration.EMPHASIZED,
+                durationMillis = Specs.Duration.SCREEN_ENTER,
                 easing = Specs.Easing.Standard
             ),
-            initialAlpha = Specs.Alpha.SEMI_TRANSPARENT
-        ) + scaleIn(
-            initialScale = Specs.Scale.SLIGHTLY_REDUCED,
+            initialAlpha = Specs.Alpha.SUBTLE_FADE
+        ) togetherWith slideOutHorizontally(
+            targetOffsetX = { fullWidth -> (fullWidth * Specs.Parallax.FOREGROUND_OFFSET).toInt() },
             animationSpec = tween(
-                durationMillis = Specs.Duration.EMPHASIZED,
-                easing = Specs.Easing.Standard
+                durationMillis = Specs.Duration.SCREEN_EXIT,
+                easing = Specs.Easing.SmoothAccelerate
             )
-        ) togetherWith slideOutVertically(
-            targetOffsetY = { fullHeight -> (fullHeight * Specs.Offset.FULL_SCREEN).toInt() },
-            animationSpec = tween(
-                durationMillis = Specs.Duration.EMPHASIZED,
-                easing = Specs.Easing.EmphasizedAccelerate
-            )
-        ) + fadeOut(
-            animationSpec = tween(
-                durationMillis = Specs.Duration.EMPHASIZED,
-                easing = Specs.Easing.Standard
-            ),
-            targetAlpha = Specs.Alpha.SEMI_TRANSPARENT
         )
     }
 
     /**
-     * Predictive Back Gesture Transition
+     * Predictive Back Gesture Transition (with Gentle Parallax)
      *
      * Behavior:
      * - Supports Android's predictive back gesture
-     * - Mirrors pop transition for consistency
+     * - Mirrors pop transition with gentle parallax effect
+     * - Smooth horizontal slide matching user's gesture
+     * - Background screen scales up subtly as user drags
      *
+     * Parallax Effect:
+     * - Background (incoming): Gentle reveal with subtle scale up
+     * - Foreground (outgoing): Follows gesture at full speed
+     *
+     * Timing: 500ms entrance, 400ms exit for refined feel
+     * Easing: Smooth curves for elegant motion
+     *
+     * Mental Model: User elegantly "pulls" the previous screen back into view
      * Use Case: Gesture-based back navigation on Android
      */
     val defaultPredictivePopTransition: AnimatedContentTransitionScope<*>.(Int) -> ContentTransform =
-        { progress ->
-            slideInVertically(
-                initialOffsetY = { fullHeight -> -(fullHeight * Specs.Offset.PARTIAL_SCREEN).toInt() },
+        { _ ->
+            slideInHorizontally(
+                initialOffsetX = { fullWidth -> -(fullWidth * Specs.Parallax.BACKGROUND_OFFSET).toInt() },
                 animationSpec = tween(
-                    durationMillis = Specs.Duration.EMPHASIZED,
-                    easing = Specs.Easing.EmphasizedAccelerate
+                    durationMillis = Specs.Duration.SCREEN_ENTER,
+                    easing = Specs.Easing.SmoothDecelerate
+                )
+            ) + scaleIn(
+                initialScale = Specs.Parallax.BACKGROUND_SCALE,
+                animationSpec = tween(
+                    durationMillis = Specs.Duration.SCREEN_ENTER,
+                    easing = Specs.Easing.Standard
                 )
             ) + fadeIn(
                 animationSpec = tween(
-                    durationMillis = Specs.Duration.EMPHASIZED,
+                    durationMillis = Specs.Duration.SCREEN_ENTER,
                     easing = Specs.Easing.Standard
                 ),
-                initialAlpha = Specs.Alpha.SEMI_TRANSPARENT
-            ) + scaleIn(
-                initialScale = Specs.Scale.SLIGHTLY_REDUCED,
+                initialAlpha = Specs.Alpha.SUBTLE_FADE
+            ) togetherWith slideOutHorizontally(
+                targetOffsetX = { fullWidth -> (fullWidth * Specs.Parallax.FOREGROUND_OFFSET).toInt() },
                 animationSpec = tween(
-                    durationMillis = Specs.Duration.EMPHASIZED,
-                    easing = Specs.Easing.Standard
+                    durationMillis = Specs.Duration.SCREEN_EXIT,
+                    easing = Specs.Easing.SmoothAccelerate
                 )
-            ) togetherWith slideOutVertically(
-                targetOffsetY = { fullHeight -> (fullHeight * Specs.Offset.FULL_SCREEN).toInt() },
-                animationSpec = tween(
-                    durationMillis = Specs.Duration.EMPHASIZED,
-                    easing = Specs.Easing.EmphasizedAccelerate
-                )
-            ) + fadeOut(
-                animationSpec = tween(
-                    durationMillis = Specs.Duration.EMPHASIZED,
-                    easing = Specs.Easing.Standard
-                ),
-                targetAlpha = Specs.Alpha.SEMI_TRANSPARENT
             )
         }
 
     /**
-     * Modal Transition (Vertical Slide)
+     * Modal Transition (Vertical Slide Up)
      *
      * Behavior:
-     * - New screen slides up from bottom
-     * - Current screen stays in place with dimming
-     * - Creates modal/overlay effect
+     * - New screen slides up from bottom (modal presentation)
+     * - Current screen stays in place with subtle fade
+     * - Creates clear modal/overlay mental model
+     * - Vertical motion distinguishes from hierarchical navigation
      *
+     * Timing: 400ms for modal feel
+     * Easing: Smooth deceleration for elegant entrance
+     *
+     * Mental Model: Overlay appearing on top of current context
      * Use Case: Modal screens (e.g., Add Transaction, Add Budget)
      */
     val modalForwardTransition: AnimatedContentTransitionScope<*>.() -> ContentTransform = {
         slideInVertically(
             initialOffsetY = { fullHeight -> fullHeight },
             animationSpec = tween(
-                durationMillis = Specs.Duration.EMPHASIZED,
-                easing = Specs.Easing.EmphasizedDecelerate
+                durationMillis = Specs.Duration.MODAL,
+                easing = Specs.Easing.SmoothDecelerate
             )
-        ) + fadeIn(
+        ) togetherWith fadeOut(
             animationSpec = tween(
-                durationMillis = Specs.Duration.QUICK,
-                easing = Specs.Easing.Standard
-            )
-        ) togetherWith scaleOut(
-            targetScale = Specs.Scale.REDUCED,
-            animationSpec = tween(
-                durationMillis = Specs.Duration.EMPHASIZED,
-                easing = Specs.Easing.Standard
-            )
-        ) + fadeOut(
-            animationSpec = tween(
-                durationMillis = Specs.Duration.EMPHASIZED,
+                durationMillis = Specs.Duration.MODAL,
                 easing = Specs.Easing.Standard
             ),
-            targetAlpha = Specs.Alpha.SEMI_TRANSPARENT
+            targetAlpha = Specs.Alpha.SUBTLE_FADE
         )
     }
 
@@ -267,35 +277,29 @@ object NavigationTransitions {
      * Modal Pop Transition (Vertical Slide Down)
      *
      * Behavior:
-     * - Current screen slides down
-     * - Previous screen scales up and fades in
+     * - Current screen slides down to bottom (dismissing modal)
+     * - Previous screen fades back in from subtle fade
      * - Reverses modal forward transition
+     * - Maintains vertical motion for modal mental model
      *
+     * Timing: 400ms for modal feel
+     * Easing: Smooth acceleration for elegant exit
+     *
+     * Mental Model: Overlay being dismissed, revealing underlying context
      * Use Case: Closing modal screens
      */
     val modalPopTransition: AnimatedContentTransitionScope<*>.() -> ContentTransform = {
-        scaleIn(
-            initialScale = Specs.Scale.REDUCED,
+        fadeIn(
             animationSpec = tween(
-                durationMillis = Specs.Duration.EMPHASIZED,
-                easing = Specs.Easing.Standard
-            )
-        ) + fadeIn(
-            animationSpec = tween(
-                durationMillis = Specs.Duration.EMPHASIZED,
+                durationMillis = Specs.Duration.MODAL,
                 easing = Specs.Easing.Standard
             ),
-            initialAlpha = Specs.Alpha.SEMI_TRANSPARENT
+            initialAlpha = Specs.Alpha.SUBTLE_FADE
         ) togetherWith slideOutVertically(
             targetOffsetY = { fullHeight -> fullHeight },
             animationSpec = tween(
-                durationMillis = Specs.Duration.EMPHASIZED,
-                easing = Specs.Easing.EmphasizedAccelerate
-            )
-        ) + fadeOut(
-            animationSpec = tween(
-                durationMillis = Specs.Duration.QUICK,
-                easing = Specs.Easing.Standard
+                durationMillis = Specs.Duration.MODAL,
+                easing = Specs.Easing.SmoothAccelerate
             )
         )
     }
@@ -306,18 +310,20 @@ object NavigationTransitions {
      * Behavior:
      * - Simple cross-fade between screens
      * - No directional movement
+     * - Quick and subtle
      *
+     * Mental Model: Lateral movement at same hierarchy level
      * Use Case: Tab navigation, same-level screen switches
      */
     val fadeTransition: AnimatedContentTransitionScope<*>.() -> ContentTransform = {
         fadeIn(
             animationSpec = tween(
-                durationMillis = Specs.Duration.STANDARD,
+                durationMillis = Specs.Duration.FADE,
                 easing = Specs.Easing.Standard
             )
         ) togetherWith fadeOut(
             animationSpec = tween(
-                durationMillis = Specs.Duration.STANDARD,
+                durationMillis = Specs.Duration.FADE,
                 easing = Specs.Easing.Standard
             )
         )
