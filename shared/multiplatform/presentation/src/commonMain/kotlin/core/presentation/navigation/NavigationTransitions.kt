@@ -60,10 +60,10 @@ object NavigationTransitions {
          * Slower timing for elegant, refined animations
          */
         object Duration {
-            const val SCREEN_ENTER = 500  // Elegant, unhurried entrance
-            const val SCREEN_EXIT = 400   // Responsive but not rushed exit
-            const val MODAL = 400         // Slightly slower for modal feel
-            const val FADE = 250          // Quick cross-fade for lateral movement
+            const val SCREEN_ENTER = 500 // Elegant, unhurried entrance
+            const val SCREEN_EXIT = 400 // Responsive but not rushed exit
+            const val MODAL = 400 // Slightly slower for modal feel
+            const val FADE = 250 // Quick cross-fade for lateral movement
         }
 
         /**
@@ -73,6 +73,7 @@ object NavigationTransitions {
         object Easing {
             // Smooth deceleration - gentle landing (inspired by iOS)
             val SmoothDecelerate = CubicBezierEasing(0.25f, 0.1f, 0.25f, 1.0f)
+
             // Smooth acceleration - gentle departure
             val SmoothAccelerate = CubicBezierEasing(0.4f, 0.0f, 0.6f, 1.0f)
             val Standard = FastOutSlowInEasing
@@ -83,9 +84,9 @@ object NavigationTransitions {
          * Subtle depth perception without extreme differential
          */
         object Parallax {
-            const val FOREGROUND_OFFSET = 1.0f   // Foreground moves at full speed
-            const val BACKGROUND_OFFSET = 0.6f   // Background moves at 60% speed (gentle parallax)
-            const val BACKGROUND_SCALE = 0.98f   // Very subtle scale for depth (barely noticeable)
+            const val FOREGROUND_OFFSET = 1.0f // Foreground moves at full speed
+            const val BACKGROUND_OFFSET = 0.6f // Background moves at 60% speed (gentle parallax)
+            const val BACKGROUND_SCALE = 0.98f // Very subtle scale for depth (barely noticeable)
         }
 
         /**
@@ -94,7 +95,7 @@ object NavigationTransitions {
          */
         object Alpha {
             const val OPAQUE = 1f
-            const val SUBTLE_FADE = 0.95f  // Barely noticeable, no color artifacts
+            const val SUBTLE_FADE = 0.95f // Barely noticeable, no color artifacts
         }
     }
 
