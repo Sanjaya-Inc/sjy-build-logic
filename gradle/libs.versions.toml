@@ -3,7 +3,7 @@
 agp = "9.0.0"
 
 # Kotlin
-kotlin-core = "2.3.0"
+kotlin-core = "2.3.10"
 kotlin-serialization = "1.10.0"
 kotlin-immutable = "0.4.0"
 kotlin-date = "0.7.1-0.6.x-compat"
