@@ -29,7 +29,7 @@ class KmpKoinSetup(
                 val bundles = dependenciesFinder.findBundle("koin-nonandroid")
                 implementation(bundles)
                 val annotation = dependenciesFinder.findLibrary("koin-annotation")
-                api(annotation)
+                implementation(annotation)
             }
             sourceSets.androidMain.dependencies {
                 val bom = dependenciesFinder.findLibrary("koin-bom")
@@ -37,7 +37,7 @@ class KmpKoinSetup(
                 val bundles = dependenciesFinder.findBundle("koin-android")
                 implementation(bundles)
                 val annotation = dependenciesFinder.findLibrary("koin-annotation")
-                api(annotation)
+                implementation(annotation)
             }
             sourceSets.named("commonMain").configure {
                 kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")

@@ -6,7 +6,6 @@ plugins {
     alias(sjy.plugins.buildconfig.kmp)
 }
 
-// Read local.properties
 val localProperties = Properties().apply {
     val localPropertiesFile = rootProject.file("local.properties")
     if (localPropertiesFile.exists()) {
@@ -21,8 +20,8 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.utils)
-            api(project.dependencies.platform(sjy.supabase.bom))
-            api(sjy.bundles.supabase.core)
+            implementation(project.dependencies.platform(sjy.supabase.bom))
+            implementation(sjy.bundles.supabase.core)
         }
     }
 }
@@ -32,6 +31,8 @@ ktorfit {
 }
 
 buildConfig {
+    className("SupabaseConfig")
+    packageName("core.supabase")
     buildConfigField(
         "String",
         "SUPABASE_URL",
@@ -41,5 +42,10 @@ buildConfig {
         "String",
         "SUPABASE_KEY",
         "\"${localProperties.getProperty("SUPABASE_KEY", "")}\""
+    )
+    buildConfigField(
+        "String",
+        "GOOGLE_CLIENT_ID",
+        "\"${localProperties.getProperty("GOOGLE_CLIENT_ID", "")}\""
     )
 }

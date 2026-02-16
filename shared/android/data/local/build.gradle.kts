@@ -22,7 +22,7 @@ android {
 dependencies {
     implementation(project(":core:utils"))
     implementation(project(":core:data:pref"))
-    api(sjy.bundles.room)
+    implementation(sjy.bundles.room)
     ksp(sjy.room.compiler)
     testImplementation(sjy.room.test)
 }

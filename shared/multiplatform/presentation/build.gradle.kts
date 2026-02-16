@@ -10,7 +10,6 @@ kotlin {
     
     sourceSets {
         commonMain.dependencies {
-            api(sjy.bundles.navigation3)
             implementation(projects.core.utils)
         }
     }

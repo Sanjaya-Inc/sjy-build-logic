@@ -21,5 +21,5 @@ android {
 
 dependencies {
     implementation(project(":core:utils"))
-    api(sjy.datastore)
+    implementation(sjy.datastore)
 }

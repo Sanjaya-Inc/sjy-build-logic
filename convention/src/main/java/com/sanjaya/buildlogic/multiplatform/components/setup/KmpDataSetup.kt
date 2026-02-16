@@ -37,7 +37,9 @@ class KmpDataSetup(
                     "ktor-logging",
                     "ktor-auth",
                     "store",
-                    "multiplatform-settings"
+                    "datastore",
+                    "datastore-core",
+                    "datastore-preferences"
                 ).map(dependenciesFinder::findLibrary)
                 multiplatformDeps.forEach(::implementation)
             }
