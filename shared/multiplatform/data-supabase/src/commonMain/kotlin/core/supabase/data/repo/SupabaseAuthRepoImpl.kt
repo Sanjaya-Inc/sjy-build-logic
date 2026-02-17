@@ -22,7 +22,7 @@ import org.koin.core.annotation.Single
 import kotlin.time.Instant
 
 @Single
-class SupabaseAuthRepoImpl(
+internal class SupabaseAuthRepoImpl(
     private val supabaseClient: SupabaseClient
 ) : SupabaseAuthRepo {
 

@@ -10,6 +10,9 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.utils)
+            implementation(sjy.datastore)
+            implementation(sjy.datastore.core)
+            implementation(sjy.datastore.preferences)
         }
     }
 }

@@ -11,7 +11,7 @@ import io.github.jan.supabase.realtime.Realtime
 import org.koin.core.annotation.Single
 
 @Single
-class SupabaseClient : SupabaseClient by createSupabaseClient(
+internal class SupabaseClient : SupabaseClient by createSupabaseClient(
     supabaseUrl = SupabaseConfig.SUPABASE_URL,
     supabaseKey = SupabaseConfig.SUPABASE_KEY,
     builder = {

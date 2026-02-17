@@ -17,7 +17,7 @@ import org.koin.core.annotation.Single
 @Single
 @Scoped
 @Scope(InitializerScope::class)
-class SupabaseInitializer(
+class SupabaseInitializer internal constructor(
     private val supabaseClient: SupabaseClient,
     private val dispatchers: SjyDispatchers
 ) : Initializer, CoroutineScope by CoroutineScope(dispatchers.io) {
