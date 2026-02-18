@@ -34,7 +34,7 @@ chucker = "4.3.0"
 # Firebase & Stripe (from essentials)
 firebase-bom = "34.9.0"
 gms-services = "4.4.4"
-stripe = "22.8.0"
+stripe = "22.8.1"
 
 # UI Components (from ui)
 orbit-mvi = "11.0.0"
