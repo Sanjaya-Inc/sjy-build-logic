@@ -7,8 +7,7 @@ import org.orbitmvi.orbit.viewmodel.container
 
 abstract class BaseViewModel<State : Any, SideEffect : Any>(
     initialState: State,
-    private val onCreateHandlers: List<ViewModelCreationCallback<State, SideEffect>> = listOf(),
-    private val intentHandlers: List<IntentHandler> = listOf()
+    vararg onCreateHandlers: ViewModelCreationCallback<State, SideEffect>
 ) : ContainerHost<State, SideEffect>, ViewModel() {
 
     override val container: Container<State, SideEffect> =
@@ -21,11 +20,5 @@ abstract class BaseViewModel<State : Any, SideEffect : Any>(
             },
         )
 
-    open fun onIntent(intent: Any) = Unit
-
-    fun sendIntent(intent: Any) {
-        onIntent(intent)
-        intentHandlers.filter { it.canHandle(intent) }
-            .forEach { it.handleIntent(intent) }
-    }
+    abstract fun sendIntent(intent: Any)
 }

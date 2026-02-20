@@ -6,7 +6,6 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.retain.retain
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.EntryProviderScope
@@ -74,9 +73,4 @@ val LocalNavigationRouter = compositionLocalOf<NavigationRouter> { error("Not Pr
 @Composable
 fun rememberNavigationRouter(startRoute: Route): NavigationRouter {
     return remember { NavigationRouter(startRoute) }
-}
-
-@Composable
-fun rememberNavigationIntentHandler(router: NavigationRouter = LocalNavigationRouter.current): NavigationIntentHandler {
-    return retain(router) { NavigationIntentHandler(router) }
 }
