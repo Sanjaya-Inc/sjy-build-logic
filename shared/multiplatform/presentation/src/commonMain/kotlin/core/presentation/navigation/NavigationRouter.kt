@@ -1,32 +1,29 @@
 package core.presentation.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.retain.retain
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
-import androidx.navigation3.ui.NavDisplay.popTransitionSpec
-import androidx.navigation3.ui.NavDisplay.predictivePopTransitionSpec
-import androidx.navigation3.ui.NavDisplay.transitionSpec
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import org.koin.compose.koinInject
-import org.koin.core.annotation.Single
 
+@Stable
 interface Route
 
-@Single
-class NavigationRouter {
+@Stable
+class NavigationRouter(startRoute: Route) {
 
-    private val _backStack = MutableStateFlow(listOf<Route>())
+    private val _backStack = MutableStateFlow(listOf<Route>(startRoute))
     val backStack = _backStack.asStateFlow()
-
-    fun setStartRoute(route: Route) {
-        _backStack.update { listOf(route) }
-    }
 
     fun navigateTo(route: Route, clearBackStack: Boolean = false) {
         _backStack.update {
@@ -51,22 +48,35 @@ class NavigationRouter {
 
 @Composable
 fun NavigationRouter(
-    startRoute: Route,
+    router: NavigationRouter,
     entryProvider: EntryProviderScope<Route>.() -> Unit,
     modifier: Modifier = Modifier,
     transitionSpecs: TransitionSpecs = DefaultTransitionSpecs,
 ) {
-    val router = koinInject<NavigationRouter>()
     val backStack by router.backStack.collectAsStateWithLifecycle()
-    NavDisplay(
-        backStack = backStack.takeIf { it.isNotEmpty() } ?: listOf(startRoute),
-        onBack = router::onBack,
-        modifier = modifier,
-        transitionSpec = transitionSpecs.screenForward,
-        popTransitionSpec = transitionSpecs.screenBackward,
-        predictivePopTransitionSpec = transitionSpecs.screenPredictiveBack,
-        entryProvider = entryProvider {
-            entryProvider()
-        }
-    )
+    CompositionLocalProvider(LocalNavigationRouter provides router) {
+        NavDisplay(
+            backStack = backStack,
+            onBack = router::onBack,
+            modifier = modifier,
+            transitionSpec = transitionSpecs.screenForward,
+            popTransitionSpec = transitionSpecs.screenBackward,
+            predictivePopTransitionSpec = transitionSpecs.screenPredictiveBack,
+            entryProvider = entryProvider {
+                entryProvider()
+            }
+        )
+    }
+}
+
+val LocalNavigationRouter = compositionLocalOf<NavigationRouter> { error("Not Provided yet") }
+
+@Composable
+fun rememberNavigationRouter(startRoute: Route): NavigationRouter {
+    return remember { NavigationRouter(startRoute) }
+}
+
+@Composable
+fun rememberNavigationIntentHandler(router: NavigationRouter = LocalNavigationRouter.current): NavigationIntentHandler {
+    return retain(router) { NavigationIntentHandler(router) }
 }
