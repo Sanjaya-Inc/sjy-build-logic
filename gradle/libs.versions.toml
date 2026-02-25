@@ -48,7 +48,7 @@ compose-bom = "2026.02.00"
 compose-icon = "1.7.8"
 material3 = "1.4.0"
 compose-destination = "2.3.0"
-coil = "3.3.0"
+coil = "3.4.0"
 accompanist = "0.37.3"
 
 junit4 = "4.13.2"
