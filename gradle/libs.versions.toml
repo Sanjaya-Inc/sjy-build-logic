@@ -29,7 +29,7 @@ store = "5.1.0-alpha08"
 app-startup = "1.2.0"
 okhttp = "5.3.2"
 ktor = "3.4.0"
-chucker = "4.3.0"
+chucker = "4.3.1"
 
 # Firebase & Stripe (from essentials)
 firebase-bom = "34.10.0"
