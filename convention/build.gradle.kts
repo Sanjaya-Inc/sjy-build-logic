@@ -119,3 +119,7 @@ gradlePlugin {
         // endregion
     }
 }
+
+ksp {
+    arg("KOIN_CONFIG_CHECK", "false")
+}
