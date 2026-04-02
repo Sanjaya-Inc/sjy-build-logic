@@ -60,7 +60,7 @@ napier = "2.7.1"
 datastore = "1.2.1"
 room = "2.8.4"
 sqlite = "2.6.2"
-sqlcipher = "4.14.0"
+sqlcipher = "4.14.1"
 supabase = "3.4.1"
 
 [libraries]
