@@ -319,7 +319,7 @@ androidx-room = { id = "androidx.room", version.ref = "room" }
 
 # Firebase & Stripe (from essentials)
 gms-services = { id = "com.google.gms.google-services", version.ref = "gms-services" }
-crashlytics = { id = "com.google.firebase.crashlytics", version = "3.0.6" }
+crashlytics = { id = "com.google.firebase.crashlytics", version = "3.0.7" }
 
 # UI Components (from ui)
 lumo = { id = "com.nomanr.plugin.lumo", version = "1.2.5" }
