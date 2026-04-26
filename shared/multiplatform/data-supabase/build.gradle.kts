@@ -26,10 +26,6 @@ kotlin {
     }
 }
 
-ktorfit {
-    compilerPluginVersion.set("2.3.3")
-}
-
 buildConfig {
     className("SupabaseConfig")
     packageName("core.supabase")

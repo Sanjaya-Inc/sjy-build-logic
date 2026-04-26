@@ -8,7 +8,3 @@ kotlin {
         namespace = "core.utils"
     }
 }
-
-ktorfit {
-    compilerPluginVersion.set("2.3.3")
-}

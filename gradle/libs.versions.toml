@@ -23,7 +23,7 @@ koin = "4.1.1"
 koin-annotation = "2.3.1"
 compose-compiler = "1.10.3"
 
-ktorfit = "2.7.2"
+ktorfit = "2.7.3"
 mmkv = "2.4.0"
 store = "5.1.0-alpha08"
 app-startup = "1.2.0"
