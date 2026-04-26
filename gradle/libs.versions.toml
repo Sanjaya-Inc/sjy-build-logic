@@ -43,7 +43,8 @@ activity = "1.13.0"
 navigation3-ui = "1.1.0"
 navigation3-adaptive = "1.3.0-alpha07"
 navigation3-lifecycle = "2.11.0-alpha03"
-compose-multiplatform = "1.11.0-alpha04"
+compose-multiplatform = "1.11.0-beta03"
+cmp-material3 = "1.11.0-alpha07"
 compose-bom = "2026.04.01"
 compose-icon = "1.7.8"
 material3 = "1.4.0"
@@ -180,7 +181,7 @@ compose-destination-sheet = { module = "io.github.raamcosta.compose-destinations
 # Compose Multiplatform
 compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-multiplatform" }
 compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose-multiplatform" }
-compose-material3-multiplatform = { module = "org.jetbrains.compose.material3:material3", version.ref = "compose-multiplatform" }
+compose-material3-multiplatform = { module = "org.jetbrains.compose.material3:material3", version.ref = "cmp-material3" }
 compose-ui-multiplatform = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose-multiplatform" }
 compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose-multiplatform" }
 compose-components-ui-tooling-preview = { module = "org.jetbrains.compose.components:components-ui-tooling-preview", version.ref = "compose-multiplatform" }
