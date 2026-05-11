@@ -16,7 +16,7 @@ jacoco = "0.8.14"
 core-ktx = "1.18.0"
 
 # Concurrency
-coroutines = "1.10.2"
+coroutines = "1.11.0"
 
 # Dependency Injection
 koin = "4.1.1"
