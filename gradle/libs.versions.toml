@@ -21,7 +21,7 @@ coroutines = "1.11.0"
 # Dependency Injection
 koin = "4.1.1"
 koin-annotation = "2.3.1"
-compose-compiler = "1.10.3"
+compose-compiler = "1.11.0"
 
 ktorfit = "2.7.3"
 mmkv = "2.4.0"
