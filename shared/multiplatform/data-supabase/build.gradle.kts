@@ -4,6 +4,7 @@ import java.util.Properties
 plugins {
     alias(sjy.plugins.buildlogic.multiplatform.lib)
     alias(sjy.plugins.buildconfig.kmp)
+    alias(sjy.plugins.buildlogic.detekt)
 }
 
 val localProperties = Properties().apply {

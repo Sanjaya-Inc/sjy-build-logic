@@ -63,6 +63,8 @@ room = "2.8.4"
 sqlite = "2.6.2"
 sqlcipher = "4.16.0"
 supabase = "3.6.0"
+autoservice = "1.1.1"
+autoservice-ksp = "1.2.0"
 
 [libraries]
 # AndroidX
@@ -216,6 +218,10 @@ supabase-postgrest = { group = "io.github.jan-tennert.supabase", name = "postgre
 supabase-auth = { group = "io.github.jan-tennert.supabase", name = "auth-kt" }
 supabase-realtime = { group = "io.github.jan-tennert.supabase", name = "realtime-kt" }
 supabase-compose-auth = { group = "io.github.jan-tennert.supabase", name = "compose-auth" }
+
+## Autoservice
+autoservice-ksp = { module = "dev.zacsweers.autoservice:auto-service-ksp", version.ref = "autoservice-ksp" }
+autoservice-annotation = { module = "com.google.auto.service:auto-service-annotations", version.ref = "autoservice" }
 
 [bundles]
 koin-nonandroid = [
