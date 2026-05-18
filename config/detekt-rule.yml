@@ -102,20 +102,40 @@ style:
   ReturnCount:
     active: false
 
-TwitterCompose:
+Compose:
+  ComposableAnnotationNaming:
+    active: true
+  ComposableNaming:
+    active: true
+  ComposableParamOrder:
+    active: true
   CompositionLocalAllowlist:
     active: false
-    # You can optionally define a list of CompositionLocals that are allowed here
-    # allowedCompositionLocals: LocalSomething,LocalSomethingElse
   CompositionLocalNaming:
     active: true
   ContentEmitterReturningValues:
     active: true
-    # You can optionally add your own composables here
-    # contentEmitters: MyComposable,MyOtherComposable
-  ModifierComposable:
+  ContentTrailingLambda:
+    active: true
+  ContentSlotReused:
+    active: true
+  DefaultsVisibility:
+    active: true
+  LambdaParameterEventTrailing:
+    active: true
+  LambdaParameterInRestartableEffect:
+    active: true
+  Material2:
+    active: true
+  ModifierClickableOrder:
+    active: true
+  ModifierComposed:
     active: true
   ModifierMissing:
+    active: true
+  ModifierNaming:
+    active: true
+  ModifierNotUsedAtRoot:
     active: true
   ModifierReused:
     active: true
@@ -123,23 +143,23 @@ TwitterCompose:
     active: true
   MultipleEmitters:
     active: true
-    # You can optionally add your own composables here
-    # contentEmitters: MyComposable,MyOtherComposable
   MutableParams:
     active: true
-  ComposableNaming:
+  MutableStateAutoboxing:
     active: true
-    # You can optionally disable the checks in this rule for regex matches against the composable name (e.g. molecule presenters)
-    # allowedComposableFunctionNames: .*Presenter,.*MoleculePresenter
-  ComposableParamOrder:
+  MutableStateParam:
+    active: true
+  ParameterNaming:
+    active: true
+  PreviewAnnotationNaming:
     active: true
   PreviewNaming:
-    active: true
+    active: false
   PreviewPublic:
     active: true
-    # You can optionally disable that only previews with @PreviewParameter are flagged
-    # previewPublicOnlyIfParams: false
   RememberMissing:
+    active: true
+  RememberContentMissing:
     active: true
   UnstableCollections:
     active: true

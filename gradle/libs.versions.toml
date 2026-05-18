@@ -47,6 +47,7 @@ compose-multiplatform = "1.11.0"
 cmp-material3 = "1.11.0-alpha07"
 compose-bom = "2026.05.00"
 compose-icon = "1.7.8"
+compose-detekt = "0.5.8"
 material3 = "1.4.0"
 compose-destination = "2.3.0"
 coil = "3.4.0"
@@ -112,7 +113,7 @@ plugin-compose = { module = "org.jetbrains.compose:compose-gradle-plugin", versi
 plugin-detekt = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 plugin-room = { module = "androidx.room:room-gradle-plugin", version.ref = "room" }
 
-detekt-twitter = { module = "com.twitter.compose.rules:detekt", version = "0.0.26" }
+detekt-compose = { module = "io.nlopez.compose.rules:detekt", version.ref = "compose-detekt" }
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 ktorfit = { group = "de.jensklingenberg.ktorfit", name = "ktorfit-lib", version.ref = "ktorfit" }
 
