@@ -6,3 +6,4 @@
 /shared/*/*/build
 /convention/**/**/build/
 /.kotlin/**
+/shared/multiplatform/*/*/build/**
