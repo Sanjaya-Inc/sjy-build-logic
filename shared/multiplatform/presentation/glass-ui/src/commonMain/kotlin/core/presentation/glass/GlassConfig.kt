@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.dp
 /**
  * Glass configuration for Tepan Payments glassmorphism effects.
  * Aligned with DESIGN.md specifications for professional financial UI.
- * 
+ *
  * Design principles:
  * - Financial trust through subtle, professional glass effects
  * - No playful overshoots or bounces (trust issue)

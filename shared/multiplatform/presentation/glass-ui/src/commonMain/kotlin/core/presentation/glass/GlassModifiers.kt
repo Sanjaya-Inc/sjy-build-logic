@@ -8,9 +8,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlin.math.PI
@@ -78,7 +76,7 @@ fun Modifier.glassInnerShadow(
 
     onDrawWithContent {
         drawContent()
-        
+
         drawRect(
             brush = innerShadowBrush,
             blendMode = BlendMode.Multiply
@@ -92,10 +90,10 @@ fun Modifier.glassGloss(
     heightFraction: Float = 0.42f
 ): Modifier = drawWithCache {
     require(heightFraction in 0f..1f) { "heightFraction must be in range [0, 1]" }
-    
+
     onDrawWithContent {
         drawContent()
-        
+
         drawRect(
             brush = brush,
             topLeft = Offset.Zero,
@@ -113,13 +111,13 @@ fun Modifier.glassFallbackNoise(
     seed: Int = 42
 ): Modifier = drawWithCache {
     require(intensity in 0f..1f) { "intensity must be in range [0, 1]" }
-    
+
     val ditherSize = 4f
     val ditherPattern = generateDitherPattern(seed)
-    
+
     onDrawWithContent {
         drawContent()
-        
+
         drawDitherPattern(
             pattern = ditherPattern,
             ditherSize = ditherSize,
@@ -131,12 +129,12 @@ fun Modifier.glassFallbackNoise(
 private fun generateDitherPattern(seed: Int): List<Float> {
     val pattern = mutableListOf<Float>()
     var state = seed
-    
+
     repeat(16) {
         state = (state * 1103515245 + 12345) and 0x7fffffff
         pattern.add((state % 100) / 100f)
     }
-    
+
     return pattern
 }
 
@@ -147,15 +145,15 @@ private fun DrawScope.drawDitherPattern(
 ) {
     val cols = (size.width / ditherSize).toInt() + 1
     val rows = (size.height / ditherSize).toInt() + 1
-    
+
     for (row in 0 until rows) {
         for (col in 0 until cols) {
             val patternIndex = ((row % 4) * 4 + (col % 4))
             val noiseValue = pattern[patternIndex]
-            
+
             val alpha = (noiseValue - 0.5f) * intensity
             val color = Color.White.copy(alpha = alpha.coerceIn(0f, 1f))
-            
+
             drawRect(
                 color = color,
                 topLeft = Offset(col * ditherSize, row * ditherSize),
@@ -172,10 +170,10 @@ fun Modifier.glassShimmer(
     width: Float = 0.3f
 ): Modifier = drawWithCache {
     require(width in 0f..1f) { "width must be in range [0, 1]" }
-    
+
     val angleRad = angle * PI.toFloat() / 180f
     val shimmerWidth = size.width * width
-    
+
     val shimmerBrush = Brush.linearGradient(
         colors = listOf(
             Color.Transparent,
@@ -191,7 +189,7 @@ fun Modifier.glassShimmer(
             y = size.height / 2f + shimmerWidth / 2f * sin(angleRad)
         )
     )
-    
+
     onDrawWithContent {
         drawContent()
         drawRect(brush = shimmerBrush)

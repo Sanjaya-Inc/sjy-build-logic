@@ -135,7 +135,7 @@ fun GlassContainerWithDepth(
                         heightFraction = 0.42f
                     )
             )
-            
+
             content()
         }
     }
@@ -156,7 +156,7 @@ data class ShadowConfig(
             offsetY = 4.dp,
             spread = 0.dp
         )
-        
+
         val Elevated = ShadowConfig(
             color = androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.2f),
             blur = 16.dp,
@@ -164,7 +164,7 @@ data class ShadowConfig(
             offsetY = 8.dp,
             spread = 2.dp
         )
-        
+
         val Subtle = ShadowConfig(
             color = androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.1f),
             blur = 4.dp,
@@ -188,7 +188,7 @@ data class InnerShadowConfig(
             offsetX = 0.dp,
             offsetY = (-2).dp
         )
-        
+
         val Prominent = InnerShadowConfig(
             color = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.7f),
             blur = 6.dp,

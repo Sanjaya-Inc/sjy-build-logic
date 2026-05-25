@@ -130,7 +130,7 @@ fun GlassToggleButton(
     content: @Composable (Boolean) -> Unit
 ) {
     val config = if (checked) checkedConfig else uncheckedConfig
-    
+
     GlassButton(
         onClick = { onCheckedChange(!checked) },
         modifier = modifier,

@@ -7,11 +7,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -35,27 +32,27 @@ fun GlassUIShowcase() {
         ShowcaseSection("Preset Configurations") {
             PresetConfigurationsShowcase()
         }
-        
+
         ShowcaseSection("Glass Buttons") {
             GlassButtonsShowcase()
         }
-        
+
         ShowcaseSection("Glass Cards") {
             GlassCardsShowcase()
         }
-        
+
         ShowcaseSection("Glass Surfaces") {
             GlassSurfacesShowcase()
         }
-        
+
         ShowcaseSection("Custom Configurations") {
             CustomConfigurationsShowcase()
         }
-        
+
         ShowcaseSection("Interactive Components") {
             InteractiveComponentsShowcase()
         }
-        
+
         ShowcaseSection("Shadow Variants") {
             ShadowVariantsShowcase()
         }
@@ -84,25 +81,25 @@ private fun PresetConfigurationsShowcase() {
             contentPadding = androidx.compose.foundation.layout.PaddingValues(16.dp)
         ) {
         }
-        
+
         GlassCard(
             config = GlassConfig.Default,
             contentPadding = androidx.compose.foundation.layout.PaddingValues(16.dp)
         ) {
         }
-        
+
         GlassCard(
             config = GlassConfig.Heavy,
             contentPadding = androidx.compose.foundation.layout.PaddingValues(16.dp)
         ) {
         }
-        
+
         GlassCard(
             config = GlassConfig.Frosted,
             contentPadding = androidx.compose.foundation.layout.PaddingValues(16.dp)
         ) {
         }
-        
+
         GlassCard(
             config = GlassConfig.Dark,
             contentPadding = androidx.compose.foundation.layout.PaddingValues(16.dp)
@@ -121,13 +118,13 @@ private fun GlassButtonsShowcase() {
             config = GlassConfig.Default
         ) {
         }
-        
+
         GlassButtonWithShadow(
             onClick = {},
             config = GlassConfig.Heavy
         ) {
         }
-        
+
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -136,20 +133,20 @@ private fun GlassButtonsShowcase() {
                 config = GlassConfig.Default
             ) {
             }
-            
+
             GlassIconButton(
                 onClick = {},
                 config = GlassConfig.Frosted
             ) {
             }
-            
+
             GlassIconButton(
                 onClick = {},
                 config = GlassConfig.Heavy.copy(tintColor = Color(0xFF6200EE))
             ) {
             }
         }
-        
+
         GlassButton(
             onClick = {},
             enabled = false
@@ -167,12 +164,12 @@ private fun GlassCardsShowcase() {
             config = GlassConfig.Light
         ) {
         }
-        
+
         GlassCardWithShadow(
             config = GlassConfig.Default
         ) {
         }
-        
+
         GlassElevatedCard(
             config = GlassConfig.Heavy
         ) {
@@ -180,7 +177,7 @@ private fun GlassCardsShowcase() {
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
-        
+
         GlassClickableCard(
             onClick = {},
             config = GlassConfig.Frosted
@@ -206,7 +203,7 @@ private fun GlassSurfacesShowcase() {
                 }
             }
         }
-        
+
         GlassNavigationBar(
             config = GlassConfig.Light
         ) {
@@ -220,7 +217,7 @@ private fun GlassSurfacesShowcase() {
                 }
             }
         }
-        
+
         GlassDialog(
             config = GlassConfig.Heavy
         ) {
@@ -243,7 +240,7 @@ private fun CustomConfigurationsShowcase() {
             )
         ) {
         }
-        
+
         GlassCard(
             config = GlassConfig(
                 tintColor = Color(0xFF7C4DFF),
@@ -253,7 +250,7 @@ private fun CustomConfigurationsShowcase() {
             )
         ) {
         }
-        
+
         GlassCard(
             config = GlassConfig(
                 tintColor = Color(0xFFFF6B6B),
@@ -269,7 +266,7 @@ private fun CustomConfigurationsShowcase() {
 @Composable
 private fun InteractiveComponentsShowcase() {
     var toggleState by remember { mutableStateOf(false) }
-    
+
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -280,13 +277,13 @@ private fun InteractiveComponentsShowcase() {
             uncheckedConfig = GlassConfig.Light
         ) { checked ->
         }
-        
+
         GlassButton(
             onClick = {},
             config = GlassConfig.Default
         ) {
         }
-        
+
         GlassClickableCard(
             onClick = {},
             config = GlassConfig.Frosted
@@ -311,19 +308,19 @@ private fun ShadowVariantsShowcase() {
             shadowConfig = ShadowConfig.Subtle
         ) {
         }
-        
+
         GlassCardWithShadow(
             config = GlassConfig.Default,
             shadowConfig = ShadowConfig.Default
         ) {
         }
-        
+
         GlassCardWithShadow(
             config = GlassConfig.Heavy,
             shadowConfig = ShadowConfig.Elevated
         ) {
         }
-        
+
         GlassElevatedCard(
             config = GlassConfig.Frosted,
             dropShadowConfig = ShadowConfig.Elevated,
@@ -344,7 +341,7 @@ fun ThemedGlassShowcase() {
         surfaceConfig = GlassConfig.Default,
         errorConfig = GlassConfig.Heavy.copy(tintColor = Color(0xFFB00020))
     )
-    
+
     ProvideGlassTheme(theme = customTheme) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -352,13 +349,13 @@ fun ThemedGlassShowcase() {
         ) {
             GlassButton(onClick = {}) {
             }
-            
+
             GlassButton(
                 onClick = {},
                 config = LocalGlassTheme.current.primaryConfig
             ) {
             }
-            
+
             GlassCard {
             }
         }
@@ -379,7 +376,7 @@ fun AdvancedGlassCompositions() {
             contentPadding = androidx.compose.foundation.layout.PaddingValues(16.dp)
         ) {
         }
-        
+
         GlassElevatedCard(
             config = GlassConfig.Frosted.copy(tintColor = Color(0xFF6200EE)),
             dropShadowConfig = ShadowConfig.Elevated
@@ -388,13 +385,13 @@ fun AdvancedGlassCompositions() {
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
-        
+
         GlassCard(
             config = GlassConfig.Light
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Spacer(modifier = Modifier.height(8.dp))
-                
+
                 GlassCard(
                     config = GlassConfig.Heavy.copy(tintColor = Color(0xFF7C4DFF))
                 ) {

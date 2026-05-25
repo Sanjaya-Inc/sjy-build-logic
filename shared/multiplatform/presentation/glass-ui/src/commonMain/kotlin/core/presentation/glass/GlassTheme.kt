@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.Color
 /**
  * Tepan Payments Glass Theme configuration.
  * Provides glassmorphism presets aligned with the Tepan design system.
- * 
+ *
  * Design principles from DESIGN.md:
  * - Financial trust meets crypto innovation
  * - Professional, secure, modern, approachable
@@ -31,8 +31,8 @@ data class GlassTheme(
          */
         fun light(
             primaryColor: Color = Color(0xFF2B7FFF), // TepanPrimaryLight
-            accentColor: Color = Color(0xFF7C3AED),  // TepanAccentLight
-            surfaceColor: Color = Color(0xFFFFFFFF)  // TepanSurfaceLight
+            accentColor: Color = Color(0xFF7C3AED), // TepanAccentLight
+            surfaceColor: Color = Color(0xFFFFFFFF) // TepanSurfaceLight
         ) = GlassTheme(
             defaultConfig = GlassConfig.Light.copy(tintColor = surfaceColor),
             primaryConfig = GlassConfig.Primary.copy(tintColor = primaryColor),
@@ -47,8 +47,8 @@ data class GlassTheme(
          */
         fun dark(
             primaryColor: Color = Color(0xFF4A90FF), // TepanPrimaryDark
-            accentColor: Color = Color(0xFF9D5EFF),  // TepanAccentDark
-            surfaceColor: Color = Color(0xFF151B24)  // TepanSurfaceDark
+            accentColor: Color = Color(0xFF9D5EFF), // TepanAccentDark
+            surfaceColor: Color = Color(0xFF151B24) // TepanSurfaceDark
         ) = GlassTheme(
             defaultConfig = GlassConfig.Dark.copy(tintColor = surfaceColor),
             primaryConfig = GlassConfig.Primary.copy(tintColor = primaryColor),
@@ -64,7 +64,7 @@ val LocalGlassTheme = staticCompositionLocalOf { GlassTheme.dark() }
 /**
  * Provides a glass theme to the composition tree.
  * Should be called at the root of your app, typically inside MaterialTheme.
- * 
+ *
  * Example:
  * ```
  * MaterialTheme {
@@ -108,7 +108,7 @@ fun GlassTheme.withTintColor(tintColor: Color): GlassTheme {
 /**
  * Creates a new glass theme with noise texture enabled.
  * Adds subtle grain for a more tactile, premium feel.
- * 
+ *
  * @param intensity Noise intensity (0.0 to 1.0). Default is 0.15 per DESIGN.md.
  */
 fun GlassTheme.withNoise(intensity: Float = 0.15f): GlassTheme {
@@ -124,7 +124,7 @@ fun GlassTheme.withNoise(intensity: Float = 0.15f): GlassTheme {
 /**
  * Creates a new glass theme with custom blur radius.
  * Adjust blur for different visual weights and performance needs.
- * 
+ *
  * @param blurRadius Blur radius in dp. Typical range: 8.dp to 16.dp.
  */
 fun GlassTheme.withBlur(blurRadius: androidx.compose.ui.unit.Dp): GlassTheme {
