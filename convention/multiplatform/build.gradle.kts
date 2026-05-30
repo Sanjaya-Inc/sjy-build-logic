@@ -8,4 +8,5 @@ dependencies {
     compileOnly(sjy.plugin.agp)
     compileOnly(sjy.plugin.ksp)
     compileOnly(sjy.plugin.kgp)
+    implementation(sjy.koin.compiler.plugin)
 }

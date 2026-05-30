@@ -85,7 +85,7 @@ koin-core = { group = "io.insert-koin", name = "koin-core" }
 koin-core-coroutines = { group = "io.insert-koin", name = "koin-core-coroutines" }
 koin-core-viewmodel = { group = "io.insert-koin", name = "koin-core-viewmodel" }
 koin-annotation = { group = "io.insert-koin", name = "koin-annotations", version.ref = "koin" }
-koin-compiler-plugin = { group = "io.insert-koin.compiler", name = "plugin", version.ref = "koin-compiler" }
+koin-compiler-plugin = { module = "io.insert-koin:koin-compiler-gradle-plugin", version.ref = "koin-compiler" }
 
 # Dependency Injection - Koin Android
 koin-android = { group = "io.insert-koin", name = "koin-android" }

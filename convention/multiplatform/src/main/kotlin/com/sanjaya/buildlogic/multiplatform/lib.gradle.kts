@@ -1,12 +1,10 @@
 package com.sanjaya.buildlogic.multiplatform
 
-import com.sanjaya.buildlogic.sjyVersion
+import com.android.build.api.variant.KotlinMultiplatformAndroidComponentsExtension
 import com.sanjaya.buildlogic.sjyLibrary
 import com.sanjaya.buildlogic.sjyPlugin
-import com.sanjaya.buildlogic.sjyBundle
+import com.sanjaya.buildlogic.sjyVersion
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
-
-import com.android.build.api.variant.KotlinMultiplatformAndroidComponentsExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 fun String.toPascalCase(): String = split('-', '_')
@@ -36,6 +34,14 @@ pluginManager.apply("kotlin-parcelize")
 pluginManager.apply(project.sjyPlugin("kotlin-serialization"))
 
 pluginManager.apply(project.sjyPlugin("ktorfit"))
+
+println("[Build Logic][KmpKoinSetup] Setting up Koin for kmp project: ${project.name}")
+pluginManager.apply(project.sjyPlugin("koin-compiler"))
+extensions.configure<org.koin.compiler.plugin.KoinGradleExtension> {
+    compileSafety.set(false)
+    strictSafety.set(false)
+    userLogs.set(true)
+}
 
 configure<KotlinMultiplatformAndroidComponentsExtension> {
     finalizeDsl {

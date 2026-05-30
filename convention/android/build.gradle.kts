@@ -9,4 +9,5 @@ dependencies {
     compileOnly(sjy.plugin.ksp)
     compileOnly(sjy.plugin.kgp)
     compileOnly(sjy.plugin.compose)
+    implementation(sjy.koin.compiler.plugin)
 }

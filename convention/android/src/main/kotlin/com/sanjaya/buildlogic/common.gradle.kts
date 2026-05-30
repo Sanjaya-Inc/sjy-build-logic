@@ -34,6 +34,12 @@ println("[Build Logic][KtorfitSetup] Setting up android remote data for project:
 pluginManager.apply(project.sjyPlugin("ktorfit"))
 
 println("[Build Logic][AndroidKoinSetup] Setting up Koin Android for project: ${project.name}")
+pluginManager.apply(project.sjyPlugin("koin-compiler"))
+extensions.configure<org.koin.compiler.plugin.KoinGradleExtension> {
+    compileSafety.set(false)
+    strictSafety.set(false)
+    userLogs.set(true)
+}
 
 dependencies {
     add("implementation", project.sjyLibrary("kotlin-serialization"))
