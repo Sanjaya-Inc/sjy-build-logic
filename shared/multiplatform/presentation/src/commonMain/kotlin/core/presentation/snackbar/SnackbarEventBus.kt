@@ -17,8 +17,8 @@ import org.koin.core.annotation.Factory
 @Factory
 class SnackbarEventBus(
     private val dispatcher: SjyDispatchers,
-    private val _flow: MutableSharedFlow<SnackbarVisuals> = MutableSharedFlow()
-) : SharedFlow<SnackbarVisuals> by _flow,
+    private val flow: MutableSharedFlow<SnackbarVisuals> = MutableSharedFlow()
+) : SharedFlow<SnackbarVisuals> by flow,
     CoroutineScope by CoroutineScope(dispatcher.main) {
 
     fun post(
@@ -37,7 +37,7 @@ class SnackbarEventBus(
     }
 
     private fun post(event: SnackbarVisuals) = launch {
-        _flow.emit(event)
+        flow.emit(event)
     }
 }
 

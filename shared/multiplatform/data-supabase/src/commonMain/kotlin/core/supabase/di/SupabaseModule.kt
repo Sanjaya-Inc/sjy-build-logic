@@ -7,4 +7,4 @@ import org.koin.core.annotation.Module
 @ComponentScan(
     "core.supabase"
 )
-object SupabaseModule
+class SupabaseModule

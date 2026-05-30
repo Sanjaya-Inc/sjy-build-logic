@@ -12,26 +12,54 @@ output-reports:
     - 'XmlOutputReport'
 
 comments:
-  active: false
+  active: true
 
 complexity:
-  active: false
+  active: true
+  LongMethod:
+    active: true
+    ignoreAnnotated:
+      - 'Preview'
+      - 'PreviewLightDark'
+      - 'Composable'
+  LongParameterList:
+    active: true
+    ignoreAnnotated:
+      - 'Preview'
+      - 'PreviewLightDark'
+      - 'Composable'
+  TooManyFunctions:
+    active: true
+    thresholdInFiles: 40
+    thresholdInClasses: 18
+    thresholdInInterfaces: 10
+    thresholdInObjects: 20
+    thresholdInEnums: 5
 
 coroutines:
-  active: false
+  active: true
+  InjectDispatcher:
+    active: true
+    dispatcherNames: ['IO', 'Default', 'Unconfined']
+  SleepInsteadOfDelay:
+    active: true
+  SuspendFunWithFlowReturnType:
+    active: true
+  GlobalCoroutineUsage:
+    active: true
 
 empty-blocks:
-  active: false
+  active: true
 
 exceptions:
-  active: false
+  active: true
 
 formatting:
   active: true
   android: true
   ImportOrdering:
-    active: false
-    autoCorrect: false
+    active: true
+    autoCorrect: true
   MaximumLineLength:
     active: true
     maxLineLength: 120
@@ -41,29 +69,39 @@ formatting:
       - "**/testFixtures/**"
       - "**/roboletricTest/**"
   Filename:
-    active: false
+    active: true
   PackageName:
-    active: false
+    active: true
 
 naming:
-  active: false
+  active: true
+  FunctionNaming:
+    active: true
+    ignoreAnnotated:
+      - 'Preview'
+      - 'PreviewLightDark'
+      - 'Composable'
 
 performance:
-  active: false
+  active: true
 
 potential-bugs:
-  active: false
+  active: true
+  UnconditionalJumpStatementInLoop:
+    active: true
+  NullCheckOnMutableProperty:
+    active: true
 
 style:
   active: true
   UnusedParameter:
-    active: false
+    active: true
   UnusedPrivateProperty:
-    active: false
+    active: true
   ForbiddenImport:
-    active: false
-    imports: [ ]
-    forbiddenPatterns: '(ktor.*|koin.*|kotlinx.datetime.*)'
+    active: true
+    imports: []
+    forbiddenPatterns: ''
   ForbiddenComment:
     active: true
     comments:
@@ -86,7 +124,7 @@ style:
     ignoreAnnotated:
       - Module
   MagicNumber:
-    active: false
+    active: true
     excludes: [ '**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/androidUnitTest/**', '**/androidInstrumentedTest/**', '**/jsTest/**', '**/iosTest/**', '**/*.kts' ]
     ignoreNumbers:
       - '-1'
@@ -95,12 +133,18 @@ style:
       - '2'
       - '0.2'
       - '1024'
+    ignoreNamedArgument: true
+    ignoreEnums: true
+    ignorePropertyDeclaration: true
+    ignoreLocalVariableDeclaration: true
+    ignoreExtensionFunctions: true
   UnusedPrivateMember:
     active: true
     ignoreAnnotated:
       - 'Preview'
+      - 'PreviewLightDark'
   ReturnCount:
-    active: false
+    active: true
 
 Compose:
   ComposableAnnotationNaming:
@@ -164,6 +208,6 @@ Compose:
   UnstableCollections:
     active: true
   ViewModelForwarding:
-    active: false
+    active: true
   ViewModelInjection:
     active: true

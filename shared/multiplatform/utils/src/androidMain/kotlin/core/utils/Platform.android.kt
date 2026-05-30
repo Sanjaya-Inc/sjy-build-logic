@@ -1,3 +1,5 @@
+@file:Suppress("MatchingDeclarationName")
+
 package core.utils
 
 import android.os.Build
