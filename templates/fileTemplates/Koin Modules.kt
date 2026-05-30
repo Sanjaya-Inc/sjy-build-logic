@@ -6,4 +6,4 @@ import org.koin.core.annotation.Module
 
 @Module
 @ComponentScan("${PACKAGE_NAME}")
-object ${MODULE_NAME}Module
+class ${MODULE_NAME}Module
