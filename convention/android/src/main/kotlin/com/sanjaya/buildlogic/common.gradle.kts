@@ -1,7 +1,5 @@
 package com.sanjaya.buildlogic
 
-import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
-
 
 pluginManager.apply("com.sanjaya.buildlogic.target")
 
@@ -12,20 +10,12 @@ pluginManager.apply(project.sjyPlugin("kotlin-serialization"))
 println("[Build Logic][KspSetup] Setting up ksp for project: ${project.name}")
 runCatching {
     pluginManager.apply(project.sjyPlugin("ksp"))
-    configure<KotlinAndroidProjectExtension> {
-        sourceSets.named("main") {
-            kotlin.srcDir("build/generated/ksp/main/kotlin")
-        }
-        sourceSets.named("debug") {
-            kotlin.srcDir("build/generated/ksp/debug/kotlin")
-        }
-        sourceSets.named("release") {
-            kotlin.srcDir("build/generated/ksp/release/kotlin")
-        }
-    }
-}.onFailure {
-    println("[Build Logic][KspSetup] [ERROR] KSP Plugins is not applied, please add ksp on root build.gradle.kts first")
-    println("[Build Logic][KspSetup] use this: alias(core.plugins.ksp) apply false")
+}.onFailure { e ->
+    println("[Build Logic][KspSetup] [ERROR] Failed to apply KSP plugin: ${e.message}")
+    println(
+        "[Build Logic][KspSetup] Please ensure ksp is added to the root build.gradle.kts: " +
+            "alias(sjy.plugins.ksp) apply false"
+    )
 }.onSuccess {
     println("[Build Logic][KspSetup] Successfully applied ksp plugin")
 }

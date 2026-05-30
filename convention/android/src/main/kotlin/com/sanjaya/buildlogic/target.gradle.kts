@@ -2,8 +2,6 @@ package com.sanjaya.buildlogic
 
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.LibraryExtension
-import org.gradle.api.plugins.JavaPluginExtension
-import org.gradle.jvm.toolchain.JavaLanguageVersion
 
 println("[Build Logic][AndroidTargetSetup] Setting up Android Target for project: ${project.name}")
 

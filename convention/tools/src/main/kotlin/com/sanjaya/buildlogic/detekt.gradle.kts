@@ -3,7 +3,6 @@ package com.sanjaya.buildlogic
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
-import org.gradle.kotlin.dsl.withType
 
 println("[Build Logic][DetektSetup] Setting up Detekt for project: ${project.name}")
 

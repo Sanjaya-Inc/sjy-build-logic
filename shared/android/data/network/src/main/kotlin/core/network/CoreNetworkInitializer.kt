@@ -4,11 +4,10 @@ import android.content.Context
 import androidx.startup.Initializer
 import core.utils.KoinInitializer
 import org.koin.core.context.loadKoinModules
-import org.koin.ksp.generated.module
 
 class CoreNetworkInitializer : Initializer<Unit> {
     override fun create(context: Context) {
-        loadKoinModules(CoreNetworkModule.module)
+        loadKoinModules(CoreNetworkModule.module())
     }
 
     override fun dependencies(): List<Class<out Initializer<*>?>?> {

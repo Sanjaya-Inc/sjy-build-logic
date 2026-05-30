@@ -4,7 +4,7 @@ import com.android.build.api.variant.KotlinMultiplatformAndroidComponentsExtensi
 import com.sanjaya.buildlogic.sjyLibrary
 import com.sanjaya.buildlogic.sjyPlugin
 import com.sanjaya.buildlogic.sjyVersion
-import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
+
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 fun String.toPascalCase(): String = split('-', '_')
@@ -18,13 +18,9 @@ pluginManager.apply(project.sjyPlugin("android-kotlin-multiplatform-library"))
 println("[Build Logic][KspSetup] Setting up ksp for project: ${project.name}")
 runCatching {
     pluginManager.apply(project.sjyPlugin("ksp"))
-    configure<KotlinAndroidProjectExtension> {
-        sourceSets.named("main") { kotlin.srcDir("build/generated/ksp/main/kotlin") }
-        sourceSets.named("debug") { kotlin.srcDir("build/generated/ksp/debug/kotlin") }
-        sourceSets.named("release") { kotlin.srcDir("build/generated/ksp/release/kotlin") }
-    }
-}.onFailure {
-    println("[Build Logic][KspSetup] [ERROR] KSP Plugins is not applied, please add ksp on root build.gradle.kts first")
+}.onFailure { e ->
+    println("[Build Logic][KspSetup] [ERROR] Failed to apply KSP plugin: ${e.message}")
+    println("[Build Logic][KspSetup] Please ensure ksp is added to the root build.gradle.kts: alias(sjy.plugins.ksp) apply false")
 }.onSuccess {
     println("[Build Logic][KspSetup] Successfully applied ksp plugin")
 }

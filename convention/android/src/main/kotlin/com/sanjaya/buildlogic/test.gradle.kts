@@ -4,13 +4,6 @@ import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.LibraryExtension
 import com.android.build.api.variant.ApplicationAndroidComponentsExtension
 import com.android.build.api.variant.LibraryAndroidComponentsExtension
-import org.gradle.api.tasks.testing.Test
-import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.register
-import org.gradle.kotlin.dsl.withType
-import org.gradle.testing.jacoco.plugins.JacocoPluginExtension
-import org.gradle.testing.jacoco.plugins.JacocoTaskExtension
-import org.gradle.testing.jacoco.tasks.JacocoReport
 
 val jacocoFileFilter = listOf(
     "**/*_MembersInjector.class",
@@ -100,7 +93,11 @@ if (isApp || isLib) {
         }
     }
 
-    fun registerJacocoReportTask(variantName: String, testTaskName: String, variantNameLower: String) {
+    fun registerJacocoReportTask(
+        variantName: String,
+        testTaskName: String,
+        variantNameLower: String
+    ) {
         val testTask = tasks.named(testTaskName)
         tasks.register<JacocoReport>("jacoco${variantName}Report") {
             group = "verification"
@@ -127,16 +124,23 @@ if (isApp || isLib) {
     }
 
     if (isApp) {
-        extensions.getByType(ApplicationAndroidComponentsExtension::class.java).onVariants { variant ->
-            if (variant.buildType == "debug") {
-                val variantName = variant.name.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
-                registerJacocoReportTask(variantName, "test${variantName}UnitTest", variant.name)
+        extensions.getByType(ApplicationAndroidComponentsExtension::class.java)
+            .onVariants { variant ->
+                if (variant.buildType == "debug") {
+                    val variantName =
+                        variant.name.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+                    registerJacocoReportTask(
+                        variantName,
+                        "test${variantName}UnitTest",
+                        variant.name
+                    )
+                }
             }
-        }
     } else {
         extensions.getByType(LibraryAndroidComponentsExtension::class.java).onVariants { variant ->
             if (variant.buildType == "debug") {
-                val variantName = variant.name.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+                val variantName =
+                    variant.name.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
                 registerJacocoReportTask(variantName, "test${variantName}UnitTest", variant.name)
             }
         }
