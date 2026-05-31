@@ -66,6 +66,8 @@ sqlcipher = "4.16.0"
 supabase = "3.6.0"
 autoservice = "1.1.1"
 autoservice-ksp = "1.2.0"
+jna = "5.18.1"
+rustls = "0.1.1"
 
 [libraries]
 # AndroidX
@@ -224,6 +226,10 @@ supabase-compose-auth = { group = "io.github.jan-tennert.supabase", name = "comp
 ## Autoservice
 autoservice-ksp = { module = "dev.zacsweers.autoservice:auto-service-ksp", version.ref = "autoservice-ksp" }
 autoservice-annotation = { module = "com.google.auto.service:auto-service-annotations", version.ref = "autoservice" }
+
+## JNA (for Rust FFI)
+jna = { module = "net.java.dev.jna:jna", version.ref = "jna" }
+rustls = { module = "rustls:rustls-platform-verifier", version.ref = "rustls" }
 
 [bundles]
 koin-nonandroid = [
