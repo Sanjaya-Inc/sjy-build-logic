@@ -66,7 +66,7 @@ sqlcipher = "4.16.0"
 supabase = "3.6.0"
 autoservice = "1.1.1"
 autoservice-ksp = "1.2.0"
-jna = "5.18.1"
+jna = "5.19.0"
 rustls = "0.1.1"
 
 [libraries]
