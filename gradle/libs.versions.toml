@@ -10,7 +10,7 @@ kotlin-date = "0.8.0-0.6.x-compat"
 ksp = "2.3.9"
 detekt = "1.23.8"
 jvm-target = "21"
-jacoco = "0.8.14"
+jacoco = "0.8.15"
 
 # AndroidX
 core-ktx = "1.19.0"
