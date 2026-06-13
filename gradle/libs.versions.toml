@@ -20,7 +20,7 @@ coroutines = "1.11.0"
 
 # Dependency Injection
 koin = "4.2.1"
-koin-compiler = "1.0.0"
+koin-compiler = "1.0.1"
 compose-compiler = "1.11.1"
 
 ktorfit = "2.7.5"
