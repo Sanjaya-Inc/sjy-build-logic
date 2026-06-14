@@ -167,6 +167,15 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 compose-google-fonts = { module = "androidx.compose.ui:ui-text-google-fonts" }
 compose-icons = { module = "androidx.compose.material:material-icons-core", version.ref = "compose-icon" }
+compose-icon-collections-fontawesome = { module = "com.woowla.compose.icon.collections:fontawesome", version = "7.1.0" }
+compose-icon-collections-octicons = { module = "com.woowla.compose.icon.collections:octicons", version = "19.21.2" }
+compose-icon-collections-tabler = { module = "com.woowla.compose.icon.collections:tabler", version = "3.36.1" }
+compose-icon-collections-remix = { module = "com.woowla.compose.icon.collections:remix", version = "4.9.0" }
+compose-icon-collections-boxicons = { module = "com.woowla.compose.icon.collections:boxicons", version = "2.1.4" }
+compose-icon-collections-feather = { module = "com.woowla.compose.icon.collections:feather", version = "4.29.2" }
+compose-icon-collections-ionicons = { module = "com.woowla.compose.icon.collections:ionicons", version = "8.0.13" }
+compose-icon-collections-simpleicons = { module = "com.woowla.compose.icon.collections:simpleicons", version = "16.6.1" }
+compose-icon-collections-twbs = { module = "com.woowla.compose.icon.collections:twbs", version = "1.13.1" }
 
 # Navigation 3 (Compose Multiplatform)
 navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "navigation3-ui" }
