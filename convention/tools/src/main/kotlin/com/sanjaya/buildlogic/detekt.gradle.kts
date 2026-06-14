@@ -31,28 +31,28 @@ if (detektApplied) {
         allRules = false
         autoCorrect = true
         parallel = true
-        baseline = file("../config/detekt-${project.name}-baseline.xml")
+        baseline = rootProject.file("config/detekt-${project.name}-baseline.xml")
         config.setFrom(detektConfigFile)
     }
 
     val jvmTargetVersion = project.sjyVersion("jvm-target")
 
+    val detektSource = files(
+        "src/main/java", "src/main/kotlin",
+        "src/test/java", "src/test/kotlin",
+        "src/androidTest/java", "src/androidTest/kotlin",
+        "src/androidDeviceTest/java", "src/androidDeviceTest/kotlin",
+        "src/androidHostTest/java", "src/androidHostTest/kotlin",
+        "src/commonMain/java", "src/commonMain/kotlin",
+        "src/commonTest/java", "src/commonTest/kotlin",
+        "src/androidMain/java", "src/androidMain/kotlin",
+        "src/iosMain/java", "src/iosMain/kotlin",
+        "src/jvmMain/java", "src/jvmMain/kotlin"
+    )
+
     tasks.withType<Detekt>().configureEach {
         jvmTarget = jvmTargetVersion
-        setSource(
-            files(
-                "src/main/java", "src/main/kotlin",
-                "src/test/java", "src/test/kotlin",
-                "src/androidTest/java", "src/androidTest/kotlin",
-                "src/androidDeviceTest/java", "src/androidDeviceTest/kotlin",
-                "src/androidHostTest/java", "src/androidHostTest/kotlin",
-                "src/commonMain/java", "src/commonMain/kotlin",
-                "src/commonTest/java", "src/commonTest/kotlin",
-                "src/androidMain/java", "src/androidMain/kotlin",
-                "src/iosMain/java", "src/iosMain/kotlin",
-                "src/jvmMain/java", "src/jvmMain/kotlin"
-            )
-        )
+        setSource(detektSource)
         exclude("**/build/**")
         reports {
             html.required.set(true)
@@ -65,6 +65,8 @@ if (detektApplied) {
 
     tasks.withType<DetektCreateBaselineTask>().configureEach {
         jvmTarget = jvmTargetVersion
+        setSource(detektSource)
+        exclude("**/build/**")
     }
 
     dependencies {
