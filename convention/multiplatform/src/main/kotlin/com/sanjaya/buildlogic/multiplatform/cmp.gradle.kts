@@ -14,6 +14,7 @@ configure<KotlinMultiplatformExtension> {
     sourceSets.androidMain.dependencies {
         implementation(project.sjyLibrary("androidx-activity-compose"))
         implementation(project.sjyLibrary("androidx-ui-tooling-preview"))
+        implementation(project.sjyLibrary("androidx-ui-tooling"))
     }
     sourceSets.commonMain.dependencies {
         implementation(project.sjyLibrary("compose-runtime"))
