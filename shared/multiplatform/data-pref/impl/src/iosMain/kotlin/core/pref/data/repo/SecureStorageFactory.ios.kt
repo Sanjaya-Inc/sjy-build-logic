@@ -4,20 +4,24 @@ import core.pref.PreferenceRepository
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.alloc
-import kotlinx.cinterop.interpretCPointer
 import kotlinx.cinterop.memScoped
-import kotlinx.cinterop.objcPtr
 import kotlinx.cinterop.ptr
 import kotlinx.cinterop.value
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
+import platform.CoreFoundation.CFDictionaryAddValue
+import platform.CoreFoundation.CFDictionaryCreateMutable
+import platform.CoreFoundation.CFRelease
 import platform.CoreFoundation.CFTypeRefVar
+import platform.CoreFoundation.kCFAllocatorDefault
 import platform.CoreFoundation.kCFBooleanTrue
+import platform.CoreFoundation.kCFTypeDictionaryKeyCallBacks
+import platform.CoreFoundation.kCFTypeDictionaryValueCallBacks
 import platform.Foundation.CFBridgingRelease
+import platform.Foundation.CFBridgingRetain
 import platform.Foundation.NSData
-import platform.Foundation.NSMutableDictionary
 import platform.Foundation.NSString
 import platform.Foundation.NSUTF8StringEncoding
 import platform.Foundation.create
@@ -109,48 +113,56 @@ internal actual fun createSecuredRepository(): PreferenceRepository {
             }
         }.distinctUntilChanged()
 
-        @Suppress("UNCHECKED_CAST")
-        private fun createQuery(): MutableMap<Any?, Any?> {
-            return NSMutableDictionary() as MutableMap<Any?, Any?>
-        }
+        private fun createQuery(account: String? = null): platform.CoreFoundation.CFMutableDictionaryRef? {
+            val query = CFDictionaryCreateMutable(
+                kCFAllocatorDefault,
+                0,
+                kCFTypeDictionaryKeyCallBacks.ptr,
+                kCFTypeDictionaryValueCallBacks.ptr
+            ) ?: return null
 
-        private fun Map<Any?, Any?>.toCFDictionary(): platform.CoreFoundation.CFDictionaryRef {
-            return interpretCPointer<cnames.structs.__CFDictionary>(this.objcPtr())!!
+            CFDictionaryAddValue(query, kSecClass, kSecClassGenericPassword)
+
+            val serviceRef = CFBridgingRetain(KEYCHAIN_SERVICE)
+            CFDictionaryAddValue(query, kSecAttrService, serviceRef)
+            CFRelease(serviceRef)
+
+            if (account != null) {
+                val accountRef = CFBridgingRetain(account)
+                CFDictionaryAddValue(query, kSecAttrAccount, accountRef)
+                CFRelease(accountRef)
+            }
+
+            return query
         }
 
         private fun writeToKeychain(key: String, value: String) {
-            val account = key
-
-            @Suppress("CAST_NEVER_SUCCEEDS")
-            val valueData = (value as NSString).dataUsingEncoding(NSUTF8StringEncoding) ?: return
-
-            val query = createQuery().apply {
-                put(kSecClass, kSecClassGenericPassword)
-                put(kSecAttrService, KEYCHAIN_SERVICE)
-                put(kSecAttrAccount, account)
-            }
+            val query = createQuery(account = key) ?: return
 
             // Delete first to avoid duplicates
-            SecItemDelete(query.toCFDictionary())
+            SecItemDelete(query)
 
-            query.put(kSecValueData, valueData)
-            SecItemAdd(query.toCFDictionary(), null)
+            @Suppress("CAST_NEVER_SUCCEEDS")
+            val valueData = (value as NSString).dataUsingEncoding(NSUTF8StringEncoding)
+            if (valueData != null) {
+                val valueDataRef = CFBridgingRetain(valueData)
+                CFDictionaryAddValue(query, kSecValueData, valueDataRef)
+                CFRelease(valueDataRef)
+                SecItemAdd(query, null)
+            }
+
+            CFRelease(query)
         }
 
         private fun readFromKeychain(key: String): String? {
-            val account = key
+            val query = createQuery(account = key) ?: return null
 
-            val query = createQuery().apply {
-                put(kSecClass, kSecClassGenericPassword)
-                put(kSecAttrService, KEYCHAIN_SERVICE)
-                put(kSecAttrAccount, account)
-                put(kSecReturnData, kCFBooleanTrue)
-                put(kSecMatchLimit, kSecMatchLimitOne)
-            }
+            CFDictionaryAddValue(query, kSecReturnData, kCFBooleanTrue)
+            CFDictionaryAddValue(query, kSecMatchLimit, kSecMatchLimitOne)
 
-            return memScoped {
+            val result = memScoped {
                 val resultRef = alloc<CFTypeRefVar>()
-                val status = SecItemCopyMatching(query.toCFDictionary(), resultRef.ptr)
+                val status = SecItemCopyMatching(query, resultRef.ptr)
                 if (status == errSecSuccess) {
                     val nsData = CFBridgingRelease(resultRef.value) as? NSData
                     nsData?.let {
@@ -160,24 +172,21 @@ internal actual fun createSecuredRepository(): PreferenceRepository {
                     null
                 }
             }
+
+            CFRelease(query)
+            return result
         }
 
         private fun deleteFromKeychain(key: String) {
-            val account = key
-            val query = createQuery().apply {
-                put(kSecClass, kSecClassGenericPassword)
-                put(kSecAttrService, KEYCHAIN_SERVICE)
-                put(kSecAttrAccount, account)
-            }
-            SecItemDelete(query.toCFDictionary())
+            val query = createQuery(account = key) ?: return
+            SecItemDelete(query)
+            CFRelease(query)
         }
 
         private fun clearKeychain() {
-            val query = createQuery().apply {
-                put(kSecClass, kSecClassGenericPassword)
-                put(kSecAttrService, KEYCHAIN_SERVICE)
-            }
-            SecItemDelete(query.toCFDictionary())
+            val query = createQuery() ?: return
+            SecItemDelete(query)
+            CFRelease(query)
         }
     }
 }
