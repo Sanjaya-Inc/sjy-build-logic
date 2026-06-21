@@ -63,5 +63,4 @@ internal class PreferenceRepositoryImpl(
         dataStore.data
             .map { preferences -> preferences[key] ?: defaultValue }
             .distinctUntilChanged()
-
 }
