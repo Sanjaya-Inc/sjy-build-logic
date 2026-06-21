@@ -134,6 +134,6 @@ internal actual fun createSecuredRepository(): PreferenceRepository {
 }
 
 private const val PROVIDER = "AndroidKeyStore"
-private const val ALIAS = "berbudget_secured_pref_key"
+private const val ALIAS = "core_secured_pref_key"
 private const val CIPHER_TRANSFORMATION = "AES/GCM/NoPadding"
 private const val TAG_LENGTH = 128

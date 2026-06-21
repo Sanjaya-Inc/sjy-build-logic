@@ -39,7 +39,7 @@ import platform.Security.kSecMatchLimitOne
 import platform.Security.kSecReturnData
 import platform.Security.kSecValueData
 
-private const val KEYCHAIN_SERVICE = "com.xervproject.berbudget.secured"
+private const val KEYCHAIN_SERVICE = "core.pref.data.secured"
 
 @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
 internal actual fun createSecuredRepository(): PreferenceRepository {
