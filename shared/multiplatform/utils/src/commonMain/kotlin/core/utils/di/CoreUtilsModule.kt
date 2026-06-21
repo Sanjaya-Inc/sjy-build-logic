@@ -1,5 +1,6 @@
 package core.utils.di
 
+import core.utils.PlatformContext
 import kotlinx.serialization.json.Json
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
@@ -9,7 +10,7 @@ import org.koin.core.annotation.Single
 @ComponentScan(
     "core.utils"
 )
-class CoreUtilsModule {
+class CoreUtilsModule(private val platformContext: PlatformContext) {
 
     @Single
     fun provideJson(): Json {
@@ -18,4 +19,11 @@ class CoreUtilsModule {
             ignoreUnknownKeys = true
         }
     }
+
+    @Single
+    fun providePlatformContext(): PlatformContext {
+        return platformContext
+    }
 }
+
+fun coreUtilsModule(platformContext: PlatformContext) = CoreUtilsModule(platformContext).module()

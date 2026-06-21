@@ -1,4 +1,4 @@
-package core.pref.domain.repo
+package core.pref
 
 import kotlinx.coroutines.flow.Flow
 
