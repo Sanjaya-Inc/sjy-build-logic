@@ -138,6 +138,8 @@ style:
     ignorePropertyDeclaration: true
     ignoreLocalVariableDeclaration: true
     ignoreExtensionFunctions: true
+    ignoreAnnotated:
+      - 'androidx.compose.runtime.Composable'
   UnusedPrivateMember:
     active: true
     ignoreAnnotated:
