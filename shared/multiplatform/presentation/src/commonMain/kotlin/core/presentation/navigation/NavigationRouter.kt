@@ -109,5 +109,5 @@ val LocalNavigationRouter = compositionLocalOf<NavigationRouter> { error("Not Pr
 
 @Composable
 fun rememberNavigationRouter(startRoute: Route): NavigationRouter {
-    return remember { NavigationRouter(startRoute) }
+    return remember(startRoute) { NavigationRouter(startRoute) }
 }
