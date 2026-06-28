@@ -41,14 +41,23 @@ class NavigationRouter(startRoute: Route) {
         return true
     }
 
-    fun navigateTo(route: Route, clearBackStack: Boolean = false) {
+    fun navigateTo(
+        route: Route,
+        clearBackStack: Boolean = false,
+        allowDuplicates: Boolean = false
+    ) {
         if (!shouldProcessAction(route)) return
 
-        _backStack.update {
-            if (clearBackStack) {
-                listOf(route)
-            } else {
-                it + route
+        _backStack.update { currentStack ->
+            when {
+                clearBackStack -> listOf(route)
+
+                !allowDuplicates && currentStack.contains(route) -> {
+                    val index = currentStack.indexOf(route)
+                    currentStack.subList(0, index + 1)
+                }
+
+                else -> currentStack + route
             }
         }
     }
