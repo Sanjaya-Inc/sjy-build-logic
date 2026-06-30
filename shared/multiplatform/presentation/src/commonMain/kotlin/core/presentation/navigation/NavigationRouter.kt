@@ -20,7 +20,11 @@ import kotlin.time.Clock
 interface Route
 
 @Stable
-class NavigationRouter(startRoute: Route) {
+class NavigationRouter(
+    startRoute: Route,
+    val key: Any? = null,
+    val parent: NavigationRouter? = null
+) {
 
     private val _backStack = MutableStateFlow(listOf(startRoute))
     val backStack = _backStack.asStateFlow()
@@ -39,6 +43,19 @@ class NavigationRouter(startRoute: Route) {
 
         lastActionTimes[key] = currentTime
         return true
+    }
+
+    fun findSibling(key: Any?): NavigationRouter? {
+        return when {
+            key == null -> null
+            this.key == key -> this
+            else -> parent?.findSibling(key)
+        }
+    }
+
+    operator fun invoke(key: Any?): NavigationRouter {
+        if (key == null) return this
+        return findSibling(key) ?: this
     }
 
     fun navigateTo(
@@ -82,6 +99,7 @@ class NavigationRouter(startRoute: Route) {
     }
 }
 
+@Suppress("SwallowedException")
 @Composable
 fun NavigationRouter(
     router: NavigationRouter,
@@ -90,7 +108,10 @@ fun NavigationRouter(
     transitionSpecs: TransitionSpecs = DefaultTransitionSpecs,
 ) {
     val backStack by router.backStack.collectAsStateWithLifecycle()
-    CompositionLocalProvider(LocalNavigationRouter provides router) {
+    CompositionLocalProvider(
+        LocalNavigationRouter provides router,
+        LocalParentNavigationRouter provides router
+    ) {
         NavDisplay(
             backStack = backStack,
             onBack = router::onBack,
@@ -107,7 +128,10 @@ fun NavigationRouter(
 
 val LocalNavigationRouter = compositionLocalOf<NavigationRouter> { error("Not Provided yet") }
 
+internal val LocalParentNavigationRouter = compositionLocalOf<NavigationRouter?> { null }
+
 @Composable
-fun rememberNavigationRouter(startRoute: Route): NavigationRouter {
-    return retain(startRoute) { NavigationRouter(startRoute) }
+fun rememberNavigationRouter(startRoute: Route, key: Any? = null): NavigationRouter {
+    val parent = LocalParentNavigationRouter.current
+    return retain(startRoute, key, parent) { NavigationRouter(startRoute, key, parent) }
 }
