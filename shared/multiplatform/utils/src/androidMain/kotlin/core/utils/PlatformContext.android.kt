@@ -1,3 +1,8 @@
 package core.utils
 
-actual class PlatformContext(val appContext: android.content.Context)
+import android.app.Activity
+
+actual class PlatformContext(
+    val appContext: android.content.Context,
+    val activity: Activity? = null
+)
