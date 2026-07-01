@@ -79,6 +79,17 @@ class NavigationRouter(
         }
     }
 
+    fun replaceTop(route: Route) {
+        if (!shouldProcessAction(route)) return
+
+        _backStack.update { stack ->
+            when {
+                stack.isEmpty() -> listOf(route)
+                else -> stack.dropLast(1) + route
+            }
+        }
+    }
+
     fun onBack() {
         if (!shouldProcessAction(ACTION_BACK)) return
 
