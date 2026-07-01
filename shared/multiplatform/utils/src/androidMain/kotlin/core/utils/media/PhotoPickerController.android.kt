@@ -3,6 +3,8 @@ package core.utils.media
 import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.net.Uri
+import android.provider.OpenableColumns
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -26,7 +28,7 @@ actual fun rememberPhotoPicker(
             return@rememberLauncherForActivityResult
         }
         val bytes = context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
-        val name = uri.lastPathSegment?.substringAfterLast('/') ?: "photo.jpg"
+        val name = resolveDisplayName(context, uri)
         onResult(bytes, name)
     }
 
@@ -65,6 +67,16 @@ actual fun rememberPhotoPicker(
             }
         )
     }
+}
+
+private fun resolveDisplayName(context: android.content.Context, uri: Uri): String {
+    context.contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use { cursor ->
+        val index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+        if (index >= 0 && cursor.moveToFirst()) {
+            cursor.getString(index)?.takeIf { it.isNotBlank() }?.let { return it }
+        }
+    }
+    return "photo.jpg"
 }
 
 private const val JPEG_QUALITY = 90
