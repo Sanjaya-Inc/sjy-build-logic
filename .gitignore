@@ -3,6 +3,7 @@
 /build/
 /convention/build/
 /local.properties
+.DS_Store
 /shared/*/*/build
 /convention/**/**/build/
 /.kotlin/**

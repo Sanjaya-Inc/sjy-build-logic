@@ -63,8 +63,19 @@ actual fun compositeMatchShareImage(request: ShareMatchCompositeRequest): ImageB
             CGRectMake(0.0, 0.0, request.exportWidth.toDouble(), request.exportHeight.toDouble())
         )
     }
-    request.overlayBitmap.toUIImage().drawInRect(
-        CGRectMake(0.0, 0.0, request.exportWidth.toDouble(), request.exportHeight.toDouble())
+    val overlayImage = request.overlayBitmap.toUIImage()
+    val overlayWidth = overlayImage.size.useContents { width }
+    val overlayHeight = overlayImage.size.useContents { height }
+    val overlayScale = request.exportWidth.toDouble() / overlayWidth
+    val overlayDrawHeight = overlayHeight * overlayScale
+    val overlayDrawTop = request.exportHeight.toDouble() - overlayDrawHeight
+    overlayImage.drawInRect(
+        CGRectMake(
+            x = 0.0,
+            y = overlayDrawTop,
+            width = request.exportWidth.toDouble(),
+            height = request.exportHeight.toDouble()
+        )
     )
     val composed = UIGraphicsGetImageFromCurrentImageContext()
     UIGraphicsEndImageContext()

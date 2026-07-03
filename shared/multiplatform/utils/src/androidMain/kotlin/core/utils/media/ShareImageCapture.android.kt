@@ -28,27 +28,49 @@ import androidx.compose.ui.geometry.Rect as ComposeRect
 
 @Composable
 actual fun rememberShareImageCapture(): ShareImageCapture {
-    val boundsHolder = remember { CaptureBoundsHolder() }
+    val previewBounds = remember { CaptureBoundsHolder() }
+    val overlayBounds = remember { CaptureBoundsHolder() }
     val view = LocalView.current
     val captureModifier = Modifier.onGloballyPositioned { coordinates ->
-        boundsHolder.bounds = coordinates.boundsInWindow()
-        boundsHolder.widthPx = coordinates.size.width
-        boundsHolder.heightPx = coordinates.size.height
+        previewBounds.bounds = coordinates.boundsInWindow()
+        previewBounds.widthPx = coordinates.size.width
+        previewBounds.heightPx = coordinates.size.height
     }
-    return remember(view, boundsHolder) {
+    val overlayCaptureModifier = Modifier.onGloballyPositioned { coordinates ->
+        overlayBounds.bounds = coordinates.boundsInWindow()
+        overlayBounds.widthPx = coordinates.size.width
+        overlayBounds.heightPx = coordinates.size.height
+    }
+    return remember(view, previewBounds, overlayBounds) {
         ShareImageCapture(
             captureModifier = captureModifier,
-            captureToBitmap = { width, height ->
+            overlayCaptureModifier = overlayCaptureModifier,
+            captureToBitmap = { width, height, preserveAlpha ->
                 captureAndroidView(
                     view = view,
-                    bounds = boundsHolder.bounds,
+                    bounds = previewBounds.bounds,
                     width = width,
-                    height = height
+                    height = height,
+                    preserveAlpha = preserveAlpha
+                )
+            },
+            captureOverlayToBitmap = { width, height, preserveAlpha ->
+                captureAndroidView(
+                    view = view,
+                    bounds = overlayBounds.bounds,
+                    width = width,
+                    height = height,
+                    preserveAlpha = preserveAlpha
                 )
             },
             previewSizePx = {
-                val width = boundsHolder.widthPx
-                val height = boundsHolder.heightPx
+                val width = previewBounds.widthPx
+                val height = previewBounds.heightPx
+                if (width > 0 && height > 0) width to height else null
+            },
+            overlaySizePx = {
+                val width = overlayBounds.widthPx
+                val height = overlayBounds.heightPx
                 if (width > 0 && height > 0) width to height else null
             }
         )
@@ -59,14 +81,16 @@ private suspend fun captureAndroidView(
     view: View,
     bounds: ComposeRect?,
     width: Int,
-    height: Int
+    height: Int,
+    preserveAlpha: Boolean
 ): ImageBitmap = withContext(Dispatchers.Main) {
     val captureBounds = bounds ?: error("Preview is not laid out yet")
     check(view.width > 0 && view.height > 0) { "Preview is not laid out yet" }
 
     val cropRect = captureBounds.toAndroidRect(view)
+    check(cropRect.width() > 0 && cropRect.height() > 0) { "Capture target is not laid out yet" }
     val activity = view.context.findActivity()
-    if (activity != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    if (!preserveAlpha && activity != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         runCatching {
             captureWithPixelCopy(
                 activity = activity,
@@ -122,29 +146,24 @@ private fun captureWithViewDraw(
     width: Int,
     height: Int
 ): ImageBitmap {
-    val previousLayerType = view.layerType
-    view.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
-    try {
-        val fullBitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
-        view.draw(Canvas(fullBitmap))
-        val cropped = Bitmap.createBitmap(
-            fullBitmap,
-            cropRect.left,
-            cropRect.top,
-            cropRect.width(),
-            cropRect.height()
-        )
-        if (cropped !== fullBitmap) {
-            fullBitmap.recycle()
-        }
-        val scaled = Bitmap.createScaledBitmap(cropped, width, height, true)
-        if (scaled !== cropped) {
-            cropped.recycle()
-        }
-        return scaled.asImageBitmap()
-    } finally {
-        view.setLayerType(previousLayerType, null)
+    val fullBitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+    fullBitmap.eraseColor(android.graphics.Color.TRANSPARENT)
+    view.draw(Canvas(fullBitmap))
+    val cropped = Bitmap.createBitmap(
+        fullBitmap,
+        cropRect.left,
+        cropRect.top,
+        cropRect.width(),
+        cropRect.height()
+    )
+    if (cropped !== fullBitmap) {
+        fullBitmap.recycle()
     }
+    val scaled = Bitmap.createScaledBitmap(cropped, width, height, true)
+    if (scaled !== cropped) {
+        cropped.recycle()
+    }
+    return scaled.asImageBitmap()
 }
 
 private fun ComposeRect.toAndroidRect(view: View): Rect {

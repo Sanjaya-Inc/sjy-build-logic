@@ -27,21 +27,36 @@ import platform.UIKit.UIView
 
 @Composable
 actual fun rememberShareImageCapture(): ShareImageCapture {
-    val boundsHolder = remember { CaptureBoundsHolder() }
+    val previewBounds = remember { CaptureBoundsHolder() }
+    val overlayBounds = remember { CaptureBoundsHolder() }
     val captureModifier = Modifier.onGloballyPositioned { coordinates ->
-        boundsHolder.bounds = coordinates.boundsInWindow()
-        boundsHolder.widthPx = coordinates.size.width
-        boundsHolder.heightPx = coordinates.size.height
+        previewBounds.bounds = coordinates.boundsInWindow()
+        previewBounds.widthPx = coordinates.size.width
+        previewBounds.heightPx = coordinates.size.height
     }
-    return remember(boundsHolder) {
+    val overlayCaptureModifier = Modifier.onGloballyPositioned { coordinates ->
+        overlayBounds.bounds = coordinates.boundsInWindow()
+        overlayBounds.widthPx = coordinates.size.width
+        overlayBounds.heightPx = coordinates.size.height
+    }
+    return remember(previewBounds, overlayBounds) {
         ShareImageCapture(
             captureModifier = captureModifier,
-            captureToBitmap = { width, height ->
-                capturePreview(boundsHolder.bounds, width, height)
+            overlayCaptureModifier = overlayCaptureModifier,
+            captureToBitmap = { width, height, _ ->
+                capturePreview(previewBounds.bounds, width, height)
+            },
+            captureOverlayToBitmap = { width, height, _ ->
+                capturePreview(overlayBounds.bounds, width, height)
             },
             previewSizePx = {
-                val width = boundsHolder.widthPx
-                val height = boundsHolder.heightPx
+                val width = previewBounds.widthPx
+                val height = previewBounds.heightPx
+                if (width > 0 && height > 0) width to height else null
+            },
+            overlaySizePx = {
+                val width = overlayBounds.widthPx
+                val height = overlayBounds.heightPx
                 if (width > 0 && height > 0) width to height else null
             }
         )
