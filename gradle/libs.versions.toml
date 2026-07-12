@@ -188,6 +188,7 @@ datastore = { module = "androidx.datastore:datastore", version.ref = "datastore"
 datastore-core = { module = "androidx.datastore:datastore-core", version.ref = "datastore" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 
+coil-network-ktor3 = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
 coil-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
 coil = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 

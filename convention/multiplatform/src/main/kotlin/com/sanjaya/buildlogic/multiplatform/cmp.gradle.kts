@@ -17,6 +17,7 @@ configure<KotlinMultiplatformExtension> {
         implementation(project.sjyLibrary("androidx-ui-tooling"))
     }
     sourceSets.commonMain.dependencies {
+        implementation(project.sjyLibrary("coil-network-ktor3"))
         implementation(project.sjyLibrary("compose-runtime"))
         implementation(project.sjyLibrary("compose-foundation"))
         implementation(project.sjyLibrary("compose-material3-multiplatform"))
