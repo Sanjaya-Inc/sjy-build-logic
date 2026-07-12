@@ -37,6 +37,7 @@ private fun drawBackgroundPhoto(canvas: Canvas, request: ShareMatchCompositeRequ
     val drawHeight = background.height * finalScale
     val centerX = request.exportWidth / 2f + request.offsetX * previewScale
     val centerY = request.exportHeight / 2f + request.offsetY * previewScale
+    val paint = Paint(Paint.FILTER_BITMAP_FLAG)
     canvas.drawBitmap(
         background,
         null,
@@ -46,7 +47,7 @@ private fun drawBackgroundPhoto(canvas: Canvas, request: ShareMatchCompositeRequ
             centerX + drawWidth / 2f,
             centerY + drawHeight / 2f
         ),
-        null
+        paint
     )
     background.recycle()
 }

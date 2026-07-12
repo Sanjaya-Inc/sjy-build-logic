@@ -2,23 +2,27 @@ package core.utils.media
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.OpenableColumns
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat
-import java.io.ByteArrayOutputStream
+import androidx.core.content.FileProvider
+import java.io.File
 
 @Composable
 actual fun rememberPhotoPicker(
     onResult: (ByteArray?, String?) -> Unit
 ): PhotoPickerController {
     val context = LocalContext.current
+    var pendingCameraFile by remember { mutableStateOf<File?>(null) }
 
     val galleryLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.PickVisualMedia()
@@ -33,26 +37,42 @@ actual fun rememberPhotoPicker(
     }
 
     val cameraLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.TakePicturePreview()
-    ) { bitmap: Bitmap? ->
-        if (bitmap == null) {
+        ActivityResultContracts.TakePicture()
+    ) { success ->
+        val file = pendingCameraFile
+        pendingCameraFile = null
+        if (!success || file == null) {
             onResult(null, null)
             return@rememberLauncherForActivityResult
         }
-        val stream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, stream)
-        onResult(stream.toByteArray(), "camera.jpg")
+        val bytes = runCatching { file.readBytes() }.getOrNull()
+        file.delete()
+        onResult(bytes, "camera.jpg")
+    }
+
+    val launchCamera = remember(cameraLauncher, context) {
+        {
+            pendingCameraFile?.delete()
+            val file = File(context.cacheDir, "camera_capture_${System.currentTimeMillis()}.jpg")
+            pendingCameraFile = file
+            val uri = FileProvider.getUriForFile(
+                context,
+                "${context.packageName}.share.fileprovider",
+                file
+            )
+            cameraLauncher.launch(uri)
+        }
     }
 
     val cameraPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
         if (granted) {
-            cameraLauncher.launch(null)
+            launchCamera()
         }
     }
 
-    return remember(galleryLauncher, cameraLauncher, cameraPermissionLauncher) {
+    return remember(galleryLauncher, launchCamera, cameraPermissionLauncher) {
         PhotoPickerController(
             pickFromGallery = {
                 galleryLauncher.launch(
@@ -61,7 +81,7 @@ actual fun rememberPhotoPicker(
             },
             pickFromCamera = {
                 when (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)) {
-                    PackageManager.PERMISSION_GRANTED -> cameraLauncher.launch(null)
+                    PackageManager.PERMISSION_GRANTED -> launchCamera()
                     else -> cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
                 }
             }
@@ -78,5 +98,3 @@ private fun resolveDisplayName(context: android.content.Context, uri: Uri): Stri
     }
     return "photo.jpg"
 }
-
-private const val JPEG_QUALITY = 90
