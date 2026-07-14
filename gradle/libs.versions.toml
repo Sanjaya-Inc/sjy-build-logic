@@ -37,7 +37,7 @@ gms-services = "4.5.0"
 stripe = "23.11.1"
 
 # UI Components (from ui)
-orbit-mvi = "11.0.0"
+orbit-mvi = "12.0.0"
 lifecycle = "2.10.0"
 activity = "1.13.0"
 navigation3-ui = "1.1.1"
