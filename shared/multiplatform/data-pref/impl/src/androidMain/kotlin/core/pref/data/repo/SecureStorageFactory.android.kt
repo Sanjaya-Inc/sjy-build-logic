@@ -7,14 +7,20 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import core.pref.PreferenceRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import okio.ByteString.Companion.decodeBase64
 import okio.ByteString.Companion.toByteString
 import org.koin.core.qualifier.named
 import org.koin.mp.KoinPlatform
+import java.security.GeneralSecurityException
 import java.security.KeyStore
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
@@ -28,6 +34,9 @@ internal actual fun createSecuredRepository(): PreferenceRepository {
                 qualifier = named("securedDataStore")
             )
         }
+
+        private val resetRequested = AtomicBoolean(false)
+        private val resetScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
         override suspend fun putString(key: String, value: String) {
             write(key, encrypt(value))
@@ -57,22 +66,22 @@ internal actual fun createSecuredRepository(): PreferenceRepository {
 
         override fun getString(key: String, defaultValue: String): Flow<String> =
             observe(key).map { encrypted ->
-                encrypted?.let { decrypt(it) } ?: defaultValue
+                encrypted?.let { decryptOrNull(it) } ?: defaultValue
             }
 
         override fun getBoolean(key: String, defaultValue: Boolean): Flow<Boolean> =
             observe(key).map { encrypted ->
-                encrypted?.let { decrypt(it).toBooleanStrictOrNull() } ?: defaultValue
+                encrypted?.let { decryptOrNull(it)?.toBooleanStrictOrNull() } ?: defaultValue
             }
 
         override fun getInt(key: String, defaultValue: Int): Flow<Int> =
             observe(key).map { encrypted ->
-                encrypted?.let { decrypt(it).toIntOrNull() } ?: defaultValue
+                encrypted?.let { decryptOrNull(it)?.toIntOrNull() } ?: defaultValue
             }
 
         override fun getLong(key: String, defaultValue: Long): Flow<Long> =
             observe(key).map { encrypted ->
-                encrypted?.let { decrypt(it).toLongOrNull() } ?: defaultValue
+                encrypted?.let { decryptOrNull(it)?.toLongOrNull() } ?: defaultValue
             }
 
         private suspend fun write(key: String, value: String) {
@@ -107,6 +116,25 @@ internal actual fun createSecuredRepository(): PreferenceRepository {
             return entry?.secretKey ?: error("Key not found")
         }
 
+        private fun deleteKey() {
+            val keyStore = KeyStore.getInstance(PROVIDER).apply { load(null) }
+            if (keyStore.containsAlias(ALIAS)) {
+                keyStore.deleteEntry(ALIAS)
+            }
+        }
+
+        private fun resetSecureStorage() {
+            if (!resetRequested.compareAndSet(false, true)) return
+            resetScope.launch {
+                try {
+                    dataStore.edit { preferences -> preferences.clear() }
+                    deleteKey()
+                } finally {
+                    resetRequested.set(false)
+                }
+            }
+        }
+
         private fun encrypt(value: String): String {
             val bytes = value.encodeToByteArray()
             val cipher = Cipher.getInstance(CIPHER_TRANSFORMATION)
@@ -115,6 +143,21 @@ internal actual fun createSecuredRepository(): PreferenceRepository {
             val encryptedBytes = cipher.doFinal(bytes)
             val result = iv + encryptedBytes
             return result.toByteString(0, result.size).base64()
+        }
+
+        private fun decryptOrNull(value: String): String? {
+            return try {
+                decrypt(value)
+            } catch (_: GeneralSecurityException) {
+                resetSecureStorage()
+                null
+            } catch (_: IllegalArgumentException) {
+                resetSecureStorage()
+                null
+            } catch (_: IndexOutOfBoundsException) {
+                resetSecureStorage()
+                null
+            }
         }
 
         private fun decrypt(value: String): String {
