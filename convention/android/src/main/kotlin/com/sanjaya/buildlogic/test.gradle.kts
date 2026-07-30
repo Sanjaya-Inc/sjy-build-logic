@@ -46,6 +46,7 @@ val testDependencies = listOf(
     "junit-jupiter",
     "junit-jupiter-api",
     "junit-jupiter-engine",
+    "junit-platform-launcher",
     "kotlin-test",
     "mockk",
     "mockk-android",
@@ -98,10 +99,9 @@ if (isApp || isLib) {
         testTaskName: String,
         variantNameLower: String
     ) {
-        val testTask = tasks.named(testTaskName)
         tasks.register<JacocoReport>("jacoco${variantName}Report") {
             group = "verification"
-            dependsOn(testTask)
+            dependsOn(tasks.matching { it.name == testTaskName })
             classDirectories.setFrom(
                 layout.buildDirectory.dir("tmp/kotlin-classes/$variantNameLower")
                     .get().asFileTree.matching { exclude(jacocoFileFilter) },
