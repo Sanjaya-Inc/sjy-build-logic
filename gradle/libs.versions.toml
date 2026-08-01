@@ -364,6 +364,7 @@ buildlogic-firebase = { id = "com.sanjaya.buildlogic.firebase" }
 buildlogic-test = { id = "com.sanjaya.buildlogic.test" }
 buildlogic-multiplatform-lib = { id = "com.sanjaya.buildlogic.multiplatform.lib" }
 buildlogic-multiplatform-cmp = { id = "com.sanjaya.buildlogic.multiplatform.cmp" }
+buildlogic-multiplatform-ios-app-version = { id = "com.sanjaya.buildlogic.multiplatform.ios-app-version" }
 
 # Koin Compiler Plugin
 koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koin-compiler" }
