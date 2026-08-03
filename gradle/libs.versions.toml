@@ -24,7 +24,7 @@ koin-compiler = "1.1.0"
 compose-compiler = "1.11.1"
 
 ktorfit = "2.7.5"
-mmkv = "2.4.0"
+mmkv = "2.4.1"
 store = "5.1.0-alpha10"
 app-startup = "1.2.0"
 okhttp = "5.4.0"
