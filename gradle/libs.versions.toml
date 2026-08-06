@@ -69,6 +69,11 @@ autoservice-ksp = "1.2.0"
 jna = "5.19.1"
 rustls = "0.1.1"
 
+# JVM / MCP server
+gradle-tooling-api = "8.12"
+mcp-sdk = "0.13.0"
+logback = "1.5.38"
+
 [libraries]
 # AndroidX
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -83,7 +88,7 @@ kotlin-date = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref =
 
 # Dependency Injection - Koin Core
 koin-bom = { group = "io.insert-koin", name = "koin-bom", version.ref = "koin" }
-koin-core = { group = "io.insert-koin", name = "koin-core" }
+koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
 koin-core-coroutines = { group = "io.insert-koin", name = "koin-core-coroutines" }
 koin-core-viewmodel = { group = "io.insert-koin", name = "koin-core-viewmodel" }
 koin-annotation = { group = "io.insert-koin", name = "koin-annotations", version.ref = "koin" }
@@ -114,6 +119,7 @@ plugin-kgp = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref
 plugin-ksp = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp" }
 plugin-compose = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "compose-compiler" }
 plugin-detekt = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+plugin-kotlin-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin-core" }
 plugin-room = { module = "androidx.room:room-gradle-plugin", version.ref = "room" }
 
 detekt-compose = { module = "io.nlopez.compose.rules:detekt", version.ref = "compose-detekt" }
@@ -137,6 +143,9 @@ ktor-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = 
 ktor-auth = { group = "io.ktor", name = "ktor-client-auth", version.ref = "ktor" }
 ktor-websockets = { group = "io.ktor", name = "ktor-client-websockets", version.ref = "ktor" }
 ktor-mock = { group = "io.ktor", name = "ktor-client-mock", version.ref = "ktor" }
+ktor-serverCore = { group = "io.ktor", name = "ktor-server-core-jvm", version.ref = "ktor" }
+ktor-serverNetty = { group = "io.ktor", name = "ktor-server-netty-jvm", version.ref = "ktor" }
+ktor-serverTestHost = { group = "io.ktor", name = "ktor-server-test-host-jvm", version.ref = "ktor" }
 
 chucker = { group = "com.github.chuckerteam.chucker", name = "library", version.ref = "chucker" }
 chucker-no-op = { group = "com.github.chuckerteam.chucker", name = "library-no-op", version.ref = "chucker" }
@@ -212,6 +221,8 @@ junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", vers
 junit-vintage-engine = { module = "org.junit.vintage:junit-vintage-engine", version.ref = "junit5" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version = "6.1.2" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin-core" }
+kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin-core" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlin-serialization" }
 
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
@@ -243,6 +254,11 @@ autoservice-annotation = { module = "com.google.auto.service:auto-service-annota
 ## JNA (for Rust FFI)
 jna = { module = "net.java.dev.jna:jna", version.ref = "jna" }
 rustls = { module = "rustls:rustls-platform-verifier", version.ref = "rustls" }
+
+## JVM / MCP server
+gradle-tooling-api = { module = "org.gradle:gradle-tooling-api", version.ref = "gradle-tooling-api" }
+mcp-sdk = { module = "io.modelcontextprotocol:kotlin-sdk", version.ref = "mcp-sdk" }
+logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 
 [bundles]
 koin-nonandroid = [
