@@ -71,7 +71,7 @@ rustls = "0.1.1"
 
 # JVM / MCP server
 gradle-tooling-api = "8.12"
-mcp-sdk = "0.13.0"
+mcp-sdk = "0.15.0"
 logback = "1.6.1"
 
 [libraries]
