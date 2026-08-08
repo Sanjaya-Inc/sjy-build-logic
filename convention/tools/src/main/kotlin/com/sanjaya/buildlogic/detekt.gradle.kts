@@ -16,12 +16,14 @@ val detektApplied = runCatching {
 }
 
 if (detektApplied) {
-    val detektConfigFile = if (rootProject.file("config/detekt-rule.yml").exists()) {
-        rootProject.file("config/detekt-rule.yml").also {
+    val settingsDir = layout.settingsDirectory
+    val externalConfig = settingsDir.file("config/detekt-rule.yml").asFile
+    val detektConfigFile = if (externalConfig.exists()) {
+        externalConfig.also {
             println("[Build Logic][DetektSetup] Using external detekt config file: $it")
         }
     } else {
-        rootProject.file("sjy-build-logic/config/detekt-rule.yml").also {
+        settingsDir.file("sjy-build-logic/config/detekt-rule.yml").asFile.also {
             println("[Build Logic][DetektSetup] Using default detekt config file: $it")
         }
     }
@@ -31,7 +33,7 @@ if (detektApplied) {
         allRules = false
         autoCorrect = true
         parallel = true
-        baseline = rootProject.file("config/detekt-${project.name}-baseline.xml")
+        baseline = settingsDir.file("config/detekt-${project.name}-baseline.xml").asFile
         config.setFrom(detektConfigFile)
     }
 

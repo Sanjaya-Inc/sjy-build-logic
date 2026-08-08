@@ -8,7 +8,7 @@ plugins {
 }
 
 val localProperties = Properties().apply {
-    val localPropertiesFile = rootProject.file("local.properties")
+    val localPropertiesFile = layout.settingsDirectory.file("local.properties").asFile
     if (localPropertiesFile.exists()) {
         load(FileInputStream(localPropertiesFile))
     }
