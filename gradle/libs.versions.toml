@@ -30,6 +30,7 @@ app-startup = "1.2.0"
 okhttp = "5.4.0"
 ktor = "3.5.2"
 chucker = "4.3.1"
+axer = "1.2.12"
 
 # Firebase & Stripe (from essentials)
 firebase-bom = "34.17.0"
@@ -149,6 +150,8 @@ ktor-serverTestHost = { group = "io.ktor", name = "ktor-server-test-host-jvm", v
 
 chucker = { group = "com.github.chuckerteam.chucker", name = "library", version.ref = "chucker" }
 chucker-no-op = { group = "com.github.chuckerteam.chucker", name = "library-no-op", version.ref = "chucker" }
+axer = { group = "io.github.orioneee", name = "axer", version.ref = "axer" }
+axer-no-op = { group = "io.github.orioneee", name = "axer-no-op", version.ref = "axer" }
 
 # Firebase & Stripe (from essentials)
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase-bom" }
