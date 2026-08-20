@@ -78,18 +78,16 @@ private fun drawOverlayBitmap(canvas: Canvas, request: ShareMatchCompositeReques
         return
     }
     val paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
-    val scale = request.exportWidth.toFloat() / overlay.width.toFloat()
-    val drawHeight = overlay.height * scale
-    val drawTop = request.exportHeight - drawHeight
+    val dest = overlayDrawRect(
+        exportWidth = request.exportWidth,
+        exportHeight = request.exportHeight,
+        overlayWidth = overlay.width,
+        overlayHeight = overlay.height,
+    )
     canvas.drawBitmap(
         overlay,
         null,
-        android.graphics.RectF(
-            0f,
-            drawTop,
-            request.exportWidth.toFloat(),
-            request.exportHeight.toFloat()
-        ),
+        android.graphics.RectF(dest.left, dest.top, dest.right, dest.bottom),
         paint
     )
     if (overlay !== source) {

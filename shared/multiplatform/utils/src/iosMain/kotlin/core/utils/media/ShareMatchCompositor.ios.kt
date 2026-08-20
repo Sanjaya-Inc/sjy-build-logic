@@ -11,6 +11,10 @@ import kotlinx.cinterop.useContents
 import kotlinx.cinterop.usePinned
 import org.jetbrains.skia.EncodedImageFormat
 import org.jetbrains.skia.Image
+import platform.CoreGraphics.CGBlendMode
+import platform.CoreGraphics.CGContextFillRect
+import platform.CoreGraphics.CGContextSetBlendMode
+import platform.CoreGraphics.CGContextSetRGBFillColor
 import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGSizeMake
 import platform.Foundation.NSData
@@ -23,8 +27,23 @@ import platform.UIKit.UIImage
 import platform.UIKit.UIImagePNGRepresentation
 import platform.UIKit.drawInRect
 import kotlin.math.max
+import kotlin.math.roundToInt
 
 actual fun compositeMatchShareImage(request: ShareMatchCompositeRequest): ImageBitmap {
+    UIGraphicsBeginImageContextWithOptions(
+        CGSizeMake(request.exportWidth.toDouble(), request.exportHeight.toDouble()),
+        false,
+        1.0
+    )
+    drawBackgroundPhoto(request)
+    drawDarkeningOverlay(request)
+    drawOverlayImage(request)
+    val composed = UIGraphicsGetImageFromCurrentImageContext()
+    UIGraphicsEndImageContext()
+    return composed?.toImageBitmap() ?: error("Could not composite share image")
+}
+
+private fun drawBackgroundPhoto(request: ShareMatchCompositeRequest) {
     val background = UIImage(data = request.photoBytes.toNSData())
         ?: error("Could not decode selected photo")
     val previewScale = request.exportWidth.toFloat() / request.previewWidthPx.toFloat()
@@ -38,13 +57,6 @@ actual fun compositeMatchShareImage(request: ShareMatchCompositeRequest): ImageB
     val drawHeight = backgroundHeight * finalScale
     val centerX = request.exportWidth / 2.0 + request.offsetX * previewScale
     val centerY = request.exportHeight / 2.0 + request.offsetY * previewScale
-
-    UIGraphicsBeginImageContextWithOptions(
-        CGSizeMake(request.exportWidth.toDouble(), request.exportHeight.toDouble()),
-        false,
-        1.0
-    )
-    val context = UIGraphicsGetCurrentContext()
     background.drawInRect(
         CGRectMake(
             x = centerX - drawWidth / 2.0,
@@ -53,33 +65,38 @@ actual fun compositeMatchShareImage(request: ShareMatchCompositeRequest): ImageB
             height = drawHeight
         )
     )
-    if (context != null) {
-        platform.CoreGraphics.CGContextSetFillColorWithColor(
-            context,
-            platform.UIKit.UIColor.colorWithWhite(0.0, request.overlayOpacity.toDouble()).CGColor
-        )
-        platform.CoreGraphics.CGContextFillRect(
-            context,
-            CGRectMake(0.0, 0.0, request.exportWidth.toDouble(), request.exportHeight.toDouble())
-        )
-    }
+}
+
+private fun drawDarkeningOverlay(request: ShareMatchCompositeRequest) {
+    val context = UIGraphicsGetCurrentContext()
+        ?: error("Could not composite share image")
+    CGContextSetBlendMode(context, CGBlendMode.kCGBlendModeNormal)
+    CGContextSetRGBFillColor(context, 0.0, 0.0, 0.0, request.overlayOpacity.toDouble())
+    CGContextFillRect(
+        context,
+        CGRectMake(0.0, 0.0, request.exportWidth.toDouble(), request.exportHeight.toDouble())
+    )
+}
+
+private fun drawOverlayImage(request: ShareMatchCompositeRequest) {
     val overlayImage = request.overlayBitmap.toUIImage()
     val overlayWidth = overlayImage.size.useContents { width }
     val overlayHeight = overlayImage.size.useContents { height }
-    val overlayScale = request.exportWidth.toDouble() / overlayWidth
-    val overlayDrawHeight = overlayHeight * overlayScale
-    val overlayDrawTop = request.exportHeight.toDouble() - overlayDrawHeight
+    if (overlayWidth <= 0.0 || overlayHeight <= 0.0) return
+    val dest = overlayDrawRect(
+        exportWidth = request.exportWidth,
+        exportHeight = request.exportHeight,
+        overlayWidth = overlayWidth.roundToInt().coerceAtLeast(1),
+        overlayHeight = overlayHeight.roundToInt().coerceAtLeast(1),
+    )
     overlayImage.drawInRect(
         CGRectMake(
-            x = 0.0,
-            y = overlayDrawTop,
-            width = request.exportWidth.toDouble(),
-            height = request.exportHeight.toDouble()
+            x = dest.left.toDouble(),
+            y = dest.top.toDouble(),
+            width = dest.width.toDouble(),
+            height = dest.height.toDouble(),
         )
     )
-    val composed = UIGraphicsGetImageFromCurrentImageContext()
-    UIGraphicsEndImageContext()
-    return composed?.toImageBitmap() ?: error("Could not composite share image")
 }
 
 private fun ImageBitmap.toUIImage(): UIImage {
