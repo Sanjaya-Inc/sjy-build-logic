@@ -4,10 +4,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asSkiaBitmap
 import core.utils.PlatformContext
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.usePinned
+import org.jetbrains.skia.EncodedImageFormat
+import org.jetbrains.skia.Image
 import platform.Foundation.NSData
 import platform.Foundation.create
 import platform.PhotosUI.PHPickerConfiguration
@@ -28,7 +31,6 @@ import platform.UIKit.UIViewController
 import platform.darwin.NSObject
 
 private const val JPEG_QUALITY = 0.9
-private const val PIXEL_STRIDE_MULTIPLIER = 4
 private const val GALLERY_SELECTION_LIMIT = 1L
 
 private object IosPhotoPickerBridge {
@@ -161,34 +163,8 @@ actual fun PlatformContext.shareImageBitmap(
     topViewController()?.presentViewController(activityController, animated = true, completion = null)
 }
 
-@OptIn(ExperimentalForeignApi::class)
 private fun ImageBitmap.toPngBytes(): ByteArray {
-    val pixels = IntArray(width * height)
-    readPixels(pixels)
-    val skiaImage = org.jetbrains.skia.Image.makeRaster(
-        imageInfo = org.jetbrains.skia.ImageInfo.makeN32Premul(width, height),
-        bytes = pixels.toRgbaBytes(),
-        rowBytes = width * PIXEL_STRIDE_MULTIPLIER
-    )
-    return skiaImage.encodeToData()!!.bytes
-}
-
-private const val COLOR_SHIFT_ALPHA = 24
-private const val COLOR_SHIFT_RED = 16
-private const val COLOR_SHIFT_GREEN = 8
-private const val BYTE_MASK = 0xFF
-private const val CHANNEL_OFFSET_GREEN = 1
-private const val CHANNEL_OFFSET_BLUE = 2
-private const val CHANNEL_OFFSET_ALPHA = 3
-
-private fun IntArray.toRgbaBytes(): ByteArray {
-    val out = ByteArray(size * PIXEL_STRIDE_MULTIPLIER)
-    forEachIndexed { index, argb ->
-        val offset = index * PIXEL_STRIDE_MULTIPLIER
-        out[offset] = ((argb shr COLOR_SHIFT_RED) and BYTE_MASK).toByte()
-        out[offset + CHANNEL_OFFSET_GREEN] = ((argb shr COLOR_SHIFT_GREEN) and BYTE_MASK).toByte()
-        out[offset + CHANNEL_OFFSET_BLUE] = (argb and BYTE_MASK).toByte()
-        out[offset + CHANNEL_OFFSET_ALPHA] = ((argb shr COLOR_SHIFT_ALPHA) and BYTE_MASK).toByte()
-    }
-    return out
+    val encoded = Image.makeFromBitmap(asSkiaBitmap()).encodeToData(EncodedImageFormat.PNG)
+        ?: error("Could not encode share image")
+    return encoded.bytes
 }
