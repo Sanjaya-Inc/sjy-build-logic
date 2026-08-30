@@ -8,4 +8,7 @@ kotlin {
     android {
         namespace = "core.utils"
     }
+    sourceSets.commonTest.dependencies {
+        implementation(sjy.coroutines.test)
+    }
 }
