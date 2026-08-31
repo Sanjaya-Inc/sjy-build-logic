@@ -5,7 +5,7 @@ agp = "9.3.2"
 # Kotlin
 kotlin-core = "2.4.10"
 kotlin-serialization = "1.11.0"
-kotlin-immutable = "0.5.1"
+kotlin-immutable = "0.5.2"
 kotlin-date = "0.8.0-0.6.x-compat"
 ksp = "2.3.11"
 detekt = "1.23.8"
@@ -25,7 +25,7 @@ compose-compiler = "1.12.0"
 
 ktorfit = "2.7.5"
 mmkv = "2.4.2"
-store = "5.1.0-alpha10"
+store = "5.1.0-alpha11"
 app-startup = "1.2.0"
 okhttp = "5.5.0"
 ktor = "3.5.2"
@@ -35,10 +35,10 @@ axer = "1.2.12"
 # Firebase & Stripe (from essentials)
 firebase-bom = "34.18.0"
 gms-services = "4.5.0"
-stripe = "23.17.0"
+stripe = "23.17.1"
 
 # UI Components (from ui)
-orbit-mvi = "12.0.0"
+orbit-mvi = "12.0.1"
 lifecycle = "2.11.0"
 activity = "1.13.0"
 navigation3-ui = "1.1.1"
@@ -71,7 +71,7 @@ jna = "5.19.1"
 rustls = "0.1.1"
 
 # JVM / MCP server
-gradle-tooling-api = "8.12"
+gradle-tooling-api = "9.7.1"
 mcp-sdk = "0.15.0"
 logback = "1.6.3"
 
