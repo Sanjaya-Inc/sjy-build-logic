@@ -26,6 +26,23 @@ if (isApp || isLib) {
         }
     }
 
+    if (providers.gradleProperty("composeCompilerReports").orNull == "true") {
+        val reportsDir = layout.buildDirectory.dir("compose_compiler")
+        tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+            compilerOptions.freeCompilerArgs.addAll(
+                reportsDir.map { dir ->
+                    val path = dir.asFile.absolutePath
+                    listOf(
+                        "-P",
+                        "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=$path",
+                        "-P",
+                        "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=$path"
+                    )
+                }
+            )
+        }
+    }
+
     configure<KspExtension> {
         arg("compose-destinations.moduleName", project.name)
         arg("compose-destinations.htmlMermaidGraph", "$rootDir/navigation-docs")
