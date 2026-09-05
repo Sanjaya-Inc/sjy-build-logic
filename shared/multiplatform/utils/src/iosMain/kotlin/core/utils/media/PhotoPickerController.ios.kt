@@ -2,7 +2,9 @@ package core.utils.media
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asSkiaBitmap
 import core.utils.PlatformContext
@@ -28,13 +30,21 @@ import platform.UIKit.UIImagePickerControllerOriginalImage
 import platform.UIKit.UIImagePickerControllerSourceType
 import platform.UIKit.UINavigationControllerDelegateProtocol
 import platform.UIKit.UIViewController
+import platform.darwin.DISPATCH_TIME_NOW
 import platform.darwin.NSObject
+import platform.darwin.dispatch_after
+import platform.darwin.dispatch_get_main_queue
+import platform.darwin.dispatch_time
 
 private const val JPEG_QUALITY = 0.9
 private const val GALLERY_SELECTION_LIMIT = 1L
+private const val PRESENT_RETRY_NS = 50_000_000L
+private const val PRESENT_MAX_ATTEMPTS = 20
 
 private object IosPhotoPickerBridge {
     var onResult: ((ByteArray?, String?) -> Unit)? = null
+    var galleryDelegate: GalleryPickerDelegate? = null
+    var cameraDelegate: CameraPickerDelegate? = null
 
     fun deliver(bytes: ByteArray?, fileName: String?) {
         onResult?.invoke(bytes, fileName)
@@ -48,6 +58,27 @@ private fun topViewController(): UIViewController? {
         controller = controller.presentedViewController
     }
     return controller
+}
+
+@OptIn(ExperimentalForeignApi::class)
+private fun presentPicker(controller: UIViewController, attempts: Int = 0) {
+    val root = UIApplication.sharedApplication.keyWindow?.rootViewController
+    if (root == null) return
+    if (root.presentedViewController != null) {
+        if (attempts >= PRESENT_MAX_ATTEMPTS) {
+            topViewController()?.presentViewController(controller, animated = true, completion = null)
+            return
+        }
+        // ponytail: poll until Compose sheet unmounts; onFullyDismissed if this races
+        dispatch_after(
+            dispatch_time(DISPATCH_TIME_NOW, PRESENT_RETRY_NS),
+            dispatch_get_main_queue()
+        ) {
+            presentPicker(controller, attempts + 1)
+        }
+        return
+    }
+    root.presentViewController(controller, animated = true, completion = null)
 }
 
 @OptIn(ExperimentalForeignApi::class)
@@ -70,15 +101,18 @@ private fun NSData.toByteArray(): ByteArray {
 @OptIn(ExperimentalForeignApi::class)
 private class GalleryPickerDelegate : NSObject(), PHPickerViewControllerDelegateProtocol {
     override fun picker(picker: PHPickerViewController, didFinishPicking: List<*>) {
-        picker.dismissViewControllerAnimated(true, completion = null)
-        val result = didFinishPicking.firstOrNull() as? PHPickerResult
-        if (result == null) {
-            IosPhotoPickerBridge.deliver(null, null)
-            return
-        }
-        result.itemProvider.loadDataRepresentationForTypeIdentifier("public.image") { data, _ ->
-            val bytes = (data as? NSData)?.toByteArray()
-            IosPhotoPickerBridge.deliver(bytes, "photo.jpg")
+        picker.dismissViewControllerAnimated(true) {
+            val result = didFinishPicking.firstOrNull() as? PHPickerResult
+            if (result == null) {
+                IosPhotoPickerBridge.deliver(null, null)
+                IosPhotoPickerBridge.galleryDelegate = null
+                return@dismissViewControllerAnimated
+            }
+            result.itemProvider.loadDataRepresentationForTypeIdentifier("public.image") { data, _ ->
+                val bytes = (data as? NSData)?.toByteArray()
+                IosPhotoPickerBridge.deliver(bytes, "photo.jpg")
+                IosPhotoPickerBridge.galleryDelegate = null
+            }
         }
     }
 }
@@ -92,14 +126,18 @@ private class CameraPickerDelegate :
         picker: UIImagePickerController,
         didFinishPickingMediaWithInfo: Map<Any?, *>
     ) {
-        picker.dismissViewControllerAnimated(true, completion = null)
-        val image = didFinishPickingMediaWithInfo[UIImagePickerControllerOriginalImage] as? UIImage
-        IosPhotoPickerBridge.deliver(image?.toJpegBytes(), "camera.jpg")
+        picker.dismissViewControllerAnimated(true) {
+            val image = didFinishPickingMediaWithInfo[UIImagePickerControllerOriginalImage] as? UIImage
+            IosPhotoPickerBridge.deliver(image?.toJpegBytes(), "camera.jpg")
+            IosPhotoPickerBridge.cameraDelegate = null
+        }
     }
 
     override fun imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        picker.dismissViewControllerAnimated(true, completion = null)
-        IosPhotoPickerBridge.deliver(null, null)
+        picker.dismissViewControllerAnimated(true) {
+            IosPhotoPickerBridge.deliver(null, null)
+            IosPhotoPickerBridge.cameraDelegate = null
+        }
     }
 }
 
@@ -110,8 +148,10 @@ private fun presentGallery() {
         selectionLimit = GALLERY_SELECTION_LIMIT
     }
     val picker = PHPickerViewController(configuration)
-    picker.delegate = GalleryPickerDelegate()
-    topViewController()?.presentViewController(picker, animated = true, completion = null)
+    val delegate = GalleryPickerDelegate()
+    IosPhotoPickerBridge.galleryDelegate = delegate
+    picker.delegate = delegate
+    presentPicker(picker)
 }
 
 @OptIn(ExperimentalForeignApi::class)
@@ -121,19 +161,24 @@ private fun presentCamera() {
         IosPhotoPickerBridge.deliver(null, null)
         return
     }
+    val delegate = CameraPickerDelegate()
+    IosPhotoPickerBridge.cameraDelegate = delegate
     val picker = UIImagePickerController().apply {
         this.sourceType = sourceType
-        delegate = CameraPickerDelegate()
+        this.delegate = delegate
     }
-    topViewController()?.presentViewController(picker, animated = true, completion = null)
+    presentPicker(picker)
 }
 
 @Composable
 actual fun rememberPhotoPicker(
     onResult: (ByteArray?, String?) -> Unit
 ): PhotoPickerController {
-    DisposableEffect(onResult) {
-        IosPhotoPickerBridge.onResult = onResult
+    val currentOnResult by rememberUpdatedState(onResult)
+    DisposableEffect(Unit) {
+        IosPhotoPickerBridge.onResult = { bytes, fileName ->
+            currentOnResult(bytes, fileName)
+        }
         onDispose { IosPhotoPickerBridge.onResult = null }
     }
     return remember {
