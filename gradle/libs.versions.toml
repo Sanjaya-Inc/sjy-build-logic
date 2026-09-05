@@ -14,6 +14,8 @@ jacoco = "0.8.15"
 
 # AndroidX
 core-ktx = "1.19.0"
+credentials = "1.6.0"
+googleid = "1.2.0"
 
 # Concurrency
 coroutines = "1.11.0"
@@ -48,10 +50,10 @@ compose-multiplatform = "1.12.0"
 cmp-material3 = "1.12.0-alpha03"
 compose-bom = "2026.08.00"
 compose-icon = "1.7.8"
-compose-detekt = "0.6.4"
+compose-detekt = "0.6.6"
 material3 = "1.4.0"
 compose-destination = "2.3.0"
-coil = "3.6.0"
+coil = "3.6.1"
 accompanist = "0.37.3"
 
 junit4 = "4.13.2"
@@ -172,6 +174,9 @@ androidx-lifecycle-viewmodelCompose = { module = "org.jetbrains.androidx.lifecyc
 androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
+androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "credentials" }
+androidx-credentials-play-services-auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "credentials" }
+googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
