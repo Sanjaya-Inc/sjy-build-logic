@@ -67,14 +67,14 @@ private fun presentPicker(controller: UIViewController, attempts: Int = 0) {
     if (root.presentedViewController != null) {
         if (attempts >= PRESENT_MAX_ATTEMPTS) {
             topViewController()?.presentViewController(controller, animated = true, completion = null)
-            return
-        }
-        // ponytail: poll until Compose sheet unmounts; onFullyDismissed if this races
-        dispatch_after(
-            dispatch_time(DISPATCH_TIME_NOW, PRESENT_RETRY_NS),
-            dispatch_get_main_queue()
-        ) {
-            presentPicker(controller, attempts + 1)
+        } else {
+            // ponytail: poll until Compose sheet unmounts; onFullyDismissed if this races
+            dispatch_after(
+                dispatch_time(DISPATCH_TIME_NOW, PRESENT_RETRY_NS),
+                dispatch_get_main_queue()
+            ) {
+                presentPicker(controller, attempts + 1)
+            }
         }
         return
     }
