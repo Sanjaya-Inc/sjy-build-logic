@@ -10,5 +10,6 @@ plugins {
 configure<ApplicationExtension> {
     buildTypes.named("release") {
         optimization.enable = true
+        ndk.debugSymbolLevel = "FULL"
     }
 }
