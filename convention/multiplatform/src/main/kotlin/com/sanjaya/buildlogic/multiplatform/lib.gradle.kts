@@ -44,6 +44,7 @@ configure<KotlinMultiplatformAndroidComponentsExtension> {
         it.androidResources.enable = true
         it.minSdk = project.sjyVersion("min-sdk").toInt()
         it.compileSdk = project.sjyVersion("compile-sdk").toInt()
+        it.withHostTest { }
     }
 }
 
