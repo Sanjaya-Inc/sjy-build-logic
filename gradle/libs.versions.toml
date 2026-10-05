@@ -74,7 +74,7 @@ rustls = "0.1.1"
 # JVM / MCP server
 gradle-tooling-api = "9.8.0"
 mcp-sdk = "0.15.0"
-logback = "1.6.4"
+logback = "1.6.5"
 
 [libraries]
 # AndroidX
