@@ -36,7 +36,7 @@ axer = "1.2.12"
 # Firebase & Stripe (from essentials)
 firebase-bom = "35.0.2"
 gms-services = "4.5.0"
-stripe = "23.23.0"
+stripe = "23.24.0"
 
 # UI Components (from ui)
 orbit-mvi = "12.0.1"
