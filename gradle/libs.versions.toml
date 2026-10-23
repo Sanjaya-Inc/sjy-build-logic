@@ -4,7 +4,7 @@ agp = "9.4.1"
 
 # Kotlin
 kotlin-core = "2.4.21"
-kotlin-serialization = "1.11.0"
+kotlin-serialization = "1.12.0"
 kotlin-immutable = "0.5.2"
 kotlin-date = "0.8.0-0.6.x-compat"
 ksp = "2.3.12"
