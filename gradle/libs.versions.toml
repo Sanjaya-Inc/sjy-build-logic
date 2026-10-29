@@ -1,6 +1,6 @@
 [versions]
 # Android
-agp = "9.4.1"
+agp = "9.5.0"
 
 # Kotlin
 kotlin-core = "2.4.21"
