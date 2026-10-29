@@ -163,9 +163,9 @@ plugins {
 ## 4. Verification smoke
 
 ```bash
-./gradlew projects
-./gradlew :androidApp:assembleDebug   # or consumer equivalent
-./gradlew detekt
+gradle projects
+gradle :androidApp:assembleDebug   # or consumer equivalent
+gradle detekt
 ```
 
-For KMP metadata: `./gradlew compileKotlinMetadata` / `compileCommonMainKotlinMetadata` when the consumer defines it.
+For KMP metadata: `gradle compileCommonMainKotlinMetadata` when the consumer defines it. `compileKotlinMetadata` may SKIP.
