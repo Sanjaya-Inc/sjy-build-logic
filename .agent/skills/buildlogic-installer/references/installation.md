@@ -8,7 +8,7 @@ Install and wire convention plugins + optional shared modules into Android-only 
 
 | Baseline | Value | Source |
 | :--- | :--- | :--- |
-| Gradle | **9.8.0** | `gradle/wrapper/gradle-wrapper.properties` |
+| Gradle | **9.8.2** | `gradle/wrapper/gradle-wrapper.properties` |
 | AGP | **9.4.1** | `agp` in `gradle/libs.versions.toml` |
 | Kotlin (KGP) | **2.4.20** | `kotlin-core` |
 | JDK / `jvm-target` | **21** | `jvm-target` |

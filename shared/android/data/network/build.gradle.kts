@@ -1,28 +1,35 @@
-import java.io.FileInputStream
-import java.util.Properties
-import kotlin.apply
+import com.android.build.api.variant.BuildConfigField
+import com.android.build.api.variant.LibraryAndroidComponentsExtension
+import com.sanjaya.buildlogic.quotedLocalProperty
 
 plugins {
     alias(sjy.plugins.buildlogic.lib)
-}
-
-val localProperties = Properties().apply {
-    load(FileInputStream(layout.settingsDirectory.file("local.properties").asFile))
 }
 
 android {
     namespace = "core.network"
     defaultConfig {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        val baseUrl = localProperties.getProperty("api.base.url") ?: ""
-        buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
-        val sslPins = localProperties.getProperty("api.ssl.pins") ?: ""
-        buildConfigField("String", "SSL_PINS", "\"$sslPins\"")
     }
     buildFeatures {
         buildConfig = true
     }
 }
+
+extensions.configure<LibraryAndroidComponentsExtension> {
+    onVariants { variant ->
+        val fields = checkNotNull(variant.buildConfigFields) {
+            "buildConfigFields is null; enable buildFeatures.buildConfig"
+        }
+        fields.put("BASE_URL", buildConfigString("api.base.url"))
+        fields.put("SSL_PINS", buildConfigString("api.ssl.pins"))
+    }
+}
+
+fun buildConfigString(key: String) =
+    quotedLocalProperty(key).map { literal ->
+        BuildConfigField("String", literal, null)
+    }
 
 dependencies {
     debugImplementation(sjy.chucker)

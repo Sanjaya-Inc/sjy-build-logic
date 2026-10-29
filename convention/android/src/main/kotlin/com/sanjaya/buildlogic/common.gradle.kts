@@ -48,7 +48,7 @@ dependencies {
     add("implementation", project.sjyLibrary("ktor-logging"))
 
     add("implementation", project.sjyLibrary("mmkv"))
-    add("implementation", project.sjyLibrary("store"))
+    add("implementation", project.sjyLibrary("store5"))
 
     add("implementation", project.sjyLibrary("app-startup"))
 

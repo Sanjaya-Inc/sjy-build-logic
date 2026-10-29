@@ -6,65 +6,71 @@ import com.google.devtools.ksp.gradle.KspExtension
 
 println("[Build Logic][AndroidKotlinSetup] Setting up Android Compose for project: ${project.name}")
 
-val isApp = pluginManager.hasPlugin("com.android.application")
-val isLib = pluginManager.hasPlugin("com.android.library")
-
-if (isApp || isLib) {
-    pluginManager.apply(project.sjyPlugin("kotlin-compose"))
-
-    if (isApp) {
+pluginManager.withPlugin("com.android.application") {
+    enableAndroidCompose {
         configure<ApplicationExtension> {
             buildFeatures {
                 compose = true
             }
         }
-    } else {
+    }
+}
+
+pluginManager.withPlugin("com.android.library") {
+    enableAndroidCompose {
         configure<LibraryExtension> {
             buildFeatures {
                 compose = true
             }
         }
     }
+}
 
-    if (providers.gradleProperty("composeCompilerReports").orNull == "true") {
-        val reportsDir = layout.buildDirectory.dir("compose_compiler")
-        tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-            compilerOptions.freeCompilerArgs.addAll(
-                reportsDir.map { dir ->
-                    val path = dir.asFile.absolutePath
-                    listOf(
-                        "-P",
-                        "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=$path",
-                        "-P",
-                        "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=$path"
-                    )
-                }
-            )
-        }
-    }
-
+fun Project.enableAndroidCompose(configureExtension: Project.() -> Unit) {
+    pluginManager.apply(sjyPlugin("kotlin-compose"))
+    configureExtension()
+    configureComposeCompilerReports()
     configure<KspExtension> {
         arg("compose-destinations.moduleName", project.name)
         arg("compose-destinations.htmlMermaidGraph", "$rootDir/navigation-docs")
         arg("compose-destinations.mermaidGraph", "$rootDir/navigation-docs")
     }
+    addComposeDependencies()
+}
 
+fun Project.configureComposeCompilerReports() {
+    if (providers.gradleProperty("composeCompilerReports").orNull != "true") return
+    val reportsDir = layout.buildDirectory.dir("compose_compiler")
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+        compilerOptions.freeCompilerArgs.addAll(
+            reportsDir.map { directory ->
+                val path = directory.asFile.absolutePath
+                listOf(
+                    "-P",
+                    "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=$path",
+                    "-P",
+                    "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=$path",
+                )
+            },
+        )
+    }
+}
+
+fun Project.addComposeDependencies() {
     dependencies {
-        add("implementation", project.sjyLibrary("androidx-activity-compose"))
-        add("implementation", project.sjyLibrary("androidx-ui"))
-        add("implementation", project.sjyLibrary("androidx-ui-graphics"))
-        add("implementation", project.sjyLibrary("androidx-ui-tooling-preview"))
-        add("implementation", project.sjyLibrary("androidx-material3"))
-        add("implementation", project.sjyLibrary("compose-google-fonts"))
-        add("implementation", project.sjyLibrary("coil"))
-        add("implementation", project.sjyLibrary("coil-okhttp"))
-        add("implementation", project.sjyLibrary("compose-destination-core"))
-        add("implementation", project.sjyLibrary("compose-destination-sheet"))
-        add("implementation", project.sjyLibrary("compose-icons"))
-
-        add("ksp", project.sjyLibrary("compose-destination-ksp"))
-
-        add("debugImplementation", project.sjyLibrary("androidx-ui-tooling"))
-        add("debugImplementation", project.sjyLibrary("androidx-ui-test-manifest"))
+        add("implementation", sjyLibrary("androidx-activity-compose"))
+        add("implementation", sjyLibrary("androidx-ui"))
+        add("implementation", sjyLibrary("androidx-ui-graphics"))
+        add("implementation", sjyLibrary("androidx-ui-tooling-preview"))
+        add("implementation", sjyLibrary("androidx-material3"))
+        add("implementation", sjyLibrary("compose-google-fonts"))
+        add("implementation", sjyLibrary("coil"))
+        add("implementation", sjyLibrary("coil-okhttp"))
+        add("implementation", sjyLibrary("compose-destination-core"))
+        add("implementation", sjyLibrary("compose-destination-sheet"))
+        add("implementation", sjyLibrary("compose-icons"))
+        add("ksp", sjyLibrary("compose-destination-ksp"))
+        add("debugImplementation", sjyLibrary("androidx-ui-tooling"))
+        add("debugImplementation", sjyLibrary("androidx-ui-test-manifest"))
     }
 }

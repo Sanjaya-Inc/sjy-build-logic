@@ -3,9 +3,7 @@ package com.sanjaya.buildlogic
 
 println("[Build Logic][FirebaseSetup] Setting up firebase for project: ${project.name}")
 
-val isApp = pluginManager.hasPlugin("com.android.application")
-
-if (isApp) {
+pluginManager.withPlugin("com.android.application") {
     pluginManager.apply(project.sjyPlugin("gms-services"))
     pluginManager.apply(project.sjyPlugin("crashlytics"))
 }

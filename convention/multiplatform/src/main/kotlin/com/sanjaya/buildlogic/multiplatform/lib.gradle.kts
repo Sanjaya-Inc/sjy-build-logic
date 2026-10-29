@@ -4,6 +4,7 @@ import com.android.build.api.variant.KotlinMultiplatformAndroidComponentsExtensi
 import com.sanjaya.buildlogic.sjyLibrary
 import com.sanjaya.buildlogic.sjyPlugin
 import com.sanjaya.buildlogic.sjyVersion
+import com.sanjaya.buildlogic.sjyVersionOrNull
 
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
@@ -41,14 +42,25 @@ extensions.configure<org.koin.compiler.plugin.KoinGradleExtension> {
 
 configure<KotlinMultiplatformAndroidComponentsExtension> {
     finalizeDsl {
+        val compileSdkMajor = project.sjyVersion("compile-sdk").toInt()
+        val compileSdkMinor = project.sjyVersionOrNull("compile-sdk-minor")?.toInt()
         it.androidResources.enable = true
         it.minSdk = project.sjyVersion("min-sdk").toInt()
-        it.compileSdk = project.sjyVersion("compile-sdk").toInt()
+        it.compileSdk {
+            version = if (compileSdkMinor == null) {
+                release(compileSdkMajor)
+            } else {
+                release(compileSdkMajor) { minorApiLevel = compileSdkMinor }
+            }
+        }
         it.withHostTest { }
     }
 }
 
 configure<KotlinMultiplatformExtension> {
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(project.sjyVersion("jvm-target").toInt()))
+    }
     listOf(iosArm64(), iosSimulatorArm64()).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = project.name.toPascalCase()
@@ -84,7 +96,7 @@ configure<KotlinMultiplatformExtension> {
         implementation(project.sjyLibrary("ktor-cio"))
         implementation(project.sjyLibrary("ktor-logging"))
         implementation(project.sjyLibrary("ktor-auth"))
-        implementation(project.sjyLibrary("store"))
+        implementation(project.sjyLibrary("store5"))
     }
 
     sourceSets.commonTest.dependencies {
@@ -104,7 +116,7 @@ configure<KotlinMultiplatformExtension> {
         implementation(project.sjyLibrary("koin-androidx-compose"))
         implementation(project.sjyLibrary("koin-androidx-compose-navigation"))
         implementation(project.sjyLibrary("koin-compose-viewmodel-navigation"))
-        implementation(project.sjyLibrary("koin-annotation"))
+
     }
 
     sourceSets.iosMain.dependencies {

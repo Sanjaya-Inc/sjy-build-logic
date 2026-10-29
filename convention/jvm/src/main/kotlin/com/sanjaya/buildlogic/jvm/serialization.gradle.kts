@@ -4,9 +4,8 @@ import com.sanjaya.buildlogic.sjyLibrary
 
 plugins {
     id("com.sanjaya.buildlogic.jvm.lib")
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
-
-apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
 
 dependencies {
     add("implementation", project.sjyLibrary("kotlinx-serialization-json"))

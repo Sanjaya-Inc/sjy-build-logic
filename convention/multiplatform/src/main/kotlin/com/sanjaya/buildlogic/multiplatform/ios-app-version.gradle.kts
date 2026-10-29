@@ -17,7 +17,7 @@ val syncIosAppVersion = tasks.register<SyncIosAppVersionTask>("syncIosAppVersion
 
 tasks.configureEach {
     if (isIosFrameworkConsumerTask(name)) {
-        dependsOn(syncIosAppVersion)
+        inputs.file(syncIosAppVersion.flatMap { it.outputFile })
     }
 }
 

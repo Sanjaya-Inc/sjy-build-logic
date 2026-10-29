@@ -1,17 +1,9 @@
-import java.io.FileInputStream
-import java.util.Properties
+import com.sanjaya.buildlogic.quotedLocalProperty
 
 plugins {
     alias(sjy.plugins.buildlogic.multiplatform.lib)
     alias(sjy.plugins.buildconfig.kmp)
     alias(sjy.plugins.buildlogic.detekt)
-}
-
-val localProperties = Properties().apply {
-    val localPropertiesFile = layout.settingsDirectory.file("local.properties").asFile
-    if (localPropertiesFile.exists()) {
-        load(FileInputStream(localPropertiesFile))
-    }
 }
 
 kotlin {
@@ -30,19 +22,7 @@ kotlin {
 buildConfig {
     className("SupabaseConfig")
     packageName("core.supabase")
-    buildConfigField(
-        "String",
-        "SUPABASE_URL",
-        "\"${localProperties.getProperty("SUPABASE_URL", "")}\""
-    )
-    buildConfigField(
-        "String",
-        "SUPABASE_KEY",
-        "\"${localProperties.getProperty("SUPABASE_KEY", "")}\""
-    )
-    buildConfigField(
-        "String",
-        "GOOGLE_CLIENT_ID",
-        "\"${localProperties.getProperty("GOOGLE_CLIENT_ID", "")}\""
-    )
+    buildConfigField("String", "SUPABASE_URL", quotedLocalProperty("SUPABASE_URL"))
+    buildConfigField("String", "SUPABASE_KEY", quotedLocalProperty("SUPABASE_KEY"))
+    buildConfigField("String", "GOOGLE_CLIENT_ID", quotedLocalProperty("GOOGLE_CLIENT_ID"))
 }

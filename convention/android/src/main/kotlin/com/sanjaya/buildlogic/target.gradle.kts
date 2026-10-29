@@ -1,37 +1,35 @@
 package com.sanjaya.buildlogic
 
 import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.api.dsl.CompileSdkSpec
+import com.android.build.api.dsl.CompileSdkVersion
 import com.android.build.api.dsl.LibraryExtension
 
 println("[Build Logic][AndroidTargetSetup] Setting up Android Target for project: ${project.name}")
 
-val isApp = pluginManager.hasPlugin("com.android.application")
-val isLib = pluginManager.hasPlugin("com.android.library")
-
-if (isApp || isLib) {
-    val targetSdkVersion = project.sjyVersion("compile-sdk").toInt()
-    val minSdkVersion = project.sjyVersion("min-sdk").toInt()
-    val jvmTargetVersion = project.sjyVersion("jvm-target")
-
-    println("[Build Logic][AndroidTargetSetup] Setting up target android sdk to: $targetSdkVersion")
-    println("[Build Logic][AndroidTargetSetup] Setting up min android sdk to: $minSdkVersion")
-
-    if (isApp) {
+pluginManager.withPlugin("com.android.application") {
+    configureAndroidSdk { compileSdkMajor, compileSdkMinor, minSdkVersion ->
         configure<ApplicationExtension> {
-            compileSdk = targetSdkVersion
+            compileSdk {
+                version = releaseFromCatalog(compileSdkMajor, compileSdkMinor)
+            }
             defaultConfig {
-                multiDexEnabled = true
-                targetSdk = targetSdkVersion
+                targetSdk = compileSdkMajor
                 minSdk = minSdkVersion
-                println("[Build Logic][AndroidTargetSetup] Set Multidex enabled")
             }
             buildFeatures {
                 buildConfig = false
             }
         }
-    } else {
+    }
+}
+
+pluginManager.withPlugin("com.android.library") {
+    configureAndroidSdk { compileSdkMajor, compileSdkMinor, minSdkVersion ->
         configure<LibraryExtension> {
-            compileSdk = targetSdkVersion
+            compileSdk {
+                version = releaseFromCatalog(compileSdkMajor, compileSdkMinor)
+            }
             defaultConfig {
                 minSdk = minSdkVersion
             }
@@ -40,14 +38,33 @@ if (isApp || isLib) {
             }
         }
     }
+}
 
+fun Project.configureAndroidSdk(
+    configureExtension: Project.(compileSdkMajor: Int, compileSdkMinor: Int?, minSdkVersion: Int) -> Unit,
+) {
+    val compileSdkMajor = sjyVersion("compile-sdk").toInt()
+    val compileSdkMinor = sjyVersionOrNull("compile-sdk-minor")?.toInt()
+    val minSdkVersion = sjyVersion("min-sdk").toInt()
+    val jvmTargetVersion = sjyVersion("jvm-target")
+    val compileSdkLabel = compileSdkMinor?.let { "$compileSdkMajor.$it" } ?: "$compileSdkMajor"
+    println("[Build Logic][AndroidTargetSetup] Setting up compile android sdk to: $compileSdkLabel")
+    println("[Build Logic][AndroidTargetSetup] Setting up target android sdk to: $compileSdkMajor")
+    println("[Build Logic][AndroidTargetSetup] Setting up min android sdk to: $minSdkVersion")
+    configureExtension(compileSdkMajor, compileSdkMinor, minSdkVersion)
     configure<JavaPluginExtension> {
         toolchain {
             languageVersion.set(JavaLanguageVersion.of(jvmTargetVersion))
         }
     }
-
     dependencies {
-        add("implementation", project.sjyLibrary("androidx-core-ktx"))
+        add("implementation", sjyLibrary("androidx-core-ktx"))
     }
 }
+
+fun CompileSdkSpec.releaseFromCatalog(major: Int, minor: Int?): CompileSdkVersion =
+    if (minor == null) {
+        release(major)
+    } else {
+        release(major) { minorApiLevel = minor }
+    }
