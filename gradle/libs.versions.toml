@@ -29,7 +29,7 @@ mmkv = "2.4.3"
 store = "5.1.0-beta01"
 app-startup = "1.2.0"
 okhttp = "5.5.1"
-ktor = "3.6.0"
+ktor = "3.6.1"
 chucker = "4.3.1"
 axer = "1.2.12"
 
