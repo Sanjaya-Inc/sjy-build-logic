@@ -16,6 +16,7 @@ Precompiled script plugins under `convention/{android,multiplatform,tools,jvm}`.
 | `buildlogic-detekt` | `sjy.plugins.buildlogic.detekt` | `com.sanjaya.buildlogic.detekt` |
 | `buildlogic-multiplatform-lib` | `sjy.plugins.buildlogic.multiplatform.lib` | `com.sanjaya.buildlogic.multiplatform.lib` |
 | `buildlogic-multiplatform-cmp` | `sjy.plugins.buildlogic.multiplatform.cmp` | `com.sanjaya.buildlogic.multiplatform.cmp` |
+| `buildlogic-multiplatform-roborazzi` | `sjy.plugins.buildlogic.multiplatform.roborazzi` | `com.sanjaya.buildlogic.multiplatform.roborazzi` |
 | `buildlogic-multiplatform-ios-app-version` | `sjy.plugins.buildlogic.multiplatform.ios.app.version` | `com.sanjaya.buildlogic.multiplatform.ios-app-version` |
 
 Internal (no catalog alias; auto-applied): `com.sanjaya.buildlogic.common`, `com.sanjaya.buildlogic.target`.
@@ -41,6 +42,7 @@ Internal (no catalog alias; auto-applied): `com.sanjaya.buildlogic.common`, `com
 | :--- | :--- | :--- |
 | `buildlogic.multiplatform.lib` | Every KMP library | Applies `kotlin-multiplatform` + `android-kotlin-multiplatform-library`, KSP, serialization, ktorfit, koin-compiler; Android + iOS arm64/sim frameworks; common deps (koin, coroutines, immutable, datetime, store, ktor*). |
 | `buildlogic.multiplatform.cmp` | Shared Compose UI | Stack on multipatform.lib. CMP + material3 + Orbit + lifecycle + Navigation3. |
+| `buildlogic.multiplatform.roborazzi` | Compose screenshot tests | Opt-in on `androidHostTest`. Roborazzi + Robolectric. Needs `multiplatform.lib`. |
 | `buildlogic.multiplatform.ios.app.version` | Module that owns iOS framework versioning | Writes `iosApp/Configuration/Version.xcconfig` from consumer `app-version-name` / `app-version-code` via `SyncIosAppVersionTask`. |
 
 AGP 9+: KMP modules are libraries only. Host Android UI in `:androidApp`.

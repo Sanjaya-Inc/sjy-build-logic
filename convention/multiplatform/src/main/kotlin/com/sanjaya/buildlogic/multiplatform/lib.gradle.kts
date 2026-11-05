@@ -53,7 +53,10 @@ configure<KotlinMultiplatformAndroidComponentsExtension> {
                 release(compileSdkMajor) { minorApiLevel = compileSdkMinor }
             }
         }
-        it.withHostTest { }
+        it.withHostTest {
+            isIncludeAndroidResources =
+                project.pluginManager.hasPlugin("io.github.takahirom.roborazzi")
+        }
     }
 }
 
